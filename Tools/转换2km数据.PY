@@ -17,7 +17,7 @@ for n in xrange(1982,2009):
 		m="%02d" % m		#转换为两位日期
 # Local variables:	
 												#如果处理气象数据统计字段为"HUC_8"，统计LAI是则为”HUC_8"
-		data_class="pre"							#待处理的数据类型”TM“，”PRE“，”LAI“
+		data_class="temp"							#待处理的数据类型”TM“，”PRE“，”LAI“
 		data_class2="basin"					#判断是处理气象数据还是LAI数据；分别用“basin_"和“VEG_"
 ##########################-----流域划分个数---------##############################################			
 		basin_num_1=""
@@ -41,9 +41,9 @@ for n in xrange(1982,2009):
 		################################################################################	
 		
 ##########################-----公用目录---------##############################################		
-		input_dir="z:\\NEW_DATA\\2km\\"	#气象数据所在的目录
-		output_raster_dir="E:\\zagunao\\"			#转换生成的栅格所在的目录
-		basins_dir="E:\\zagunao\\" 	#流域边界所在目录
+		input_dir="K:\\NEW_DATA\\"+data_class+"\\"	#气象数据所在的目录
+		output_raster_dir="K:\\NEW_DATA\\2km\\"			#转换生成的栅格所在的目录
+		basins_dir="E:\\chuanxi\\" 	#流域边界所在目录
 ################################################################################		
 		
 #######################---转换后的每个流域结果的输出目录------#################################
@@ -75,7 +75,7 @@ for n in xrange(1982,2009):
 		name4=data_class+str(n)+m+".dbf"
 		
 ######################-----待预处理的气象数据文件------##############################################		
-		input_file = input_dir+name3							#输入气象数据
+		input_file = input_dir+name1							#输入气象数据
 #		input_file = "d:\\tm196101.txt"
 		output_asctoras = input_dir+name2				#处理后的气象数据
 		output_asctoras1=output_raster_dir+name3
@@ -126,11 +126,12 @@ for n in xrange(1982,2009):
 ################################################################################
 
 
-
+# Process: 重采样
+		arcpy.Resample_management(output_asctoras, output_asctoras1, "0.017", "CUBIC")
 
 
 # Process: 以表格显示分区统计岷江流域
 # Process: Zonal Statistics as Table...
-		arcpy.gp.ZonalStatisticsAsTable_sa(basin_1, "HUC_8", input_file, output_data_basin_1, "DATA", "MEAN")
+		arcpy.gp.ZonalStatisticsAsTable_sa(basin_1, "HUC_8", output_asctoras1, output_data_basin_1, "DATA", "MEAN")
 		print "成功对basin_250进行统计"
 	

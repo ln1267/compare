@@ -3,7 +3,7 @@
 	一般只需将"200"替换为文件名中“Outputs_”和“_n”之间的值；
 		eg：Outputs_3的文件名则将"200"替换为“200”
 	1 逻辑库名称：“libname W”
-	2 逻辑库的目录：libname W "E:\zagunao\OUTPUTS\Outputs";
+	2 逻辑库的目录：libname W "E:\chuanxi\OUTPUTS\Outputs";
 	3 读入验证数据在XLXS中的SHEET表名RANGE="200$"; RANGE="200$"; 
 	4 "if year < 2000 or year >2006 then delete;”
 **/
@@ -12,47 +12,47 @@
 
 /*----------------------------数据预处理开始-----------------------------------------------*/
 /*为每个输出创建逻辑库*/
-libname W "C:\WASSICBZB\Outputs";
+libname W "E:\chuanxi\OUTPUTS\Outputs";
 
 /*向逻辑库中读入输出的结果文件*/
 data W.ANNUALBIO;/* 读入ANNUALBIO（流域年物种丰富度）*/
-	infile "C:\WASSICBZB\Outputs\ANNUALBIO.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\ANNUALBIO.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL YEAR TREE MAMMALS BIRD AMPHIB REPTILES VERTEB AET PET;
 run;
 data W.ANNUALCARBON;/* 读入ANNUALCARBON（流域年碳通量）*/
-	infile "C:\WASSICBZB\Outputs\ANNUALCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\ANNUALCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL YEAR GEP Reco NEE AET PET;
 run;
 data W.ANNUALFLOW;/* 读入ANNUALFLOW（流域年水通量）*/
-	infile "C:\WASSICBZB\Outputs\ANNUALFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\ANNUALFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL YEAR RAIN PET AET Sun_ET RUNOFF RUN_Pratio ET_Pratio RUN_ETRatio SNWPCKMON RFACTOR;
 run;
 data W.FLOWVOLBYLANDUSE;/* 读入FLOWVOLBYLANDUSE（流域五种主要植被类型（农田，森林，草地，灌丛，无植被）的年径流）*/
-	infile "C:\WASSICBZB\Outputs\FLOWVOLBYLANDUSE.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\FLOWVOLBYLANDUSE.TXT"  dlm=',' dsd missover firstobs=2;;
 	input WATERSHEDID YEAR CROPFLOW FORESTFLOW GRASSFLOW SHRUBSAVAFLOW URBANWATERFLOW TFLOW;
 run;
 data W.HUCBIO;/* 读入HUCBIO（流域年均物种丰富度）*/
-	infile "C:\WASSICBZB\Outputs\HUCBIO.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\HUCBIO.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL NO_YR TREE MAMMALS BIRD AMPHIB REPTILES AHUCVERTEB;
 run;
 data W.HUCCARBON;/* 读入HUCCARBON（流域年均碳通量）*/
-	infile "C:\WASSICBZB\Outputs\HUCCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\HUCCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL NO_YR GEP Reco NEE;
 run;
 data W.HUCFLOW;/* 读入HUCFLOW（流域年均水通量）*/
-	infile "C:\WASSICBZB\Outputs\HUCFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\HUCFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL RAIN PET AET RUNOFF RUNOFF_P ET_P RUN_ET_PRFACTOR;
 run;
 data W.MONTHCARBON;/* 读入MONTHCARBON（流域月碳通量）*/
-	infile "C:\WASSICBZB\Outputs\MONTHCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\MONTHCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
 	input CELL YEAR MONTH GEP Reco NEE;
 run;
 data W.MONTHFLOW;/* 读入MONTHFLOW（流域月水通量）*/
-	infile "C:\WASSICBZB\Outputs\MONTHFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
-	input CELL YEAR MONTH PRECIP TEMP SMC SNWPK PET AET Sun_ET RUNOFF BASEFLOW FLOWMCMMon;
+	infile "E:\chuanxi\OUTPUTS\Outputs\MONTHFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
+	input CELL YEAR MONTH PRECIP TEMP SMC SNWPK PET AET Sun_ET RUNOFF FLOWMCMMon;
 run;
 data W.RUNOFFBYLANDUSE;/* 读入RUNOFFBYLANDUSE（流域各个植被类型的年径流）*/
-	infile "C:\WASSICBZB\Outputs\RUNOFFBYLANDUSE.TXT"  dlm=',' dsd missover firstobs=2;;
+	infile "E:\chuanxi\OUTPUTS\Outputs\RUNOFFBYLANDUSE.TXT"  dlm=',' dsd missover firstobs=2;;
 	input WATERSHEDID YEAR LADUSEID HUCRUNOFF FLOWVOL LANDratio HUCAREA;
 run;
 /*模拟结果文件读入结束*/
@@ -62,7 +62,7 @@ run;
 /*Monthly validation database*/
 /*读入月MODIS月GEP验证数据*/
 PROC IMPORT OUT= W.MODGEP 
-            DATAFILE= "E:\zagunao\VALID\MODGEP.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\MODGEP.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -73,7 +73,7 @@ PROC IMPORT OUT= W.MODGEP
 RUN;
 	/*Zhang ET database*/
 PROC IMPORT OUT= W.ZHANGET 
-            DATAFILE= "E:\zagunao\VALID\ZHANGET.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\ZHANGET.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -84,7 +84,7 @@ PROC IMPORT OUT= W.ZHANGET
 RUN;
 	/*MODIS ET database*/
 PROC IMPORT OUT= W.MODET
-            DATAFILE= "E:\zagunao\VALID\MODET.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\MODET.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -94,7 +94,7 @@ PROC IMPORT OUT= W.MODET
      SCANTIME=YES;
 RUN;
 PROC IMPORT OUT= W.MODPET
-            DATAFILE= "E:\zagunao\VALID\MODPET.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\MODPET.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -103,29 +103,9 @@ PROC IMPORT OUT= W.MODPET
      USEDATE=YES;
      SCANTIME=YES;
 RUN;
-PROC IMPORT OUT= W.FLOW_V
-            DATAFILE= "E:\zagunao\VALID\FLOW_O.xlsx" 
-            DBMS=EXCEL REPLACE;
-     RANGE="sheet2$"; 
-     GETNAMES=YES;
-     MIXED=NO;
-     SCANTEXT=YES;
-     USEDATE=YES;
-     SCANTIME=YES;
-RUN;
-PROC IMPORT OUT= W.BASEFLOW_V
-            DATAFILE= "E:\zagunao\VALID\BASEFLOW_O.xlsx" 
-            DBMS=EXCEL REPLACE;
-     RANGE="baseflow$"; 
-     GETNAMES=YES;
-     MIXED=NO;
-     SCANTEXT=YES;
-     USEDATE=YES;
-     SCANTIME=YES;
-RUN;
 /*Annual validation database*/
 PROC IMPORT OUT=W.MODGPP_Y 
-            DATAFILE= "E:\zagunao\VALID\MODGPP_Y.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\MODGPP_Y.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -135,7 +115,7 @@ PROC IMPORT OUT=W.MODGPP_Y
      SCANTIME=YES;
 RUN;
 PROC IMPORT OUT=W.MODET_Y 
-            DATAFILE= "E:\zagunao\VALID\MODET_Y.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\MODET_Y.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -145,7 +125,7 @@ PROC IMPORT OUT=W.MODET_Y
      SCANTIME=YES;
 RUN;
 PROC IMPORT OUT=W.ZHANGET_Y 
-            DATAFILE= "E:\zagunao\VALID\ZHET_Y.xlsx" 
+            DATAFILE= "E:\chuanxi\VALID\ZHET_Y.xlsx" 
             DBMS=EXCEL REPLACE;
      RANGE="sheet1$"; 
      GETNAMES=YES;
@@ -161,8 +141,8 @@ RUN;
 
 
 /*----------------------------数据处理开始-----------------------------------------------*/
-libname W "C:\WASSICBZB\Outputs";
-
+libname W "E:\chuanxi\OUTPUTS\Outputs";
+ods printer pdf file ='E:\chuanxi\OUTPUTS\Validation.pdf';/*为每个输出创建逻辑库*/
 
 /*处理月验证数据*/
 
@@ -330,280 +310,138 @@ RUN;
 
 /*向验证数据中添加流域属性字段*/
 PROC IMPORT OUT= W.basin 
-            DATAFILE= "E:\zagunao\basin_pro.dbf" 
+            DATAFILE= "E:\chuanxi\basin.dbf" 
             DBMS=DBF REPLACE;
      GETDELETED=NO;
 RUN;
-data W.basin;
-	set W.basin(keep= HUC_8  shape_area);
-	ratio=shape_area/2397709885;
+data basin;
+	set W.basin(keep= HUC_8 liuyu shape_area);
 	cell=HUC_8;
 run;
-proc sort data=W.basin out=W.basin;/*对验证用的ET数据进行排序*/
-     by cell;
-run; 
+
 data W.month_VERIFY;
- 	merge W.month_VERIFY W.basin;
+ 	merge W.month_VERIFY basin;
 	by cell;
 	drop huc_8;
 run;
 data W.ANNUAL_VERIFY;
- 	merge W.ANNUAL_VERIFY W.basin;
+ 	merge W.ANNUAL_VERIFY basin;
 	by cell;
 	drop huc_8;
 run;
-
-
-/*流域总结果的处理*/
-	/*月流域结果*/
-data W.BASIN_month_VERIFY;
-	set W.month_VERIFY;
-	B_PET=PET*ratio;
-	B_AET=AET*ratio;
-	B_SunET=Sun_ET*ratio;
-	B_MODET=MODIS_ET*ratio;
-	B_MODPET=MODIS_PET*ratio;
-	B_ZHANGET=ZHANG_ET*ratio;
-	B_GEP=GEP*ratio;
-	B_NEE=NEE*ratio;
-	B_MODGEP=MODIS_GEP*ratio;
-	drop PET AET Sun_ET MODIS_ET MODIS_PET ZHANG_ET GEP NEE MODIS_GEP shape_area ratio;
-run;
-
-proc sort data=W.BASIN_month_VERIFY out=BASIN_month_VERIFY;
-	by year month ;
-run;
-proc means data=BASIN_month_VERIFY noprint; /*分别求算每个流域的均值*/                                                                                             
-        by year month ;                                                                                                                   
-        output out=W.BASIN_month_VERIFY(drop=_type_ _freq_) sum=;                                                                                    
-run;  
-
-	/*年流域结果*/
-data W.BASIN_annual_VERIFY;
-	set W.annual_VERIFY;
-	B_PET=PET*ratio;
-	B_AET=AET*ratio;
-	B_SunET=Sun_ET*ratio;
-	B_MODET=MODET_Y*ratio;
-	B_ZHANGET=ZHANGET_Y*ratio;
-	B_GEP=GEP*ratio;
-	B_RECO=reco*ratio;
-	B_NEE=NEE*ratio;
-	B_MODGPP=MODGPP_Y*ratio;
-	B_RUNOFF=RUNOFF*ratio;
-	B_RAIN=RAIN*ratio;
-	drop PET AET Sun_ET MODET_Y rain ZHANGET_Y GEP NEE MODGPP_Y RECO shape_area ratio RUNOFF;
-run;
-
-proc sort data=W.BASIN_annual_VERIFY out=BASIN_annual_VERIFY;
-	by year  ;
-run;
-proc means data=BASIN_annual_VERIFY noprint; /*分别求算每个流域的均值*/                                                                                             
-        by year;                                                                                                                   
-        output out=W.BASIN_annual_VERIFY(drop=_type_ _freq_) sum=;                                                                                    
-run;  
-
-
-
 /*----------------------------GEP和ET的验证数据处理结束--------------------------*/
 
 
-ods printer pdf file ='C:\WASSICBZB\Validation.pdf';/*为每个输出创建逻辑库*/
+
 /*---------------------------------显示验证结果------------------------------*/
 
-/*显示cell月验证结果*/
+/*显示月验证结果*/
 proc sort data=W.Month_verify out=Month_verify;
-	by cell year ;
+	by liuyu year ;
 run;
 proc sort data=W.Annual_verify out=Annual_verify;
-	by cell year;
+	by liuyu year;
 run;
-	/*GEP数据显示*/
-/*
 proc reg data=Month_verify;
 	model GEP=MODIS_GEP;
 	plot GEP*MODIS_GEP;
-	title "A monthly comparison of GEP between WASSI-C and MODIS of each HRU";
+	title "三大流域分年GEP月验证结果";
+	by liuyu year;
+run;
+quit; 
+proc reg data=Annual_verify;
+	model GEP=MODGPP_Y;
+	plot GEP*MODGPP_Y;
+	title "三大流域分年GEP年验证结果";
+	by liuyu year;
+run;
+quit; 
+
+proc sort data=W.Month_verify out=Month_verify;
+	by liuyu  ;
+run;
+proc sort data=W.Annual_verify out=Annual_verify;
+	by liuyu ;
+run;
+proc reg data=Month_verify;
+	model GEP=MODIS_GEP;
+	plot GEP*MODIS_GEP;
+	title "三大流域GEP月验证结果";
+	by liuyu;
 run;
 quit; 
 
 proc reg data=Annual_verify;
 	model GEP=MODGPP_Y;
 	plot GEP*MODGPP_Y;
-	title "A annual comparison of GEP between WASSI-C and MODIS of each HRU";
-
+	title "三大流域GEP年验证结果";
+	by liuyu;
 run;
 quit; 
-	/*ET数据显示*/
-/*
+proc sort data=W.Month_verify out=Month_verify;
+	by year  ;
+run;
+proc sort data=W.Annual_verify out=Annual_verify;
+	by year ;
+run;
 proc reg data=Month_verify;
-	model AET=MODIS_ET;
-	plot AET*MODIS_ET;
-	title "A monthly comparison of ET between WASSI-C and MODIS of each HRU";
-run;
-quit; 
-data ZHANG_ET;
-	set Month_verify;
-	if ZHANG_ET <= 0 then delete;
-run;
-proc reg data=zhang_et;
-	model AET=ZHANG_ET;
-	plot AET*ZHANG_ET;
-	title "A monthly comparison of ET between WASSI-C and ZHANG KE of each HRU";
+	model GEP=MODIS_GEP;
+	plot GEP*MODIS_GEP;
+	title "分年GEP月验证结果";
+	by year;
 run;
 quit; 
 proc reg data=Annual_verify;
-	model AET=MODET_Y;
-	plot AET*MODET_Y;
-	title "A annual comparison of ET between WASSI-C and MODIS of each HRU";
+	model GEP=MODGPP_Y;
+	plot GEP*MODGPP_Y;
+	title "分年GEP年验证结果";
+	by year;
 run;
 quit; 
 
-
-/*显示BASIN月验证结果*/
-proc sort data=W.BASIN_Month_verify out=BASIN_Month_verify;
-	by cell year ;
-run;
-proc sort data=W.BASIN_Annual_verify out=BASIN_Annual_verify;
-	by cell year;
-run;
-	/*GEP数据显示*/
-/*
-proc reg data=BASIN_Month_verify;
-	model B_GEP=B_MODGEP;
-	plot B_GEP*B_MODGEP;
-	title "A monthly comparison of GEP between WASSI-C and MODIS of the whole watershed";
-run;
-quit; 
-
-proc reg data=BASIN_Annual_verify;
-	model B_GEP=B_MODGPP;
-	plot B_GEP*B_MODGPP;
-	title "A monthly comparison of GEP between WASSI-C and MODIS of the whole watershed";
-
-run;
-quit; 
-	/*ET数据显示*/
-/*
-proc reg data=BASIN_Month_verify;
-	model B_AET=B_MODET;
-	plot B_AET*B_MODET;
-	title "A monthly comparison of ET between WASSI-C and MODIS of the whole watershed";
-run;
-quit; 
-proc reg data=BASIN_Month_verify;
-	model B_AET=B_ZHANGET;
-	plot B_AET*B_ZHANGET;
-	title "A monthly comparison of ET between WASSI-C and ZHANG KE of the whole watershed";
-run;
-quit; 
-proc reg data=BASIN_Annual_verify;
-	model B_AET=B_MODET;
-	plot B_AET*B_MODET;
-	title "A annual comparison of ET between WASSI-C and MODIS of the whole watershed";
-run;
-quit; 
-*/
 
 /*导出处理好的验证数据集*/
 
 PROC EXPORT DATA= W.Month_verify 
-            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            OUTFILE= "E:\chuanxi\OUTPUTS\output.xlsx" 
             DBMS=EXCEL REPLACE;
      SHEET="MONTHLY"; 
 RUN;
 PROC EXPORT DATA= W.Annual_verify 
-            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            OUTFILE= "E:\chuanxi\OUTPUTS\output.xlsx" 
             DBMS=EXCEL REPLACE;
      SHEET="ANNUAL"; 
 RUN;
 
-PROC EXPORT DATA= W.BASIN_Month_verify 
-            OUTFILE= "C:\WASSICBZB\output.xlsx" 
-            DBMS=EXCEL REPLACE;
-     SHEET="BASIN_MONTHLY"; 
-RUN;
-PROC EXPORT DATA= W.BASIN_Annual_verify 
-            OUTFILE= "C:\WASSICBZB\output.xlsx" 
-            DBMS=EXCEL REPLACE;
-     SHEET="BASIN_ANNUAL"; 
-RUN;
 /*------------------------处理结束---------------------------*/
 
-
+ods printer close;
 
 
 /*------------------------开始处理FLOW数据---------------------------*/
-proc sort data=W.monthflow out=run_v ;
-	by cell;
-run;
-data run_v;
- 	merge run_v W.basin;
-	by cell;
+proc sort data=W.monthflow out=flow_v;
+	by year month;
 run;
 
-data W.run_v;
-	set run_v;
-	B_SNWPK=SNWPK*ratio;
-	B_SMC=SMC*ratio;
-	B_RUNOFF=RUNOFF*ratio;
-	B_BASEFLOW=BASEFLOW*ratio;
-	drop PRECIP TEMP SMC SNWPK PET AET Sun_ET RUNOFF BASEFLOW FLOWMCMMon HUC_8 shape_area ratio ;
-run;
-proc sort data=W.run_v out=run_v ;
-	by year month;
-run;
-proc sort data=W.monthflow out=flow_v ;
-	by year month;
-run;
-proc means data=run_v noprint; /*分别求算每个流域的均值*/                                                                                             
-        by year month ;                                                                                                                   
-        output out=out_run(drop=_type_ _freq_) sum=;                                                                                    
-run;  
 proc means data=flow_v noprint; /*分别求算每个流域的均值*/                                                                                             
         by year month ;                                                                                                                   
         output out=out_flow(drop=_type_ _freq_) sum=;                                                                                    
 run;  
+data flow_v;
+	merge out_flow val;
+	keep year month FLOWMCMMon run_v;
+	if month <1 then delete;
+run;
 
-DATA W.FLOW_verify;
-	set out_flow(keep=YEAR MONTH FLOWMCMMon);
-	FLOW=FLOWMCMMon;
-	RUNOFF=FLOWMCMMon*1000/2904.38;
-	if year < 2000 or year >2006 then delete;
-	
-	drop FLOWMCMMon;
+data flow_v_g;
+	set flow_v;
+	if month<4 or month >10 then delete;
 run;
-DATA W.run;
-	set out_run;
-	if year < 2000 or year >2006 then delete;
-run;
-proc sort data=W.FLOW_verify out=W.FLOW_verify;/*对验证用的GEP数据进行排序*/
-     by  YEAR MONTH ;
-run; 
-DATA W.FLOW_v;
-	set W.flow_V;
-	if year < 2000 or year >2006 then delete;
-run;
-DATA W.BASEFLOW_v;
-	set W.baseflow_V;
-	if year < 2000 or year >2006 then delete;
-run;
-DATA W.FLOW_verify;/* 将验证数据添加到模拟数据后面*/
-	MERGE W.FLOW_verify W.flow_V W.BASEFLOW_V W.run;
-	drop cell;
-RUN;
-     
 
-proc reg data=W.FLOW_verify;
-	model RUNOFF=RUNOFF_O;
-	plot RUNOFF*RUNOFF_O;
-	title "A monthly comparison of RUNOFF between WASSI-C and Observed of the whole watershed";
-run;
-quit; 
-proc reg data=W.FLOW_verify;
-	model B_baseflow=baseflow_O;
-	plot B_baseflow*baseflow_O;
-	title "A monthly comparison of BASEFLOW between WASSI-C and Observed of the whole watershed";
+proc reg data=flow_v;
+	model FLOWMCMMon=run_V;
+	plot FLOWMCMMon*run_V;
+	title "FLOW验证结果";
 run;
 quit; 
 /*
@@ -615,10 +453,15 @@ run;
 quit; 
 */
 	/*导出处理好的FLOW数据集*/
-PROC EXPORT DATA= W.FLOW_verify 
-            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+PROC EXPORT DATA= WORK.flow_v 
+            OUTFILE= "E:\chuanxi\OUTPUTS\excle\A.xlsx" 
             DBMS=EXCEL REPLACE;
-     SHEET="FLOW"; 
+     SHEET="flow"; 
+RUN;
+PROC EXPORT DATA= WORK.flow_v_g 
+            OUTFILE= "E:\chuanxi\OUTPUTS\excle\A.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="flow_g"; 
 RUN;
 
 /*------------------------FLOW处理结束---------------------------*/

@@ -17,7 +17,7 @@ for n in xrange(2000,2012):
 		m="%02d" % m		#转换为两位日期
 # Local variables:	
 												#如果处理气象数据统计字段为"HUC_8"，统计LAI是则为”HUC_8"
-		data_class="modet"							#待处理的数据类型”TM“，”PRE“，”LAI“
+		data_class="MODET"							#待处理的数据类型”TM“，”PRE“，”LAI“
 		data_class2="basin"					#判断是处理气象数据还是LAI数据；分别用“basin_"和“VEG_"
 ##########################-----流域划分个数---------##############################################			
 		basin_num_1=""
@@ -41,9 +41,9 @@ for n in xrange(2000,2012):
 		################################################################################	
 		
 ##########################-----公用目录---------##############################################		
-		input_dir="z:\\NEW_DATA\\year\\"	#气象数据所在的目录
-		output_raster_dir="d:\\zagunao\\year\\"			#转换生成的栅格所在的目录
-		basins_dir="d:\\zagunao\\" 	#流域边界所在目录
+		input_dir="K:\\NEW_DATA\\year\\"	#气象数据所在的目录
+		output_raster_dir="E:\\chuanxi\\"+data_class+"\\"			#转换生成的栅格所在的目录
+		basins_dir="E:\\chuanxi\\" 	#流域边界所在目录
 ################################################################################		
 		
 #######################---转换后的每个流域结果的输出目录------#################################
@@ -74,8 +74,8 @@ for n in xrange(2000,2012):
 		name4=data_class+str(n)+".dbf"
 		
 ######################-----待预处理的气象数据文件------##############################################		
-		input_file = "z:\\NEW_DATA\\year\\year\\"+name2
-		input_file1 = "z:\\NEW_DATA\\year\\new\\"+name2
+		input_file = "K:\\NEW_DATA\\year\\year\\"+name2
+		input_file1 = "K:\\NEW_DATA\\year\\new\\"+name2
 		#输入气象数据
 #		input_file = "d:\\tm196101.txt"
 		output_asctoras = input_dir+name2
@@ -127,7 +127,13 @@ for n in xrange(2000,2012):
 ################################################################################
 
 		
-
+# Process: 裁剪
+		arcpy.Clip_management(input_file, "98.7844111512537 30.2973834933537 103.966011502829 33.6688777593014", input_file1, basin_clip, "", "ClippingGeometry")
+		print "成功按研究区裁剪数据！"
+		
+# Process: 设为空函数
+		arcpy.gp.SetNull_sa(input_file1, input_file1, output_asctoras, "value > 50000")
+		print "成功计算栅格统计信息！"
 
 		# Process: 以表格显示分区统计岷江流域
 # Process: Zonal Statistics as Table...
