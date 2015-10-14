@@ -144,13 +144,13 @@
 	     input_mulu="F:\Data_WaSSIC\10km\inputs_1"
 	     output_mulu='F:\Data_WaSSIC\10km\outputs_1_1'
 
-      OPEN(1,FILE='J:\Data_WaSSIC\MJ\Inputs_2\GENERAL.TXT')
-      OPEN(2,FILE='J:\Data_WaSSIC\MJ\Inputs_2\CELLINFO.TXT') 
+      OPEN(1,FILE='J:\WaSSIC\50km\Inputs\GENERAL.TXT')
+      OPEN(2,FILE='J:\WaSSIC\50km\Inputs\CELLINFO.TXT') 
 !      OPEN(3,FILE='J:\Data_WaSSIC\MJ\Inputs_1\vegINFO.TXT')
-      OPEN(4,FILE='J:\Data_WaSSIC\MJ\Inputs_2\CLIMATE.TXT')
+      OPEN(4,FILE='J:\WaSSIC\50km\Inputs\CLIMATE.TXT')
 
-      OPEN(7,FILE='J:\Data_WaSSIC\MJ\Inputs_2\SOILINFO.TXT')
-      OPEN(8,FILE='J:\Data_WaSSIC\MJ\Inputs_2\LANDLAI.TXT')
+      OPEN(7,FILE='J:\WaSSIC\50km\Inputs\SOILINFO.TXT')
+      OPEN(8,FILE='J:\WaSSIC\50km\Inputs\LANDLAI.TXT')
 
 !      OPEN(11,FILE='J:\Data_WaSSIC\MJ\Inputs_1\HUCAREA.TXT')
 !      OPEN(22,FILE='J:\Data_WaSSIC\MJ\Inputs_1\V_FLOW.TXT')
@@ -159,22 +159,22 @@
 ! ---Open Output files---------------------------------------- 
  
        
-      OPEN(77,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\BASICOUT.TXT')
-      OPEN(78,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\MONTHFLOW.TXT')
-      OPEN(79,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ANNUALFLOW.TXT')
-      OPEN(80,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\HUCFLOW.TXT')
-      OPEN(99,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ceshi.TXT')
-      OPEN(400,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\MONTHCARBON.TXT')
-      OPEN(500,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ANNUALCARBON.TXT')
-      OPEN(600,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\HUCCARBON.TXT')
+      OPEN(77,FILE='E:\Github\output\BASICOUT.TXT')
+      OPEN(78,FILE='E:\Github\output\MONTHFLOW.TXT')
+      OPEN(79,FILE='E:\Github\output\ANNUALFLOW.TXT')
+      OPEN(80,FILE='E:\Github\output\HUCFLOW.TXT')
+      OPEN(99,FILE='E:\Github\output\ceshi.TXT')
+      OPEN(400,FILE='E:\Github\output\MONTHCARBON.TXT')
+      OPEN(500,FILE='E:\Github\output\ANNUALCARBON.TXT')
+      OPEN(600,FILE='E:\Github\output\HUCCARBON.TXT')
 !      OPEN(700,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\ANNUALBIO.TXT')
 !      OPEN(800,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\HUCBIO.TXT')    
-      OPEN(900,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\SOILSTORAGE.TXT')
+      OPEN(900,FILE='E:\Github\output\SOILSTORAGE.TXT')
 !      OPEN(910,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\RUNOFFBYLANDUSE.TXT')
 !      OPEN(920,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\FLOWVOLBYLANDUSE.TXT')     
 !      OPEN(1000,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\RUNLAND.TXT')
 ! --- Open Output FILES (WARMUP.FOR)
-       OPEN(2002,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\DATA_V_F.TXT') 
+       OPEN(2002,FILE='E:\Github\output\DATA_V_F.TXT') 
 !       OPEN(2003,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\VALIDATION.TXT')  
 
 !  --------- Read input data -------------------------------
