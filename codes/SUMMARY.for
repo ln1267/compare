@@ -11,14 +11,12 @@ C**********************************************************************C
       SUBROUTINE SUMMARY(I)
 
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND, POP_FLAG
-
-
-
-      COMMON/CELLINFO/LADUSE(1000,20), HUCNO(1000), LATUDE(1000),
-     &LONGI(1000)
       
-      COMMON/SUMMARY1/ANURAIN(200),ANURUN(200),ANUPET(200),ANUAET(200)
-     >,ANUPAET(200)
+      COMMON/CELLINFO/LADUSE(4000,20), HUCNO(4000), LATUDE(4000),
+     &LONGI(4000)
+      
+      COMMON/SUMMARY1/ANURAIN(200), ANURUN(200), ANUPET(200), 
+     & ANUAET(200)
       COMMON/R/ RFACTOR(200)
 
 C-----------------------------------------------------------------------      

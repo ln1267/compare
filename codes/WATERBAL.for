@@ -8,51 +8,45 @@ C！！！！！！！！更改591行的碳平衡计算公式                             C
 C！！！！！！！817行RUNLAND (流域数，年数，月份，月份，植被类型数）数组大小C
 C**********************************************************************C
       
-      SUBROUTINE WATERBAL(TUN1,I,J,M,MNDAY)
+      SUBROUTINE WATERBAL(I,J,M,MNDAY)
 C      use myvar
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
-      COMMON/VAL/VAL_1(100), VAL_2(100) , VAL_3 ,VAL_4,VAL_5,VAL_6
+       
 
       COMMON/OUTPUT1/ PET(200,12,20),APET(12),PAET(200,12,20),APAET(12),
      &AET(12), RUNOFF(12), INTER(12), PRIBF(12), SECBF(12), INTF(12), 
      &AVUZTWC(12), AVUZFWC(12), AVLZTWC(12), AVLZFPC(12)
-     >,A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(1000,200, 12)
-     >,RUN_HRU(1000,200, 12),BASE_HRU(1000,200, 12)
-	 
+     
       COMMON/SNOWPACK/SP(12), SNOWPACK, NSPM(200)
        
       COMMON/SUMMARY1/ANURAIN(200),ANURUN(200),ANUPET(200),ANUAET(200)
-     >,ANUPAET(200)
               
-      COMMON/SOIL/LZTWM(1000), LZFPM(1000), LZFSM(1000), LZSK(1000),
-     >  LZPK(1000), UZTWM(1000), UZFWM(1000), UZK(1000), ZPERC(1000),
-     >  REXP(1000), PFREE(1000), SMC(12)
+      COMMON/SOIL/LZTWM(4000), LZFPM(4000), LZFSM(4000), LZSK(4000),
+     >  LZPK(4000), UZTWM(4000), UZFWM(4000), UZK(4000), ZPERC(4000),
+     >  REXP(4000), PFREE(4000), SMC(12)
 
-      COMMON/CLIMATE/ RAIN(1000,200,12), TEMP(1000,200, 12), AAPPT(1000)
+      COMMON/CLIMATE/ RAIN(4000,200,12), TEMP(4000,200, 12), AAPPT(4000)
                                        
             
-      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),
-     >                LATUDE(1000),LONGI(1000)
+      COMMON/CELLINFO/LADUSE(4000,20),HUCNO(4000),
+     >                LATUDE(4000),LONGI(4000)
      
       
-      COMMON/HUC/ HUCAREA(1000)
+      COMMON/HUC/ HUCAREA(4000)
        
-      COMMON/FLOW/ STRFLOW(1000, 200, 12),STRET(1000, 200, 12)
-     >,STRGEP(1000, 200, 12)
+      COMMON/FLOW/ STRFLOW(4000, 200, 12)
        
-      COMMON/CARBON/ GEPM(1000, 200, 12),RECOM(1000,200,12), 
-     >  NEEM(1000,200,12),GEPA(1000,200),NEEA(1000,200)
+      COMMON/CARBON/ GEPM(4000, 200, 12),RECOM(4000, 200, 12), 
+     >               NEEM(4000,200,12)
        
        
 C----RUNLAND (流域数，年数，月份，月份，植被类型数）
 C----由于设计问题编译时会超出数组大小的限制                    
-      COMMON/BYLAND/ RUNLAND(100,35,12, 31,10), 
-     >ETLAND(100, 35,12, 31,10), GEPLAND(100, 35,12, 31,10)
-     >,NEELAND(100,35,12, 31,10) 
+      COMMON/BYLAND/ RUNLAND(5000, 3,12, 31,13)
 C ----------------------------------------------------------------------------     
      
      
-      INTEGER DAY, HUCNO, MNDAY,YEAR,BYEAR
+      INTEGER DAY, HUCNO, MNDAY
       
       REAL AETTEMP, RUNOFFTEMP, PBFTEMP, SBFTEMP, 
      > IFTEMP, GEPTEMP,RECOTEMP, NEETEMP
@@ -94,22 +88,21 @@ C ----------------------------------------------------------------------------
       REAL AVUZTWC, AVUZFWC, AVLZTWC, AVLZFPC, 
      >     AVLZFSC(12)
       
-      REAL STRFLOW,GEPM,RECOM,STRET,STRGEP,
+      REAL STRFLOW,GEPM,RECOM,
      >      NEEM
       
       INTEGER GEPFLAG
       
-      REAL HUCELE(1000)
+      REAL HUCELE(4000)
       
       double precision HUCAREA
       
-      REAL RUNLAND,ETLAND,GEPLAND ,NEELAND
+      REAL RUNLAND 
             
 C *****************************************************************************************************
 C *****************************************************************************************************
 C *****************************************************************************************************
 C --- INITIALIZE VARIABLES FOR START OF SIMULATION
-            YEAR=BYEAR+J-1
 
 
              AETTEMP =0.
@@ -131,9 +124,9 @@ C --- INITIALIZE VARIABLES FOR START OF SIMULATION
                   
         DO 50 K=1, NLC
                         
-           UZTWC(K) = 0.1*UZTWM(I)
+           UZTWC(K) = UZTWM(I)
            UZFWC(K) = 0.0
-           LZTWC(K) = 0.1*LZTWM(I)
+           LZTWC(K) = LZTWM(I)
            LZFSC(K) = 0.75*LZFSM(I)
            LZFPC(K) = 0.75*LZFPM(I)
            
@@ -151,20 +144,6 @@ C----- SIMULATE SNOWPACK (SEE VAROSMARTY  ET AL., 1989)
            SNOW = RAIN(I,J, M)
     
            SNOWPACK = SNOWPACK + SNOW
-
-           SNOWW=SNOWPACK*(0.68+0.18*TEMP(I,J, M))
-         !  SNOWW=0
-           IF (SNOWW .LE. 0) THEN 
-                SNOWW=0
-           Endif
-
-           IF (SNOWW .GE. SNOWPACK) THEN 
-                  SNOWW=SNOWPACK
-           Endif
-
-           SNOWPACK = SNOWPACK - SNOWW
-           
-
            
            IAM = 0
                                 
@@ -172,7 +151,7 @@ C----- SIMULATE SNOWPACK (SEE VAROSMARTY  ET AL., 1989)
         
             IAM = IAM +1 
             
-            HUCELE(I) = 1000.
+            HUCELE(I) = 500.
             
            IF (HUCELE(I) .LE. 500.0) THEN
           
@@ -236,258 +215,36 @@ C -- BASEFLOW STILL OCCURS
 
              IF (TEMP (I,J, M) .LE. -1.0) THEN
           
-!                ET(J,M,K) = 0.
-C                SURFRO(K) = 0.
-!               INF(K) = 0.
+                ET(J,M,K) = 0.
+                SURFRO(K) = 0.
+                INF(K) = 0.
                 GEP (J, M, K) = 0.
-C *****************************************************************************************************               
-C *****************计算温度小于-1℃的ET**********************************************    
-!       P+SOIL > PET      ET=PET   
-!       P+SOIL < PET      ET=P
-C *****************************************************************************************************       
-             DPAET=0.0
-             DPAET=PAET(J,M,K)/MNDAY
+                
+                
+C -- COMPUTE PRIMARY BASEFLOW WHEN T <= -1.0
 
+                PBF(K) = LZFPC(K) * LZPK(I)
+                LZFPC(K) = LZFPC(K) - PBF(K)
+                IF (LZFPC(K) .LE. 0.0001) THEN 
+                   PBF(K) = PBF(K) + LZFPC(K)
+                   LZFPC(K) = 0.0
+                ENDIF
+                
+C -- COMPUTE SECONDARY BASEFLOW WHEN T <= -1.0
 
-            IF (UZTWC(K) .GT. DPAET) THEN 
-                ET(J,M,K)=DPAET
-                UZTWC(K)=UZTWC(K)-ET(J,M,K)
-              ELSE
-                ET(J,M,K)=0
-            ENDIF
-
-       
-C *****************************************************************************************************
-C -- COMPUTE THE DAILY AVERAGE INFILTRATION FOR A GIVEN MONTH FOR EACH LAND USE
-C---流域植被类型日水分输入量=降水+融雪
-                INFIL(K) = SNOWW/MNDAY
-                 
-
-C     --- COMPUTE WATER IN EXCESS OF UZ TENSION WATER CAPACITY (TWX)
-
-                  TWX(K) = INFIL(K) + UZTWC(K) - UZTWM(I)
-
-C *****************************************************************************************************
-C *****************************************************************************************************
-C --- COMPUTE PERCOLATION INTO SOIL WATER STORAGES AND SURFACE RUNOFF
-
-                    IF (TWX(K).GE.0.0) THEN           	
-C     --- IF INFIL EXCEEDS UZ TENSION WATER CAPACITY, SET UZ TENSION WATER STORAGE TO CAPACITY, 
-C         REMAINDER OF INFIL GOES TO UZFWC IF EXCEEDS UZFWC EXCESS GOES TO SURFACE RUNOFF
-
-                     UZTWC(K) = UZTWM(I)     
-                
-                     UZFWC(K) = UZFWC(K) + TWX(K)
-                
-                     IF (UZFWC(K) .GT. UZFWM(I)) THEN
-                
-                        SURFRO(K) = UZFWC(K) - UZFWM(I)
-                
-                        UZFWC(K) = UZFWM(I)
-                
-                     ELSE
-                
-                        SURFRO(K) = 0.0
-                
-                     ENDIF 
-
-                  ELSE        	
-           
-
-C     --- IF INFIL DOES NOT EXCEED UZ TENSION WATER CAPACITY, ALL INFIL GOES TO UZ TENSION WATER STORAGE
-
-                     UZTWC(K) = UZTWC(K) + INFIL(K)
-                     SURFRO(K) = 0.0
-             	
-                  ENDIF
-           
-C --- COMPUTE PERCOLATION TO LZ IF FREE WATER IS AVAILABLE IN UZ
-
-		
-	          IF (UZFWC(K) .GT. 0.0) THEN
-		
-
-C     --- COMPUTE PERCOLATION DEMAND FROM LZ
-
-                     PERCM(K) = LZFPM(K) * LZPK(I) + LZFSM(K) * LZSK(I)
-                
-                     PERC(K) = PERCM(K) * (UZFWC(K)/UZFWM(I))
-                
-                     DEFR(K)=1.0-((LZTWC(K)+LZFPC(K)+LZFSC(K))/
-     &(LZTWM(I)+LZFPM(I)+LZFSM(I)))
-                
-                     PERC(K) = PERC(K) * (1.0 + ZPERC(I) * (DEFR(K)
-     &**REXP(I)))
-            
-
-C     --- COMPARE LZ PERCOLATION DEMAND TO UZ FREE WATER AVAILABLE AND COMPUTE ACTUAL PERCOLATION
-
-                    IF (PERC(K) .LT. UZFWC(K)) THEN
-                
-                       UZFWC(K) = UZFWC(K) - PERC(K)
-                
-                    ELSE
-                
-                       PERC(K) = UZFWC(K)
-                
-                       UZFWC(K) = 0.0
-                
-                    ENDIF
-            
-C      --- CHECK TO SEE IF PERC EXCEEDS LZ TENSION AND FREE WATER DEFICIENCY, IF SO SET PERC TO LZ DEFICIENCY
-
-
-                    LZDEF(K) = (LZTWC(K) + LZFPC(K) + LZFSC(K)) - 
-     &(LZTWM(I) + LZFPM(I) + LZFSM(I)) + PERC(K)
-                    
-                    IF (LZDEF(K) .GT. 0.0) THEN
-                    
-                       PERC(K) = PERC(K) - LZDEF(K)
-          
-                       UZFWC(K) = UZFWC(K) + LZDEF(K)
-                       
-                    ENDIF
-                
-                
-C --- DISRIBUTE PERCOLATED WATER INTO THE LZ STORAGES AND COMPUTE THE REMAINDER IN UZ FREE WATER STORAGE AND RESIDUAL AVAIL FOR RUNOFF
-   
-
-C     --- COMPUTE PERC WATER GOING INTO LZ TENSION WATER STORAGE AND COMPARE TO AVAILABLE STORAGE
-
-                    PERCT(K) = PERC(K) * (1.0 - PFREE(I))
-                
-                    IF ((PERCT(K) + LZTWC(K)) .GT. LZTWM(I)) THEN
-                
-C     --- WHEN PERC IS GREATER THAN AVAILABLE TENSION WATER STORAGE, SET TENSION WATER STORAGE TO MAX, REMAINDER OF PERC GETS EVALUATED AGAINST FREE WATER STORAGE
-
-                       PERCF(K) = PERCT(K) + LZTWC(K) - LZTWM(I)
-                
-                       LZTWC(K) = LZTWM(I)
-                
-                    ELSE
-                
-C     --- WHEN PERC IS LESS THAN AVAILABLE TENSION WATER STORAGE, UPDATE TENSION WATER STORAGE
-
-                       LZTWC(K) = LZTWC(K) + PERCT(K)
-                
-                       PERCF(K) = 0.0
-                
-                    ENDIF
-                
-C     --- COMPUTE TOTAL PERC WATER GOING INTO LZ FREE WATER STORAGE
-
-                    PERCF(K) = PERCF(K) + PERC(K) * PFREE(I)                
-
-                    IF(PERCF(K) .GT. 0.0) THEN
-                
-C     --- COMPUTE RELATIVE SIZE OF LZ PRIMARY FREE WATER STORAGE COMPARED TO LZ TOTAL FREE WATER STORAGE
-
-                       HPL(K) = LZFPM(I) / (LZFPM(I) + LZFSM(I))
-                
-C     --- COMPUTE LZ PRIMARY AND SECONDARY FREE WATER CONTENT TO CAPACITY RATIOS
-
-                       RATLP(K) = LZFPC(K) / LZFPM(I)
-                
-                       RATLS(K) = LZFSC(K) / LZFSM(I)
-                
-C     --- COMPUTE FRACTIONS AND PERCENTAGES OF FREE WATER PERC TO GO TO LZ PRIMARY STORAGE
-
-                       FRACP(K) = (HPL(K) * 2.0 * (1.0 - RATLP(K))) 
-     >                 / ((1.0 - RATLP(K)) + (1.0 - RATLS(K)))
-                
-                       IF (FRACP(K) .GT. 1.0) FRACP(K) = 1.0
-
-                          PERCP(K) = PERCF(K) * FRACP(K)
-                
-                          PERCS(K) = PERCF(K) - PERCP(K)
-                
-C     --- COMPUTE NEW PRIMARY AND SECONDARY STORAGE
-
-C         --- COMPUTE NEW SECONDARY FREE WATER STORAGE
-
-                          LZFSC(K) = LZFSC(K) + PERCS(K)
-
-                          IF(LZFSC(K) .GT. LZFSM(I)) THEN
-                
-C         --- IF NEW SECONDARY FREE WATER STORAGE EXCEEDS CAPACITY SET SECONDARY STORAGE TO CAPACITY AND EXCESS GOES TO PRIMARY FREE WATER STORAGE
-
-                             PERCS(K) = PERCS(K) - LZFSC(K) + LZFSM(I)
-                
-                             LZFSC(K) = LZFSM(I)
-                          
-                          ENDIF
-                
-            
-C         --- IF NEW LZ SECONDARY FREE WATER STORAGE IS LESS THAN CAPACITY MOVE ON TO COMPUTE NEW PRIMARY FREE WATER STORAGE
-
-
-                       LZFPC(K) = LZFPC(K) + (PERCF(K) - PERCS(K))
-
-                
-                       IF (LZFPC(K) .GT. LZFPM(I)) THEN
-
-C             --- IF LZ FREE PRIMARY WATER STORAGE EXCEEDS CAPACITY SET PRIMARY STORAGE TO CAPACITY AND EVALUATE EXCESS AGAINST LZ TENSION WATER STORAGE
-
-                          LZTWC(K) = LZTWC(K) + LZFPC(K) - LZFPM(I)
-                
-                          LZFPC(K) = LZFPM(I)
-                
-                          IF (LZTWC(K) .GT. LZTWM(I)) THEN
-
-C            --- IF LZ TENSION WATER EXCEEDS CAPACITY EVALUATE EXCESS AGAINST UZ FREE WATER CAPACITY AND SET LZ TENSION WATER STORAGE TO CAPACITY
-
-                             UZFWC(K) = UZFWC(K) + LZTWC(K) - LZTWM(I)
-                
-                             LZTWC(K) = LZTWM(I)
-                             
-                          ENDIF
-                          
-                       ENDIF
-                       
-                    ENDIF
-                
-		 ENDIF
-		 
-C ***************************************************************************************************** 
-C *****************************************************************************************************                
-C --- COMPUTE BASEFLOW AND UPDATE LZ PRIMARY AND SECONDARY FREE WATER STORAGES
-
-                
-C      --- COMPUTE PRIMARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
-
-                 PBF(K) = LZFPC(K) * LZPK(I)
-                
-                 LZFPC(K) = LZFPC(K) - PBF(K)
-                
-                 IF (LZFPC(K) .LE. 0.0001) THEN 
-                
-                    PBF(K) = PBF(K) + LZFPC(K)
-                
-                    LZFPC(K) = 0.0
-                
-                 ENDIF
-                
-
-C      --- COMPUTE SECONDARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
-
-                 SBF(K) = LZFSC(K) * LZSK(I)
-                
-                 LZFSC(K) = LZFSC(K) - SBF(K)
-                
-                 IF (LZFSC(K) .LE. 0.0001) THEN
-                
+                SBF(K) = LZFSC(K) * LZSK(I)
+                LZFSC(K) = LZFSC(K) - SBF(K)
+                IF (LZFSC(K) .LE. 0.0001) THEN
                    SBF(K) = SBF(K) + LZFSC(K)
-                
                    LZFSC(K) = 0.0
-                
-                 ENDIF                          
+                ENDIF                
 
              ELSE
                   
 C *****************************************************************************************************
 C *****************************************************************************************************
 C -- COMPUTE THE DAILY AVERAGE INFILTRATION FOR A GIVEN MONTH FOR EACH LAND USE
-C---流域植被类型日水分输入量=降水+融雪
+
                 INFIL(K) = RAIN(I,J,M)/MNDAY + SNOWW/MNDAY
           
             
@@ -501,7 +258,6 @@ C --- NOTE THAT SAC-SMA ALLOWS ET TO ALSO BE SUPPLIED UNRESTRICTED BY LZ TENSION
                
                    ET(J, M, K) = DPAET
                 
-C		开始计算植被类型K 每天的ET、
 C --- COMPUTE ET FROM UZ TENSION WATER STORAGE, RECALCULATE UZTWC, CALCULATE RESIDUAL ET DEMAND
 
                    ETUZTW(J, M, K) = ET(J, M, K) * (UZTWC(K)/UZTWM(I))
@@ -593,7 +349,8 @@ C --- CALCULATE TOTAL ET SUPPLIED BY UPPER AND LOWER LAYERS
 
                    ET(J, M, K) = ETUZTW(J, M, K) + ETUZFW(J, M, K) + 
      &             ETLZTW(J, M, K)
-                  IF (ET(J, M, K) .LT. 0.00001) ET(J, M, K) = 0.0
+                   
+
 C *****************************************************************************************************
 C *****************************************************************************************************
 C --- COMPUTE PERCOLATION INTO SOIL WATER STORAGES AND SURFACE RUNOFF
@@ -832,10 +589,73 @@ C --- COMPUTE INTERFLOW FROM UZ
                  ENDIF
 
              ENDIF
-
-
              
+ 
+            GEPFLAG = 2
+            
+           IF (GEPFLAG .EQ. 1) THEN 
 
+C NOTE  the following is based on Law et al
+
+C *****************************************************************************************************
+C *****************************************************************************************************
+C -- Caculate GEP based on Law et al (2002) paper, GEP =f(monthly ET, ECOSYSTEMS)
+C --- LUMPED CROP, GRASSLAND, SHRUB, SAVANNAH, AND WATER/URBAN/BARREN
+C --- MIXED FOREST SHOULD BE AVG OF DECID/EVERGREEN?  EVERGREEN?
+
+C --  SHRUB, SAVANNAH, AND WATER/URBAN/BARREN
+
+               IF (K.EQ. 9 .OR. K.EQ. 10 .OR. K .GE. 12) THEN 
+     
+               GEP(J, M, K) = (3.2 * ET(J,M,K) * MNDAY - 0.4)/MNDAY
+
+C -- DECIDUOUS FOREST
+ 
+               ELSEIF (K .EQ. 5  .OR. K .EQ. 6) THEN 
+
+               GEP(J, M, K) = (3.2 * ET(J,M,K)*MNDAY - 0.4)/MNDAY
+
+
+C -- EVERGREEN FOREST
+
+               ELSEIF (K .EQ. 4  .OR. K .EQ. 8) THEN 
+
+               GEP(J, M, K) = (2.4 * ET(J,M,K)*MNDAY + 30.4)/MNDAY
+               
+C -- MIXED FOREST (SAME AS EVERGREEN)
+               
+               ELSEIF (K .EQ. 7  .OR. K .EQ. 11) THEN 
+               
+               GEP(J, M, K) = (2.4 * ET(J,M,K)*MNDAY + 30.4)/MNDAY
+
+
+C -- crop lands
+               ELSEIF (K .EQ. 1  .OR. K .EQ. 2) THEN 
+               
+               GEP(J, M, K) = (3.06 * ET(J,M,K)*MNDAY - 31.6)/MNDAY
+               
+
+C -- Grasslands
+
+               ELSEIF (K .EQ. 3) THEN 
+               
+               GEP(J, M, K) = (3.39 * ET(J,M,K)*MNDAY - 67.88)/MNDAY
+
+              
+               ENDIF
+                     
+               IF (GEP(J,M,K) .LE. 0.) THEN
+               
+                GEP(J,M,K) = 0.                  
+               
+               ENDIF
+
+          ELSE
+C *****************************************************************************************************
+C *****************************************************************************************************
+
+
+C IF GEPFLAG= 2
 C CALCULATING DAILY GEP G C/M2/DAY
 C NOTE  the following is based on New Analysis by Asko (Aug 24, 2010)
 C----根据不同的植被类型重编写下面的代码
@@ -845,94 +665,94 @@ C -- CROP
 
                IF (K.EQ.1) THEN 
 
-               GEP(J, M, K) = 4.5 * ET(J,M,K)
+               GEP(J, M, K) = 3.13 * ET(J,M,K)
 C---------论文中的公式
-               RECO(J,M,K)= 40.6 + 0.43 * GEP(J, M, K)*MNDAY
+C               RECO(J,M,K)= 40.6 + 1.35 * ET(J,M,K)*MNDAY
 C---------原始计算公式 		
-C               RECO(J,M,K)= VAL_1(TUN1) + VAL_2(TUN2) * GEP(J,M,K)*MNDAY      !11.14 1.85
+               RECO(J,M,K)= 11.14 + 1.85 * ET(J,M,K)*MNDAY 
 			  
 			   
 C -- Close SHRUBLANDS                   
                
-               ELSEIF (K .EQ. 5) THEN                
+               ELSEIF (K .EQ. 4) THEN                
 
-               GEP(J, M, K) = 1.4 * ET(J,M,K)  
+               GEP(J, M, K) = 1.37 * ET(J,M,K)  
                 
-               RECO(J,M,K)= 11.4 + 0.69 * GEP(J, M, K)*MNDAY
+               RECO(J,M,K)= 11.4 + 0.95 * ET(J,M,K)*MNDAY
                 
 C -- DECIDUOUS Broadleaf FOREST
  
-               ELSEIF (K .EQ. 2) THEN 
+               ELSEIF (K .EQ. 3) THEN 
 
-               GEP(J, M, K) = 2.4* ET(J,M,K) 
+               GEP(J, M, K) = 3.2 * ET(J,M,K) 
 C-------论文公式				   
-               RECO(J,M,K)= 30.8 + 0.45 * GEP(J, M, K)*MNDAY	
+C               RECO(J,M,K)= 30.8 + 1.44 * ET(J,M,K)*MNDAY	
 C-------原始计算公式
-C			   RECO(J,M,K)= 24.12 + 1.49 * ET(J,M,K)*MNDAY	
+			   RECO(J,M,K)= 24.12 + 1.49 * ET(J,M,K)*MNDAY	
 
 
 C -- Evergreen Broadleaf FOREST
  
                ELSEIF (K .EQ. 0) THEN 
 
-               GEP(J, M, K) = 2.6* ET(J,M,K)              
-               RECO(J,M,K)= 19.6 + 0.61 * GEP(J, M, K)*MNDAY			   
+               GEP(J, M, K) = 2.59 * ET(J,M,K)              
+               RECO(J,M,K)= 19.6 + 1.58 * ET(J,M,K)*MNDAY			   
 
 C---- Evergreen Needleleaf Forest
-               ELSEIF (K .EQ. 3) THEN                
+               ELSEIF (K .EQ. 5) THEN                
 
-               GEP(J, M, K) = 2.14* ET(J,M,K)
-               RECO(J,M,K)= 9.9 + 0.68 * GEP(J, M, K)*MNDAY			   
+               GEP(J, M, K) = 2.46* ET(J,M,K)
+               RECO(J,M,K)= 9.9 + 1.67 * ET(J,M,K)*MNDAY			   
                
 C -- GRASSLANDS               
-                ELSEIF (K .EQ. 7) THEN                
+                ELSEIF (K .EQ. 6) THEN                
                
-               GEP(J, M, K) = 2.25 * ET(J,M,K)
+               GEP(J, M, K) = 2.12 * ET(J,M,K)
 C------ 论文公式
-              RECO(J,M,K)= 18.9 + 0.64*GEP(J, M, K)*MNDAY
+C               RECO(J,M,K)= 18.9 + 1.36* ET(J,M,K)*MNDAY
 C-------原始计算公式	
-C			   RECO(J,M,K)= 14.2 + 1.42 * ET(J,M,K)*MNDAY	
+			   RECO(J,M,K)= 14.2 + 1.42 * ET(J,M,K)*MNDAY	
                
 C---- MIXED FOREST
                
-               ELSEIF (K .EQ. 4) THEN 
+               ELSEIF (K .EQ. 7) THEN 
                
-               GEP(J, M, K) =2.5 * ET(J,M,K)
+               GEP(J, M, K) = 2.74 * ET(J,M,K)
                IF (TEMP(I,J,M) .LE. -1.0) THEN 
                 
                 GEP(J, M, K) = 0.0
                 
                ENDIF 
                            
-               RECO(J,M,K)= 24.44 + 0.62 * GEP(J,M,K)*MNDAY
+               RECO(J,M,K)= 24.44 + 1.70 * GEP(J,M,K)*MNDAY
 
 C -- Open Shrublands                   
                
-	     ELSEIF (K .EQ. 6) THEN                
+	     ELSEIF (K .EQ. 8) THEN                
 
-               GEP(J, M, K) =  1.42* ET(J,M,K)
-               RECO(J,M,K)= 9.7 + 0.56 * GEP(J, M, K)*MNDAY
+               GEP(J, M, K) = 1.33* ET(J,M,K)
+               RECO(J,M,K)= 9.7 + 0.74 * ET(J,M,K)*MNDAY
                                            
 C -- SAVANNAS                   
                
-	     ELSEIF (K.EQ.  0) THEN                
+	     ELSEIF (K.EQ.  9) THEN                
 
-               GEP(J, M, K) = 1.26* ET(J,M,K) !
-               RECO(J,M,K)= 25.2 + 0.53 * GEP(J, M, K)*MNDAY
+               GEP(J, M, K) = 1.26* ET(J,M,K)
+               RECO(J,M,K)= 25.2 + 0.67 * ET(J,M,K)*MNDAY
        
          
 C -- Wetlands                     
                
-	     ELSEIF (K .EQ. 0) THEN                
+	     ELSEIF (K .EQ. 10) THEN                
 
                GEP(J, M, K) = 1.66* ET(J,M,K)
-               RECO(J,M,K)= 7.8 + 0.56 * GEP(J, M, K)*MNDAY     
+               RECO(J,M,K)= 7.8 + 0.93 * ET(J,M,K)*MNDAY     
 C -- Wet Savanna                     
                
-	     ELSEIF (K .EQ. 0) THEN                
+	     ELSEIF (K .EQ. 11) THEN                
 
                GEP(J, M, K) = 1.49* ET(J,M,K)
-               RECO(J,M,K)= 14.7 + 0.63 * GEP(J, M, K)*MNDAY
+               RECO(J,M,K)= 14.7 + 0.94 * ET(J,M,K)*MNDAY
  			   
 C -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)                  
                
@@ -947,9 +767,8 @@ C -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)
                  IF (GEP(J,M,K) .LE. 0.) THEN
                       GEP(J,M,K) = 0.                  
                  ENDIF
-                                 
-                                    
-              
+                                   
+          ENDIF                
                 RECO(J,M,K) = RECO(J,M,K)/MNDAY 
                                                             
                 NEE(J, M, K) = -GEP(J,M,K) + RECO(J,M,K)
@@ -1002,9 +821,9 @@ C----!!!!! RUNLAND(I,Y,DAY, K)更改
 C			RUNLAND_Y=(J-1)*12+M							
             RUNLAND(I,J,M,DAY, K) = SURFRO(K) + PBF(K) + 
      >     SBF(K) + INF(K)
-            ETLAND(I,J,M,DAY, K) = ET(J,M,K)
-            GEPLAND(I,J,M,DAY, K) = GEP(J,M,K)
-            NEELAND(I,J,M,DAY, K) = NEE(J,M,K)
+
+
+
 C--- calculate the fraction of soil moisture 
           
               
@@ -1059,34 +878,17 @@ C -- CALCULATE AVG SMC
            ENDIF            
      
 
+C -- STREAMFLOW IN MILLION M3 FOR EACH HUC FOR MONTH M. HUCAREA IN SQ. METERS
 
-       
-           GEPM(I,J, M) = GEPTEMP
-           IF (TEMP(I,J,M) .LT. -1)  THEN
-             GEPM(I,J, M)=0
-             ELSE 
-             GEPM(I,J, M) = GEPTEMP
-             ENDIF
-           RECOM(I,J,M)  = RECOTEMP
-           NEEM(I,J,M) = NEETEMP
 
-C -- STREAMFLOW IN MILLION M3 FOR EACH HUC FOR MONTH M. HUCAREA IN SQ. METERS 
+
           STRFLOW(I, J, M) = (RUNOFF(M) + PRIBF(M) + SECBF(M) + INTF(M))
      & * HUCAREA(I)/1000./1000000.
-
-         WRITE (81,2100) I,YEAR,M,RAIN(I,J,M),TEMP(I,J,M),
-     >AETTEMP,RUNOFFTEMP,PBFTEMP,SBFTEMP
-     >,STRFLOW(I, J, M),IFTEMP,ASM,SNOWPACK,SNOWW
-     S
-2100     FORMAT(I4.0, ',', I7.0, ',',I4.0, ',', F8.3, ',',
-     >   F8.3, ',',F8.3, ',',F8.3, ',', 
-     >   F8.3,',',F8.3, ',', F8.3, ',', F8.3 ',', F8.3 ,',', F8.3,
-     >   ',', F8.3)
-         WRITE (900,2200) I,YEAR, M, AUZTWC,AUZFWC,
-     >ALZTWC,ALZFPC,ALZFSC
-
-2200     FORMAT(I4.0, ',', I7.0, ',',I4.0, ',', F8.3, ',', 
-     >   F8.3,',',F8.3, ',', F8.3, ',', F8.3)
+           
+           GEPM(I,J, M) = GEPTEMP
+           RECOM(I,J,M)  = RECOTEMP
+           NEEM(I,J,M) = NEETEMP
+          
 
 C
 C --- Return

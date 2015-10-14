@@ -14,31 +14,22 @@ C        I=HUC; J= YEAR, M =MONTH, MNDAY= NO OF DAYS IN A MONTH
       
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
 
-      COMMON/VAL/VAL_1(100), VAL_2(100), VAL_3,VAL_4,VAL_5,VAL_6
-
-      COMMON/HUC/ HUCAREA(1000)
-	  
+      COMMON/HUC/ HUCAREA(4000)
       
-      COMMON/CARBON/ GEPM(1000, 200, 12),RECOM(1000,200,12), 
-     >  NEEM(1000,200,12),GEPA(1000,200),NEEA(1000,200)
+      COMMON/CARBON/ GEPM(4000, 200, 12),RECOM(4000,200,12), 
+     >               NEEM(4000,200,12)
       
-      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),
-     >                LATUDE(1000),LONGI(1000)
-       
+      COMMON/CELLINFO/LADUSE(4000,20),HUCNO(4000),
+     >                LATUDE(4000),LONGI(4000)
+        
       
-      COMMON/OUTPUT1/ PET(200,12,20),APET(12),PAET(200,12,20),APAET(12),
-     &AET(12), RUNOFF(12), INTER(12), PRIBF(12), SECBF(12), INTF(12), 
-     &AVUZTWC(12), AVUZFWC(12), AVLZTWC(12), AVLZFPC(12)
-     >,A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(1000,200, 12)
-     >,RUN_HRU(1000,200, 12),BASE_HRU(1000,200, 12)    
 C---BIODIVERSITY CALCULATION USING ANNUAL AET, PET      
       
-      COMMON/HUCPETAET/HUCAET(1000,200), HUCPET(1000,200),
-     >HUCPAET(1000,200)
+      COMMON/HUCPETAET/HUCAET(4000,200), HUCPET(4000,200)  
           
 C --------------------------------------------------------------
       INTEGER I,J, M
-
+      
       
 C ---------------------------------------------------------------      
                      
@@ -48,14 +39,12 @@ C ---------------------------------------------------------------
       
       REAL ANGEP, ANRECO, ANNEE,  AHUCGEP, AHUCNEE,AHUCRE
       REAL HUCGEP, HUCNEE, HUCRE
-
+      
       REAL HUCAET, HUCPET
       
       REAL HUCTRS,TRS, HUCMAMMALS,MAMMALS,HUCBIRD,BIRD,HUCAMPHIB,
      >  AMPHIB,HUCREPTILES, REPTILES, HUCVERTEB, VERTEB
-      REAL PET ,APET ,PAET ,APAET ,
-     &AET , RUNOFF , INTER , PRIBF , SECBF , INTF , 
-     &AVUZTWC , AVUZFWC , AVLZTWC , AVLZFPC 
+      
       
       REAL GEPM,RECOM,NEEM
 C ----------------------------------------------------------------      
@@ -83,7 +72,6 @@ C ----------------------------------------------------------------
             
 800      FORMAT ('CELL,NO_YR, TREE, MAMMALS, BIRD,',
      >  'AMPHIB, REPTILES, AHUCVERTEB') 
-            
      
            
       DO 300 I=1, NGRID         
@@ -190,13 +178,12 @@ C --Author(s): David J. Currie Source: The American Naturalist, Vol. 137, No. 1 
 
 C ---  write annual GEP and NEE   
     
-               GEPA(I,J)=ANGEP
-               NEEA(I,J)=ANNEE
+
               WRITE (500, 3000) HUCNO(I), IDY, ANGEP,ANRECO,
-     >            ANNEE, HUCAET(I,J), HUCPET(I,J)
+     >                    ANNEE, HUCAET(I,J), HUCPET(I,J)
                                               
-3000          FORMAT (I12, ',', I12, ',',F16.2, ',', F16.2, ',', F16.2
-     >  , ',', F16.2, ',', F16.2)
+3000          FORMAT (I12, ',', I12, ',',F16.2, ',', 
+     >           F16.2, ',', F16.2, ',', F16.2,',', F16.2)
 C ---- write annual biodiversity results
      
               WRITE (700, 3100) HUCNO(I), IDY, TRS,MAMMALS, BIRD, 
@@ -266,7 +253,6 @@ C ---- write annual biodiversity results
  
 
 300   CONTINUE
-
 
       RETURN
       END

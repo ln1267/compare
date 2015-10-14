@@ -8,32 +8,29 @@ C**********************************************************************C
       SUBROUTINE WARMPET(I, J, M, MNDAY)
       
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
-
-
        
-      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),
-     >  LATUDE(1000),LONGI(1000)
+      COMMON/CELLINFO/LADUSE(4000,20),HUCNO(4000),
+     >  LATUDE(4000),LONGI(4000)
               
       COMMON/OUTPUT1/ PET(200,12,20),APET(12),PAET(200,12,20),APAET(12),
      &AET(12), RUNOFF(12), INTER(12), PRIBF(12), SECBF(12), INTF(12), 
      &AVUZTWC(12), AVUZFWC(12), AVLZTWC(12), AVLZFPC(12)
-     >,A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(1000,200, 12)
-     >,RUN_HRU(1000,200, 12),BASE_HRU(1000,200, 12)      
+            
       
-      COMMON/CLIMATE/ RAIN(1000,200,12), TEMP(1000,200, 12), AAPPT(1000)
+      COMMON/CLIMATE/ RAIN(4000,200,12), TEMP(4000,200, 12), AAPPT(4000)
       
-      COMMON/LAI/LAI_1(1000,200,12), LAI_2(1000,200,12), 
-     &LAI_3(1000,200,12),LAI_4(1000,200,12),LAI_5(1000,200,12), 
-     &LAI_6(1000,200,12), LAI_7(1000,200,12),LAI_8(1000,200,12),
-     &LAI_9(1000,200,12),LAI_10(1000,200,12),LAI_11(1000,200,12), 
-     &LAI_12(1000,200,12), LAI_13(1000,200,12), LAI_14(1000,200,12),
-     &LAI_15(1000,200,12),LAI_16(1000,200,12), LAI_17(1000,200,12),
-     &LAI_18(1000,200,12), LAI_19(1000,200,12)
+      COMMON/LAI/LAI_1(4000,200,12), LAI_2(4000,200,12), 
+     &LAI_3(4000,200,12),LAI_4(4000,200,12),LAI_5(4000,200,12), 
+     &LAI_6(4000,200,12), LAI_7(4000,200,12),LAI_8(4000,200,12),
+     &LAI_9(4000,200,12),LAI_10(4000,200,12),LAI_11(4000,200,12), 
+     &LAI_12(4000,200,12), LAI_13(4000,200,12), LAI_14(4000,200,12),
+     &LAI_15(4000,200,12),LAI_16(4000,200,12), LAI_17(4000,200,12),
+     &LAI_18(4000,200,12), LAI_19(4000,200,12)
 
 
       COMMON/LANDCHANGE/FPERD, FPERDLAI
                 
-      INTEGER NLC, HUCNO, M  
+      INTEGER NLC, HUCNO, M
       
       INTEGER BYEAR
       
@@ -97,7 +94,7 @@ C -- MMD = JULIAN DATE FOR MONTH M
                      
             DEGLAT = LATUDE(I)
             
-C -K= LANDUSE TYPE, DTEMP = AIR TEMP, HPEC = CORRECTION PARAMETER, PE =CALCUALTED PET (MM)--DAY
+C -K= LANDUSE TYPE, DTEMP = AIR TEMP, HPEC = CORRECTION PARAMETER, PE =CALCUALTED PET (MM)
            
             CALL HAMON(K, DTEMP,M,MMD,DEGLAT,PE)
             
@@ -133,6 +130,7 @@ C ----ASSIGN LAI FOR EACH LAND USE
              
              ELSEIF (K.EQ.6) THEN
              
+                          
                 LAI = LAI_6(I,BYEAR-IYSTART+J,M)
              
              ELSEIF (K.EQ.7) THEN
@@ -243,9 +241,7 @@ c5040  FORMAT (3I10, 2F10.5)
              
    40      CONTINUE                 
 
-C-------流域单元月APET、APAET（各植被类型的加权平均值）
 C ------APET =AVERAGE PET FOR CURRENT CELL, FOR ALL YEAR, MONTH
-
 
               APET(M) = TPET    
               
@@ -276,15 +272,14 @@ C                                                                      C
 C**********************************************************************C
       SUBROUTINE HAMON(K, TEMP,MONTH,J,DEGLAT,PE)
 
-      COMMON/VAL/VAL_1(1000), VAL_2, VAL_3,VAL_4,VAL_5,VAL_6
-
+      
       REAL PE, TEMP, DEGLAT
       
       REAL SOLDEC, SSANG, DAY
       
       REAL ESAT, RHOSAT, PI
       
-      INTEGER J, K  
+      INTEGER J, K
       
       PI = 3.14159265
 
@@ -313,7 +308,7 @@ C ---    CALCULATE THE ADJUSTMENT IN LENGTH OF DAY FOR 12 HR PERIOD
          
 C --- Calculate Daily PE
      
-      PE = 0.1651*DAY*RHOSAT*1.2
+      PE = 0.1651*DAY*RHOSAT
       
 C      print *, 'PET', MONTH, J, TEMP, PE, K
           
