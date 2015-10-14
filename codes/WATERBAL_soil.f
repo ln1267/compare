@@ -44,15 +44,14 @@ C      use myvar
      >  NEEM(1000,200,12),GEPA(1000,200),NEEA(1000,200)
        
        
-C----RUNLAND (流域数，年数，月份，月份，植被类型数）
+C----RUNLAND (流域数，年数，月份，日，植被类型数）
 C----由于设计问题编译时会超出数组大小的限制                    
-      COMMON/BYLAND/ RUNLAND(100,35,12, 31,10), 
-     >ETLAND(100, 35,12, 31,10), GEPLAND(100, 35,12, 31,10)
-     >,NEELAND(100,35,12, 31,10) 
+      COMMON/BYLAND/ RUNLAND(600, 30,12, 31,13), 
+     >ETLAND(600, 30,12, 31,13), GEPLAND(600, 30,12, 31,13)
 C ----------------------------------------------------------------------------     
      
      
-      INTEGER DAY, HUCNO, MNDAY,YEAR,BYEAR
+      INTEGER DAY, HUCNO, MNDAY
       
       REAL AETTEMP, RUNOFFTEMP, PBFTEMP, SBFTEMP, 
      > IFTEMP, GEPTEMP,RECOTEMP, NEETEMP
@@ -61,28 +60,28 @@ C ----------------------------------------------------------------------------
      >  LZPK, UZTWM, UZFWM, UZK, ZPERC,
      >  REXP, PFREE
 
-      REAL UZTWC(20), UZFWC(20), LZTWC(20), LZFSC(20), LZFPC(20)
+      REAL UZTWC, UZFWC, LZTWC, LZFSC, LZFPC
       
       REAL ETUZTW(200,12,20), RESIDET(200,12,20), ETUZFW(200,12,20)
       
-      REAL ETLZTW(200, 12, 20), RATLZT(20), RATLZ(20)
+      REAL ETLZTW(200, 12, 20), RATLZT, RATLZ
       
       REAL SNOW, SNOWW, SP
       
       REAL LADUSE, TASM, TAREA
       
-      REAL ET(200,12,20), SURFRO(20), GEP(200,12,20), INFIL(20),
+      REAL ET(200,12,20), SURFRO, GEP(200,12,20), INFIL,
      >  RECO(200, 12, 20), NEE(200, 12,20) 
       
       REAL DPAET, PET
       
-      REAL UZRAT(20), TWX(20), PERCM(20), PERC(20), DEFR(20), LZDEF(20) 
+      REAL UZRAT, TWX, PERCM, PERC, DEFR, LZDEF 
       
-      REAL PERCT(20), PERCF(20)
+      REAL PERCT, PERCF
       
-      REAL HPL(20), RATLP(20), RATLS(20), FRACP(20), PERCP(20),PERCS(20)
+      REAL HPL, RATLP, RATLS, FRACP, PERCP,PERCS
       
-      REAL PBF(20), SBF(20), INF(20)
+      REAL PBF, SBF, INF
       
       REAL TAUZTWC, TAUZFWC, TALZTWC, TALZFPC, TALZFSC
       
@@ -103,13 +102,12 @@ C ----------------------------------------------------------------------------
       
       double precision HUCAREA
       
-      REAL RUNLAND,ETLAND,GEPLAND ,NEELAND
+      REAL RUNLAND,ETLAND,GEPLAND 
             
 C *****************************************************************************************************
 C *****************************************************************************************************
 C *****************************************************************************************************
 C --- INITIALIZE VARIABLES FOR START OF SIMULATION
-            YEAR=BYEAR+J-1
 
 
              AETTEMP =0.
@@ -129,16 +127,15 @@ C --- INITIALIZE VARIABLES FOR START OF SIMULATION
         IAM =0     
         
                   
-        DO 50 K=1, NLC
+
                         
-           UZTWC(K) = 0.1*UZTWM(I)
-           UZFWC(K) = 0.0
-           LZTWC(K) = 0.1*LZTWM(I)
-           LZFSC(K) = 0.75*LZFSM(I)
-           LZFPC(K) = 0.75*LZFPM(I)
+           UZTWC = 0.1*UZTWM(I)
+           UZFWC = 0.0
+           LZTWC = 0.1*LZTWM(I)
+           LZFSC = 0.75*LZFSM(I)
+           LZFPC = 0.75*LZFPM(I)
            
-               
-50      CONTINUE
+
         
         ENDIF 
          
@@ -154,16 +151,10 @@ C----- SIMULATE SNOWPACK (SEE VAROSMARTY  ET AL., 1989)
 
            SNOWW=SNOWPACK*(0.68+0.18*TEMP(I,J, M))
          !  SNOWW=0
-           IF (SNOWW .LE. 0) THEN 
-                SNOWW=0
-           Endif
-
-           IF (SNOWW .GE. SNOWPACK) THEN 
-                  SNOWW=SNOWPACK
-           Endif
-
-           SNOWPACK = SNOWPACK - SNOWW
+           IF (SNOWW .LE. 0) THEN SNOWW=0
            
+           SNOWPACK = SNOWPACK - SNOWW
+
 
            
            IAM = 0
@@ -237,8 +228,8 @@ C -- BASEFLOW STILL OCCURS
              IF (TEMP (I,J, M) .LE. -1.0) THEN
           
 !                ET(J,M,K) = 0.
-C                SURFRO(K) = 0.
-!               INF(K) = 0.
+C                SURFRO = 0.
+!               INF = 0.
                 GEP (J, M, K) = 0.
 C *****************************************************************************************************               
 C *****************计算温度小于-1℃的ET**********************************************    
@@ -249,7 +240,7 @@ C ******************************************************************************
              DPAET=PAET(J,M,K)/MNDAY
 
 
-            IF (UZTWC(K) .GT. DPAET) THEN 
+            IF (UZTWC .GT. DPAET) THEN 
                 ET(J,M,K)=DPAET
                 UZTWC(K)=UZTWC(K)-ET(J,M,K)
               ELSE
@@ -260,12 +251,12 @@ C ******************************************************************************
 C *****************************************************************************************************
 C -- COMPUTE THE DAILY AVERAGE INFILTRATION FOR A GIVEN MONTH FOR EACH LAND USE
 C---流域植被类型日水分输入量=降水+融雪
-                INFIL(K) = SNOWW/MNDAY
+                INFIL = SNOWW/MNDAY
                  
 
 C     --- COMPUTE WATER IN EXCESS OF UZ TENSION WATER CAPACITY (TWX)
 
-                  TWX(K) = INFIL(K) + UZTWC(K) - UZTWM(I)
+                  TWX = INFIL + UZTWC - UZTWM(I)
 
 C *****************************************************************************************************
 C *****************************************************************************************************
@@ -275,19 +266,19 @@ C --- COMPUTE PERCOLATION INTO SOIL WATER STORAGES AND SURFACE RUNOFF
 C     --- IF INFIL EXCEEDS UZ TENSION WATER CAPACITY, SET UZ TENSION WATER STORAGE TO CAPACITY, 
 C         REMAINDER OF INFIL GOES TO UZFWC IF EXCEEDS UZFWC EXCESS GOES TO SURFACE RUNOFF
 
-                     UZTWC(K) = UZTWM(I)     
+                     UZTWC = UZTWM(I)     
                 
-                     UZFWC(K) = UZFWC(K) + TWX(K)
+                     UZFWC = UZFWC + TWX
                 
-                     IF (UZFWC(K) .GT. UZFWM(I)) THEN
+                     IF (UZFWC .GT. UZFWM(I)) THEN
                 
-                        SURFRO(K) = UZFWC(K) - UZFWM(I)
+                        SURFRO = UZFWC - UZFWM(I)
                 
-                        UZFWC(K) = UZFWM(I)
+                        UZFWC = UZFWM(I)
                 
                      ELSE
                 
-                        SURFRO(K) = 0.0
+                        SURFRO = 0.0
                 
                      ENDIF 
 
@@ -296,55 +287,55 @@ C         REMAINDER OF INFIL GOES TO UZFWC IF EXCEEDS UZFWC EXCESS GOES TO SURFA
 
 C     --- IF INFIL DOES NOT EXCEED UZ TENSION WATER CAPACITY, ALL INFIL GOES TO UZ TENSION WATER STORAGE
 
-                     UZTWC(K) = UZTWC(K) + INFIL(K)
-                     SURFRO(K) = 0.0
+                     UZTWC = UZTWC + INFIL
+                     SURFRO = 0.0
              	
                   ENDIF
            
 C --- COMPUTE PERCOLATION TO LZ IF FREE WATER IS AVAILABLE IN UZ
 
 		
-	          IF (UZFWC(K) .GT. 0.0) THEN
+	          IF (UZFWC .GT. 0.0) THEN
 		
 
 C     --- COMPUTE PERCOLATION DEMAND FROM LZ
 
-                     PERCM(K) = LZFPM(K) * LZPK(I) + LZFSM(K) * LZSK(I)
+                     PERCM = LZFPM * LZPK(I) + LZFSM * LZSK(I)
                 
-                     PERC(K) = PERCM(K) * (UZFWC(K)/UZFWM(I))
+                     PERC = PERCM * (UZFWC(K)/UZFWM(I))
                 
                      DEFR(K)=1.0-((LZTWC(K)+LZFPC(K)+LZFSC(K))/
      &(LZTWM(I)+LZFPM(I)+LZFSM(I)))
                 
-                     PERC(K) = PERC(K) * (1.0 + ZPERC(I) * (DEFR(K)
+                     PERC = PERC * (1.0 + ZPERC(I) * (DEFR
      &**REXP(I)))
             
 
 C     --- COMPARE LZ PERCOLATION DEMAND TO UZ FREE WATER AVAILABLE AND COMPUTE ACTUAL PERCOLATION
 
-                    IF (PERC(K) .LT. UZFWC(K)) THEN
+                    IF (PERC .LT. UZFWC(K)) THEN
                 
-                       UZFWC(K) = UZFWC(K) - PERC(K)
+                       UZFWC = UZFWC - PERC
                 
                     ELSE
                 
-                       PERC(K) = UZFWC(K)
+                       PERC = UZFWC
                 
-                       UZFWC(K) = 0.0
+                       UZFWC = 0.0
                 
                     ENDIF
             
 C      --- CHECK TO SEE IF PERC EXCEEDS LZ TENSION AND FREE WATER DEFICIENCY, IF SO SET PERC TO LZ DEFICIENCY
 
 
-                    LZDEF(K) = (LZTWC(K) + LZFPC(K) + LZFSC(K)) - 
-     &(LZTWM(I) + LZFPM(I) + LZFSM(I)) + PERC(K)
+                    LZDEF = (LZTWC + LZFPC + LZFSC(K)) - 
+     &(LZTWM(I) + LZFPM(I) + LZFSM(I)) + PERC
                     
-                    IF (LZDEF(K) .GT. 0.0) THEN
+                    IF (LZDEF .GT. 0.0) THEN
                     
-                       PERC(K) = PERC(K) - LZDEF(K)
+                       PERC = PERC - LZDEF
           
-                       UZFWC(K) = UZFWC(K) + LZDEF(K)
+                       UZFWC = UZFWC + LZDEF
                        
                     ENDIF
                 
@@ -354,66 +345,66 @@ C --- DISRIBUTE PERCOLATED WATER INTO THE LZ STORAGES AND COMPUTE THE REMAINDER 
 
 C     --- COMPUTE PERC WATER GOING INTO LZ TENSION WATER STORAGE AND COMPARE TO AVAILABLE STORAGE
 
-                    PERCT(K) = PERC(K) * (1.0 - PFREE(I))
+                    PERCT = PERC * (1.0 - PFREE(I))
                 
-                    IF ((PERCT(K) + LZTWC(K)) .GT. LZTWM(I)) THEN
+                    IF ((PERCT + LZTWC(K)) .GT. LZTWM(I)) THEN
                 
 C     --- WHEN PERC IS GREATER THAN AVAILABLE TENSION WATER STORAGE, SET TENSION WATER STORAGE TO MAX, REMAINDER OF PERC GETS EVALUATED AGAINST FREE WATER STORAGE
 
-                       PERCF(K) = PERCT(K) + LZTWC(K) - LZTWM(I)
+                       PERCF = PERCT + LZTWC - LZTWM(I)
                 
-                       LZTWC(K) = LZTWM(I)
+                       LZTWC = LZTWM(I)
                 
                     ELSE
                 
 C     --- WHEN PERC IS LESS THAN AVAILABLE TENSION WATER STORAGE, UPDATE TENSION WATER STORAGE
 
-                       LZTWC(K) = LZTWC(K) + PERCT(K)
+                       LZTWC = LZTWC + PERCT
                 
-                       PERCF(K) = 0.0
+                       PERCF = 0.0
                 
                     ENDIF
                 
 C     --- COMPUTE TOTAL PERC WATER GOING INTO LZ FREE WATER STORAGE
 
-                    PERCF(K) = PERCF(K) + PERC(K) * PFREE(I)                
+                    PERCF = PERCF + PERC * PFREE(I)                
 
-                    IF(PERCF(K) .GT. 0.0) THEN
+                    IF(PERCF .GT. 0.0) THEN
                 
 C     --- COMPUTE RELATIVE SIZE OF LZ PRIMARY FREE WATER STORAGE COMPARED TO LZ TOTAL FREE WATER STORAGE
 
-                       HPL(K) = LZFPM(I) / (LZFPM(I) + LZFSM(I))
+                       HPL = LZFPM(I) / (LZFPM(I) + LZFSM(I))
                 
 C     --- COMPUTE LZ PRIMARY AND SECONDARY FREE WATER CONTENT TO CAPACITY RATIOS
 
-                       RATLP(K) = LZFPC(K) / LZFPM(I)
+                       RATLP = LZFPC / LZFPM(I)
                 
-                       RATLS(K) = LZFSC(K) / LZFSM(I)
+                       RATLS = LZFSC / LZFSM(I)
                 
 C     --- COMPUTE FRACTIONS AND PERCENTAGES OF FREE WATER PERC TO GO TO LZ PRIMARY STORAGE
 
-                       FRACP(K) = (HPL(K) * 2.0 * (1.0 - RATLP(K))) 
+                       FRACP = (HPL * 2.0 * (1.0 - RATLP(K))) 
      >                 / ((1.0 - RATLP(K)) + (1.0 - RATLS(K)))
                 
-                       IF (FRACP(K) .GT. 1.0) FRACP(K) = 1.0
+                       IF (FRACP .GT. 1.0) FRACP = 1.0
 
-                          PERCP(K) = PERCF(K) * FRACP(K)
+                          PERCP = PERCF * FRACP
                 
-                          PERCS(K) = PERCF(K) - PERCP(K)
+                          PERCS = PERCF - PERCP
                 
 C     --- COMPUTE NEW PRIMARY AND SECONDARY STORAGE
 
 C         --- COMPUTE NEW SECONDARY FREE WATER STORAGE
 
-                          LZFSC(K) = LZFSC(K) + PERCS(K)
+                          LZFSC = LZFSC + PERCS
 
-                          IF(LZFSC(K) .GT. LZFSM(I)) THEN
+                          IF(LZFSC .GT. LZFSM(I)) THEN
                 
 C         --- IF NEW SECONDARY FREE WATER STORAGE EXCEEDS CAPACITY SET SECONDARY STORAGE TO CAPACITY AND EXCESS GOES TO PRIMARY FREE WATER STORAGE
 
-                             PERCS(K) = PERCS(K) - LZFSC(K) + LZFSM(I)
+                             PERCS = PERCS - LZFSC + LZFSM(I)
                 
-                             LZFSC(K) = LZFSM(I)
+                             LZFSC = LZFSM(I)
                           
                           ENDIF
                 
@@ -421,24 +412,24 @@ C         --- IF NEW SECONDARY FREE WATER STORAGE EXCEEDS CAPACITY SET SECONDARY
 C         --- IF NEW LZ SECONDARY FREE WATER STORAGE IS LESS THAN CAPACITY MOVE ON TO COMPUTE NEW PRIMARY FREE WATER STORAGE
 
 
-                       LZFPC(K) = LZFPC(K) + (PERCF(K) - PERCS(K))
+                       LZFPC = LZFPC + (PERCF - PERCS(K))
 
                 
-                       IF (LZFPC(K) .GT. LZFPM(I)) THEN
+                       IF (LZFPC .GT. LZFPM(I)) THEN
 
 C             --- IF LZ FREE PRIMARY WATER STORAGE EXCEEDS CAPACITY SET PRIMARY STORAGE TO CAPACITY AND EVALUATE EXCESS AGAINST LZ TENSION WATER STORAGE
 
-                          LZTWC(K) = LZTWC(K) + LZFPC(K) - LZFPM(I)
+                          LZTWC = LZTWC + LZFPC - LZFPM(I)
                 
-                          LZFPC(K) = LZFPM(I)
+                          LZFPC = LZFPM(I)
                 
-                          IF (LZTWC(K) .GT. LZTWM(I)) THEN
+                          IF (LZTWC .GT. LZTWM(I)) THEN
 
 C            --- IF LZ TENSION WATER EXCEEDS CAPACITY EVALUATE EXCESS AGAINST UZ FREE WATER CAPACITY AND SET LZ TENSION WATER STORAGE TO CAPACITY
 
-                             UZFWC(K) = UZFWC(K) + LZTWC(K) - LZTWM(I)
+                             UZFWC = UZFWC + LZTWC - LZTWM(I)
                 
-                             LZTWC(K) = LZTWM(I)
+                             LZTWC = LZTWM(I)
                              
                           ENDIF
                           
@@ -455,30 +446,30 @@ C --- COMPUTE BASEFLOW AND UPDATE LZ PRIMARY AND SECONDARY FREE WATER STORAGES
                 
 C      --- COMPUTE PRIMARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
 
-                 PBF(K) = LZFPC(K) * LZPK(I)
+                 PBF = LZFPC * LZPK(I)
                 
-                 LZFPC(K) = LZFPC(K) - PBF(K)
+                 LZFPC = LZFPC - PBF
                 
-                 IF (LZFPC(K) .LE. 0.0001) THEN 
+                 IF (LZFPC .LE. 0.0001) THEN 
                 
-                    PBF(K) = PBF(K) + LZFPC(K)
+                    PBF = PBF + LZFPC
                 
-                    LZFPC(K) = 0.0
+                    LZFPC = 0.0
                 
                  ENDIF
                 
 
 C      --- COMPUTE SECONDARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
 
-                 SBF(K) = LZFSC(K) * LZSK(I)
+                 SBF = LZFSC * LZSK(I)
                 
-                 LZFSC(K) = LZFSC(K) - SBF(K)
+                 LZFSC = LZFSC - SBF
                 
-                 IF (LZFSC(K) .LE. 0.0001) THEN
+                 IF (LZFSC .LE. 0.0001) THEN
                 
-                   SBF(K) = SBF(K) + LZFSC(K)
+                   SBF = SBF + LZFSC
                 
-                   LZFSC(K) = 0.0
+                   LZFSC = 0.0
                 
                  ENDIF                          
 
@@ -488,7 +479,7 @@ C ******************************************************************************
 C *****************************************************************************************************
 C -- COMPUTE THE DAILY AVERAGE INFILTRATION FOR A GIVEN MONTH FOR EACH LAND USE
 C---流域植被类型日水分输入量=降水+融雪
-                INFIL(K) = RAIN(I,J,M)/MNDAY + SNOWW/MNDAY
+                INFIL = RAIN(I,J,M)/MNDAY + SNOWW/MNDAY
           
             
 C *****************************************************************************************************
@@ -508,25 +499,25 @@ C --- COMPUTE ET FROM UZ TENSION WATER STORAGE, RECALCULATE UZTWC, CALCULATE RES
                    
                    RESIDET(J, M, K) = ET(J, M, K) - ETUZTW(J, M, K)
                    
-                   UZTWC(K) = UZTWC(K) - ETUZTW(J, M, K)
+                   UZTWC = UZTWC - ETUZTW(J, M, K)
                    
                    ETUZFW(J, M, K) = 0.0
                    
                    IF (UZTWC(K).GE.0.0) GOTO 220
                    
-                   ETUZTW(J, M, K) = ETUZTW(J, M, K) + UZTWC(K)
+                   ETUZTW(J, M, K) = ETUZTW(J, M, K) + UZTWC
                    
-                   UZTWC(K) = 0.0
+                   UZTWC = 0.0
                    
                    RESIDET(J, M, K) = ET(J, M, K) - ETUZTW(J, M, K)
                    
 C --- COMPUTE ET FROM UZ FREE WATER STORAGE, RECALCULATE UZFWC, CALCULATE RESIDUAL ET DEMAND                   
                    
-                   IF (UZFWC(K) .GE. RESIDET(J, M, K)) GO TO 221
+                   IF (UZFWC .GE. RESIDET(J, M, K)) GO TO 221
                    
-                   ETUZFW(J, M, K) = UZFWC(K)
+                   ETUZFW(J, M, K) = UZFWC
                    
-                   UZFWC(K) = 0.0
+                   UZFWC = 0.0
                    
                    RESIDET(J, M, K) = RESIDET(J, M, K) - ETUZFW(J, M, K)
                    
@@ -534,7 +525,7 @@ C --- COMPUTE ET FROM UZ FREE WATER STORAGE, RECALCULATE UZFWC, CALCULATE RESIDU
                    
 221                ETUZFW(J, M, K) = RESIDET(J, M, K)
 
-                   UZFWC(K) = UZFWC(K) - ETUZFW(J, M, K)
+                   UZFWC = UZFWC - ETUZFW(J, M, K)
                    
                    RESIDET(J, M, K) = 0.0
                    
@@ -545,49 +536,49 @@ C --- REDISTRIBUTE WATER BETWEEN UZ TENSION WATER AND FREE WATER STORAGES
 
                    UZRAT(K)=(UZTWC(K)+UZFWC(K))/(UZTWM(I)+UZFWM(I))
                       
-                   UZTWC(K) = UZTWM(I) * UZRAT(K)
+                   UZTWC = UZTWM(I) * UZRAT
                       
-                   UZFWC(K) = UZFWM(I) * UZRAT(K)
+                   UZFWC = UZFWM(I) * UZRAT
                         
-225                IF (UZTWC(K) .LT. 0.00001) UZTWC(K) = 0.0
+225                IF (UZTWC .LT. 0.00001) UZTWC = 0.0
 
-                   IF (UZFWC(K) .LT. 0.00001) UZFWC(K) = 0.0
+                   IF (UZFWC .LT. 0.00001) UZFWC = 0.0
                    
                    
 C --- COMPUTE ET FROM LZ TENSION WATER STORAGE, RECALCULATE LZTWC, CALCULATE RESIDUAL ET DEMAND
 
-                   ETLZTW(J, M, K) = RESIDET(J, M, K) * (LZTWC(K) / 
+                   ETLZTW(J, M, K) = RESIDET(J, M, K) * (LZTWC / 
      &             (UZTWM(I) + LZTWM(I)))
                    
-                   LZTWC(K) = LZTWC(K) - ETLZTW(J, M, K)
+                   LZTWC = LZTWC - ETLZTW(J, M, K)
                    
-                   IF(LZTWC(K) .GE. 0.0) GO TO 226
+                   IF(LZTWC .GE. 0.0) GO TO 226
                    
-                   ETLZTW(J, M, K) = ETLZTW(J, M, K) + LZTWC(K)
+                   ETLZTW(J, M, K) = ETLZTW(J, M, K) + LZTWC
                    
-                   LZTWC(K) = 0.0
+                   LZTWC = 0.0
                    
-226                RATLZT(K) = LZTWC(K) / LZTWM(I)
+226                RATLZT = LZTWC / LZTWM(I)
 
-                   RATLZ(K) = (LZTWC(K) + LZFPC(K) + LZFSC(K)) / 
+                   RATLZ = (LZTWC + LZFPC + LZFSC(K)) / 
      &             (LZTWM(I) + LZFPM(I) + LZFSM(I))
      
-                   IF (RATLZT(K) .GE. RATLZ(K)) GO TO 230
+                   IF (RATLZT .GE. RATLZ(K)) GO TO 230
                   
-                   LZTWC(K) = LZTWC(K) + (RATLZ(K) - RATLZT(K)) * 
+                   LZTWC = LZTWC + (RATLZ - RATLZT(K)) * 
      &             LZTWM(I)
 
                    
-                   LZFSC(K) = LZFSC(K) - (RATLZ(K) - RATLZT(K)) * 
+                   LZFSC = LZFSC - (RATLZ - RATLZT(K)) * 
      &             LZTWM(I)
                    
-                   IF(LZFSC(K) .GE. 0.0) GO TO 230
+                   IF(LZFSC .GE. 0.0) GO TO 230
                    
-                   LZFPC(K) = LZFPC(K) + LZFSC(K)
+                   LZFPC = LZFPC + LZFSC
                    
-                   LZFSC(K) = 0.0
+                   LZFSC = 0.0
                    
-230                IF (LZTWC(K) .LT. 0.00001) LZTWC(K) = 0.0
+230                IF (LZTWC .LT. 0.00001) LZTWC = 0.0
 
 C --- CALCULATE TOTAL ET SUPPLIED BY UPPER AND LOWER LAYERS
 
@@ -600,26 +591,26 @@ C --- COMPUTE PERCOLATION INTO SOIL WATER STORAGES AND SURFACE RUNOFF
 
 C     --- COMPUTE WATER IN EXCESS OF UZ TENSION WATER CAPACITY (TWX)
 
-                  TWX(K) = INFIL(K) + UZTWC(K) - UZTWM(I)
+                  TWX = INFIL + UZTWC - UZTWM(I)
            
                   IF (TWX(K).GE.0.0) THEN
              	
 C     --- IF INFIL EXCEEDS UZ TENSION WATER CAPACITY, SET UZ TENSION WATER STORAGE TO CAPACITY, 
 C         REMAINDER OF INFIL GOES TO UZFWC IF EXCEEDS UZFWC EXCESS GOES TO SURFACE RUNOFF
 
-                     UZTWC(K) = UZTWM(I)     
+                     UZTWC = UZTWM(I)     
                 
-                     UZFWC(K) = UZFWC(K) + TWX(K)
+                     UZFWC = UZFWC + TWX
                 
-                     IF (UZFWC(K) .GT. UZFWM(I)) THEN
+                     IF (UZFWC .GT. UZFWM(I)) THEN
                 
-                        SURFRO(K) = UZFWC(K) - UZFWM(I)
+                        SURFRO = UZFWC - UZFWM(I)
                 
-                        UZFWC(K) = UZFWM(I)
+                        UZFWC = UZFWM(I)
                 
                      ELSE
                 
-                        SURFRO(K) = 0.0
+                        SURFRO = 0.0
                 
                      ENDIF 
 
@@ -628,54 +619,54 @@ C         REMAINDER OF INFIL GOES TO UZFWC IF EXCEEDS UZFWC EXCESS GOES TO SURFA
 
 C     --- IF INFIL DOES NOT EXCEED UZ TENSION WATER CAPACITY, ALL INFIL GOES TO UZ TENSION WATER STORAGE
 
-                     UZTWC(K) = UZTWC(K) + INFIL(K)
+                     UZTWC = UZTWC + INFIL
              	
                   ENDIF
            
 C --- COMPUTE PERCOLATION TO LZ IF FREE WATER IS AVAILABLE IN UZ
 
 		
-	          IF (UZFWC(K) .GT. 0.0) THEN
+	          IF (UZFWC .GT. 0.0) THEN
 		
 
 C     --- COMPUTE PERCOLATION DEMAND FROM LZ
 
-                     PERCM(K) = LZFPM(K) * LZPK(I) + LZFSM(K) * LZSK(I)
+                     PERCM = LZFPM * LZPK(I) + LZFSM * LZSK(I)
                 
-                     PERC(K) = PERCM(K) * (UZFWC(K)/UZFWM(I))
+                     PERC = PERCM * (UZFWC(K)/UZFWM(I))
                 
                      DEFR(K)=1.0-((LZTWC(K)+LZFPC(K)+LZFSC(K))/
      &(LZTWM(I)+LZFPM(I)+LZFSM(I)))
                 
-                     PERC(K) = PERC(K) * (1.0 + ZPERC(I) * (DEFR(K)
+                     PERC = PERC * (1.0 + ZPERC(I) * (DEFR
      &**REXP(I)))
             
 
 C     --- COMPARE LZ PERCOLATION DEMAND TO UZ FREE WATER AVAILABLE AND COMPUTE ACTUAL PERCOLATION
 
-                    IF (PERC(K) .LT. UZFWC(K)) THEN
+                    IF (PERC .LT. UZFWC(K)) THEN
                 
-                       UZFWC(K) = UZFWC(K) - PERC(K)
+                       UZFWC = UZFWC - PERC
                 
                     ELSE
                 
-                       PERC(K) = UZFWC(K)
+                       PERC = UZFWC
                 
-                       UZFWC(K) = 0.0
+                       UZFWC = 0.0
                 
                     ENDIF
             
 C      --- CHECK TO SEE IF PERC EXCEEDS LZ TENSION AND FREE WATER DEFICIENCY, IF SO SET PERC TO LZ DEFICIENCY
 
 
-                    LZDEF(K) = (LZTWC(K) + LZFPC(K) + LZFSC(K)) - 
-     &(LZTWM(I) + LZFPM(I) + LZFSM(I)) + PERC(K)
+                    LZDEF = (LZTWC + LZFPC + LZFSC(K)) - 
+     &(LZTWM(I) + LZFPM(I) + LZFSM(I)) + PERC
                     
-                    IF (LZDEF(K) .GT. 0.0) THEN
+                    IF (LZDEF .GT. 0.0) THEN
                     
-                       PERC(K) = PERC(K) - LZDEF(K)
+                       PERC = PERC - LZDEF
           
-                       UZFWC(K) = UZFWC(K) + LZDEF(K)
+                       UZFWC = UZFWC + LZDEF
                        
                     ENDIF
                 
@@ -685,66 +676,66 @@ C --- DISRIBUTE PERCOLATED WATER INTO THE LZ STORAGES AND COMPUTE THE REMAINDER 
 
 C     --- COMPUTE PERC WATER GOING INTO LZ TENSION WATER STORAGE AND COMPARE TO AVAILABLE STORAGE
 
-                    PERCT(K) = PERC(K) * (1.0 - PFREE(I))
+                    PERCT = PERC * (1.0 - PFREE(I))
                 
-                    IF ((PERCT(K) + LZTWC(K)) .GT. LZTWM(I)) THEN
+                    IF ((PERCT + LZTWC(K)) .GT. LZTWM(I)) THEN
                 
 C     --- WHEN PERC IS GREATER THAN AVAILABLE TENSION WATER STORAGE, SET TENSION WATER STORAGE TO MAX, REMAINDER OF PERC GETS EVALUATED AGAINST FREE WATER STORAGE
 
-                       PERCF(K) = PERCT(K) + LZTWC(K) - LZTWM(I)
+                       PERCF = PERCT + LZTWC - LZTWM(I)
                 
-                       LZTWC(K) = LZTWM(I)
+                       LZTWC = LZTWM(I)
                 
                     ELSE
                 
 C     --- WHEN PERC IS LESS THAN AVAILABLE TENSION WATER STORAGE, UPDATE TENSION WATER STORAGE
 
-                       LZTWC(K) = LZTWC(K) + PERCT(K)
+                       LZTWC = LZTWC + PERCT
                 
-                       PERCF(K) = 0.0
+                       PERCF = 0.0
                 
                     ENDIF
                 
 C     --- COMPUTE TOTAL PERC WATER GOING INTO LZ FREE WATER STORAGE
 
-                    PERCF(K) = PERCF(K) + PERC(K) * PFREE(I)                
+                    PERCF = PERCF + PERC * PFREE(I)                
 
-                    IF(PERCF(K) .GT. 0.0) THEN
+                    IF(PERCF .GT. 0.0) THEN
                 
 C     --- COMPUTE RELATIVE SIZE OF LZ PRIMARY FREE WATER STORAGE COMPARED TO LZ TOTAL FREE WATER STORAGE
 
-                       HPL(K) = LZFPM(I) / (LZFPM(I) + LZFSM(I))
+                       HPL = LZFPM(I) / (LZFPM(I) + LZFSM(I))
                 
 C     --- COMPUTE LZ PRIMARY AND SECONDARY FREE WATER CONTENT TO CAPACITY RATIOS
 
-                       RATLP(K) = LZFPC(K) / LZFPM(I)
+                       RATLP = LZFPC / LZFPM(I)
                 
-                       RATLS(K) = LZFSC(K) / LZFSM(I)
+                       RATLS = LZFSC / LZFSM(I)
                 
 C     --- COMPUTE FRACTIONS AND PERCENTAGES OF FREE WATER PERC TO GO TO LZ PRIMARY STORAGE
 
-                       FRACP(K) = (HPL(K) * 2.0 * (1.0 - RATLP(K))) 
+                       FRACP = (HPL * 2.0 * (1.0 - RATLP(K))) 
      >                 / ((1.0 - RATLP(K)) + (1.0 - RATLS(K)))
                 
-                       IF (FRACP(K) .GT. 1.0) FRACP(K) = 1.0
+                       IF (FRACP .GT. 1.0) FRACP = 1.0
 
-                          PERCP(K) = PERCF(K) * FRACP(K)
+                          PERCP = PERCF * FRACP
                 
-                          PERCS(K) = PERCF(K) - PERCP(K)
+                          PERCS = PERCF - PERCP
                 
 C     --- COMPUTE NEW PRIMARY AND SECONDARY STORAGE
 
 C         --- COMPUTE NEW SECONDARY FREE WATER STORAGE
 
-                          LZFSC(K) = LZFSC(K) + PERCS(K)
+                          LZFSC = LZFSC + PERCS
 
-                          IF(LZFSC(K) .GT. LZFSM(I)) THEN
+                          IF(LZFSC .GT. LZFSM(I)) THEN
                 
 C         --- IF NEW SECONDARY FREE WATER STORAGE EXCEEDS CAPACITY SET SECONDARY STORAGE TO CAPACITY AND EXCESS GOES TO PRIMARY FREE WATER STORAGE
 
-                             PERCS(K) = PERCS(K) - LZFSC(K) + LZFSM(I)
+                             PERCS = PERCS - LZFSC + LZFSM(I)
                 
-                             LZFSC(K) = LZFSM(I)
+                             LZFSC = LZFSM(I)
                           
                           ENDIF
                 
@@ -752,24 +743,24 @@ C         --- IF NEW SECONDARY FREE WATER STORAGE EXCEEDS CAPACITY SET SECONDARY
 C         --- IF NEW LZ SECONDARY FREE WATER STORAGE IS LESS THAN CAPACITY MOVE ON TO COMPUTE NEW PRIMARY FREE WATER STORAGE
 
 
-                       LZFPC(K) = LZFPC(K) + (PERCF(K) - PERCS(K))
+                       LZFPC = LZFPC + (PERCF - PERCS(K))
 
                 
-                       IF (LZFPC(K) .GT. LZFPM(I)) THEN
+                       IF (LZFPC .GT. LZFPM(I)) THEN
 
 C             --- IF LZ FREE PRIMARY WATER STORAGE EXCEEDS CAPACITY SET PRIMARY STORAGE TO CAPACITY AND EVALUATE EXCESS AGAINST LZ TENSION WATER STORAGE
 
-                          LZTWC(K) = LZTWC(K) + LZFPC(K) - LZFPM(I)
+                          LZTWC = LZTWC + LZFPC - LZFPM(I)
                 
-                          LZFPC(K) = LZFPM(I)
+                          LZFPC = LZFPM(I)
                 
-                          IF (LZTWC(K) .GT. LZTWM(I)) THEN
+                          IF (LZTWC .GT. LZTWM(I)) THEN
 
 C            --- IF LZ TENSION WATER EXCEEDS CAPACITY EVALUATE EXCESS AGAINST UZ FREE WATER CAPACITY AND SET LZ TENSION WATER STORAGE TO CAPACITY
 
-                             UZFWC(K) = UZFWC(K) + LZTWC(K) - LZTWM(I)
+                             UZFWC = UZFWC + LZTWC - LZTWM(I)
                 
-                             LZTWC(K) = LZTWM(I)
+                             LZTWC = LZTWM(I)
                              
                           ENDIF
                           
@@ -786,30 +777,30 @@ C --- COMPUTE BASEFLOW AND UPDATE LZ PRIMARY AND SECONDARY FREE WATER STORAGES
                 
 C      --- COMPUTE PRIMARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
 
-                 PBF(K) = LZFPC(K) * LZPK(I)
+                 PBF = LZFPC * LZPK(I)
                 
-                 LZFPC(K) = LZFPC(K) - PBF(K)
+                 LZFPC = LZFPC - PBF
                 
-                 IF (LZFPC(K) .LE. 0.0001) THEN 
+                 IF (LZFPC .LE. 0.0001) THEN 
                 
-                    PBF(K) = PBF(K) + LZFPC(K)
+                    PBF = PBF + LZFPC
                 
-                    LZFPC(K) = 0.0
+                    LZFPC = 0.0
                 
                  ENDIF
                 
 
 C      --- COMPUTE SECONDARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STORAGE
 
-                 SBF(K) = LZFSC(K) * LZSK(I)
+                 SBF = LZFSC * LZSK(I)
                 
-                 LZFSC(K) = LZFSC(K) - SBF(K)
+                 LZFSC = LZFSC - SBF
                 
-                 IF (LZFSC(K) .LE. 0.0001) THEN
+                 IF (LZFSC .LE. 0.0001) THEN
                 
-                   SBF(K) = SBF(K) + LZFSC(K)
+                   SBF = SBF + LZFSC
                 
-                   LZFSC(K) = 0.0
+                   LZFSC = 0.0
                 
                  ENDIF                
                  
@@ -817,154 +808,23 @@ C      --- COMPUTE SECONDARY BASEFLOW AND COMPARE TO AVAILABLE FREE PRIMARY STOR
 C *****************************************************************************************************
 C --- COMPUTE INTERFLOW FROM UZ
 
-                 INF(K) = UZFWC(K) * UZK(I)
+                 INF = UZFWC * UZK(I)
                 
-                 IF (UZFWC(K) .LT. INF(K)) THEN
+                 IF (UZFWC .LT. INF(K)) THEN
                  
-                    INF(K) = UZFWC(K)
+                    INF = UZFWC
                     
-                    UZFWC(K) = 0.0
+                    UZFWC = 0.0
                  
                  ELSE
                     
-                    UZFWC(K) = UZFWC(K) - INF(K)
+                    UZFWC = UZFWC - INF
                 
                  ENDIF
 
              ENDIF
 
-
              
-
-C CALCULATING DAILY GEP G C/M2/DAY
-C NOTE  the following is based on New Analysis by Asko (Aug 24, 2010)
-C----根据不同的植被类型重编写下面的代码
-
-
-C -- CROP
-
-               IF (K.EQ.1) THEN 
-
-               GEP(J, M, K) = 4.5 * ET(J,M,K)
-C---------论文中的公式
-               RECO(J,M,K)= 40.6 + 0.43 * GEP(J, M, K)*MNDAY
-C---------原始计算公式 		
-C               RECO(J,M,K)= VAL_1(TUN1) + VAL_2(TUN2) * GEP(J,M,K)*MNDAY      !11.14 1.85
-			  
-			   
-C -- Close SHRUBLANDS                   
-               
-               ELSEIF (K .EQ. 5) THEN                
-
-               GEP(J, M, K) = 1.4 * ET(J,M,K)  
-                
-               RECO(J,M,K)= 11.4 + 0.69 * GEP(J, M, K)*MNDAY
-                
-C -- DECIDUOUS Broadleaf FOREST
- 
-               ELSEIF (K .EQ. 2) THEN 
-
-               GEP(J, M, K) = 2.4* ET(J,M,K) 
-C-------论文公式				   
-               RECO(J,M,K)= 30.8 + 0.45 * GEP(J, M, K)*MNDAY	
-C-------原始计算公式
-C			   RECO(J,M,K)= 24.12 + 1.49 * ET(J,M,K)*MNDAY	
-
-
-C -- Evergreen Broadleaf FOREST
- 
-               ELSEIF (K .EQ. 0) THEN 
-
-               GEP(J, M, K) = 2.6* ET(J,M,K)              
-               RECO(J,M,K)= 19.6 + 0.61 * GEP(J, M, K)*MNDAY			   
-
-C---- Evergreen Needleleaf Forest
-               ELSEIF (K .EQ. 3) THEN                
-
-               GEP(J, M, K) = 2.14* ET(J,M,K)
-               RECO(J,M,K)= 9.9 + 0.68 * GEP(J, M, K)*MNDAY			   
-               
-C -- GRASSLANDS               
-                ELSEIF (K .EQ. 7) THEN                
-               
-               GEP(J, M, K) = 2.25 * ET(J,M,K)
-C------ 论文公式
-              RECO(J,M,K)= 18.9 + 0.64*GEP(J, M, K)*MNDAY
-C-------原始计算公式	
-C			   RECO(J,M,K)= 14.2 + 1.42 * ET(J,M,K)*MNDAY	
-               
-C---- MIXED FOREST
-               
-               ELSEIF (K .EQ. 4) THEN 
-               
-               GEP(J, M, K) =2.5 * ET(J,M,K)
-               IF (TEMP(I,J,M) .LE. -1.0) THEN 
-                
-                GEP(J, M, K) = 0.0
-                
-               ENDIF 
-                           
-               RECO(J,M,K)= 24.44 + 0.62 * GEP(J,M,K)*MNDAY
-
-C -- Open Shrublands                   
-               
-	     ELSEIF (K .EQ. 6) THEN                
-
-               GEP(J, M, K) =  1.42* ET(J,M,K)
-               RECO(J,M,K)= 9.7 + 0.56 * GEP(J, M, K)*MNDAY
-                                           
-C -- SAVANNAS                   
-               
-	     ELSEIF (K.EQ.  0) THEN                
-
-               GEP(J, M, K) = 1.26* ET(J,M,K) !
-               RECO(J,M,K)= 25.2 + 0.53 * GEP(J, M, K)*MNDAY
-       
-         
-C -- Wetlands                     
-               
-	     ELSEIF (K .EQ. 0) THEN                
-
-               GEP(J, M, K) = 1.66* ET(J,M,K)
-               RECO(J,M,K)= 7.8 + 0.56 * GEP(J, M, K)*MNDAY     
-C -- Wet Savanna                     
-               
-	     ELSEIF (K .EQ. 0) THEN                
-
-               GEP(J, M, K) = 1.49* ET(J,M,K)
-               RECO(J,M,K)= 14.7 + 0.63 * GEP(J, M, K)*MNDAY
- 			   
-C -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)                  
-               
-           ELSE
-               
-              GEP(J, M, K) = 0.
-              RECO(J,M,K) =0.
-              
-              
-           ENDIF
-
-                 IF (GEP(J,M,K) .LE. 0.) THEN
-                      GEP(J,M,K) = 0.                  
-                 ENDIF
-                                 
-                                    
-              
-                RECO(J,M,K) = RECO(J,M,K)/MNDAY 
-                                                            
-                NEE(J, M, K) = -GEP(J,M,K) + RECO(J,M,K)
-
-
-                                    
-C --- COMPUTE FRACTION OF EACH WATER BALANCE COMPONENT AND GEP FOR EACH LAND COVER
-
-C *****************************************************************************************************
-C -- CALCULATE THE FRACTION OF daily GEP
-
-               GEPTEMP = GEPTEMP + GEP(J,M,K)*LADUSE(I,K)   
-               RECOTEMP = RECOTEMP + RECO(J,M,K)*LADUSE(I,K)               
-               NEETEMP = NEETEMP + NEE(J,M,K)*LADUSE(I,K)
-                            
 
 C *****************************************************************************************************
 C --- CALCULATE THE FRACTION OF daily AET
@@ -974,24 +834,24 @@ C --- CALCULATE THE FRACTION OF daily AET
 C *****************************************************************************************************
 C--- CALCULATE THE FRACTION OF daily SURFACE RUNOFF
               
-               RUNOFFTEMP = RUNOFFTEMP + SURFRO(K) * LADUSE(I,K)
+               RUNOFFTEMP = RUNOFFTEMP + SURFRO * LADUSE(I,K)
                
 C *****************************************************************************************************
 C--- CALCULATE THE FRACTION OF DAILY PRIMARY BASEFLOW
               
-               PBFTEMP = PBFTEMP + PBF(K) * LADUSE(I,K)               
+               PBFTEMP = PBFTEMP + PBF * LADUSE(I,K)               
                
 C *****************************************************************************************************
 C--- CALCULATE THE FRACTION OF DAILY SECONDARY BASEFLOW
               
-               SBFTEMP = SBFTEMP + SBF(K) * LADUSE(I,K)               
+               SBFTEMP = SBFTEMP + SBF * LADUSE(I,K)               
 
 
 
 C *****************************************************************************************************
 C--- CALCULATE THE FRACTION OF DAILY INTERFLOW
               
-               IFTEMP = IFTEMP + INF(K) * LADUSE(I,K)                                              
+               IFTEMP = IFTEMP + INF * LADUSE(I,K)                                              
               
 C *****************************************************************************************************
 
@@ -1000,25 +860,25 @@ C ----CALCUALTE TOTAL RUNOFF FOR EACH LANDUSE, K (GE SUN OCT 19, 2010)
 
 C----!!!!! RUNLAND(I,Y,DAY, K)更改
 C			RUNLAND_Y=(J-1)*12+M							
-            RUNLAND(I,J,M,DAY, K) = SURFRO(K) + PBF(K) + 
-     >     SBF(K) + INF(K)
+            RUNLAND(I,J,M,DAY, K) = SURFRO + PBF + 
+     >     SBF + INF
             ETLAND(I,J,M,DAY, K) = ET(J,M,K)
             GEPLAND(I,J,M,DAY, K) = GEP(J,M,K)
-            NEELAND(I,J,M,DAY, K) = NEE(J,M,K)
+
 C--- calculate the fraction of soil moisture 
           
               
-              TAUZTWC = TAUZTWC + UZTWC(K) * LADUSE(I,K)
+              TAUZTWC = TAUZTWC + UZTWC * LADUSE(I,K)
               
-              TAUZFWC = TAUZFWC + UZFWC(K) * LADUSE(I,K)
+              TAUZFWC = TAUZFWC + UZFWC * LADUSE(I,K)
               
-              TALZTWC = TALZTWC + LZTWC(K) * LADUSE(I,K)
+              TALZTWC = TALZTWC + LZTWC * LADUSE(I,K)
               
-              TALZFPC = TALZFPC + LZFPC(K) * LADUSE(I,K)
+              TALZFPC = TALZFPC + LZFPC * LADUSE(I,K)
               
-              TALZFSC = TALZFSC + LZFSC(K) * LADUSE(I,K)
+              TALZFSC = TALZFSC + LZFSC * LADUSE(I,K)
               
-              TASM = TASM + (UZTWC(K)+UZFWC(K)+LZTWC(K)+LZFPC(K)
+              TASM = TASM + (UZTWC(K)+UZFWC(K)+LZTWC(K)+LZFPC
      &        +LZFSC(K)) * LADUSE(I,K)
                    
                TAREA = TAREA + LADUSE(I,K) 
@@ -1073,20 +933,6 @@ C -- CALCULATE AVG SMC
 C -- STREAMFLOW IN MILLION M3 FOR EACH HUC FOR MONTH M. HUCAREA IN SQ. METERS 
           STRFLOW(I, J, M) = (RUNOFF(M) + PRIBF(M) + SECBF(M) + INTF(M))
      & * HUCAREA(I)/1000./1000000.
-
-         WRITE (81,2100) I,YEAR,M,RAIN(I,J,M),TEMP(I,J,M),
-     >AETTEMP,RUNOFFTEMP,PBFTEMP,SBFTEMP
-     >,STRFLOW(I, J, M),IFTEMP,ASM,SNOWPACK,SNOWW
-     S
-2100     FORMAT(I4.0, ',', I7.0, ',',I4.0, ',', F8.3, ',',
-     >   F8.3, ',',F8.3, ',',F8.3, ',', 
-     >   F8.3,',',F8.3, ',', F8.3, ',', F8.3 ',', F8.3 ,',', F8.3,
-     >   ',', F8.3)
-         WRITE (900,2200) I,YEAR, M, AUZTWC,AUZFWC,
-     >ALZTWC,ALZFPC,ALZFSC
-
-2200     FORMAT(I4.0, ',', I7.0, ',',I4.0, ',', F8.3, ',', 
-     >   F8.3,',',F8.3, ',', F8.3, ',', F8.3)
 
 C
 C --- Return

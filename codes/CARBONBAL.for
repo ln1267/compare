@@ -14,29 +14,27 @@ C        I=HUC; J= YEAR, M =MONTH, MNDAY= NO OF DAYS IN A MONTH
       
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
 
-      COMMON/VAL/VAL_1(1000), VAL_2(100), VAL_3,VAL_4,VAL_5,VAL_6
+      COMMON/VAL/VAL_1(100), VAL_2(100), VAL_3,VAL_4,VAL_5,VAL_6
 
-      COMMON/HUC/ HUCAREA(4000)
+      COMMON/HUC/ HUCAREA(1000)
 	  
-	  COMMON/VALID/ GEP_V(1000,200,12), ET_V(1000,200, 12)
-     >,GPP_V(1000,200),NPP_V(1000,200), FLOW_V(200,12),FLOW(1,12)
       
-      COMMON/CARBON/ GEPM(4000, 200, 12),RECOM(4000,200,12), 
-     >  NEEM(4000,200,12),GEPA(1000,200),NEEA(1000,200)
+      COMMON/CARBON/ GEPM(1000, 200, 12),RECOM(1000,200,12), 
+     >  NEEM(1000,200,12),GEPA(1000,200),NEEA(1000,200)
       
-      COMMON/CELLINFO/LADUSE(4000,20),HUCNO(4000),
-     >                LATUDE(4000),LONGI(4000)
+      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),
+     >                LATUDE(1000),LONGI(1000)
        
       
       COMMON/OUTPUT1/ PET(200,12,20),APET(12),PAET(200,12,20),APAET(12),
      &AET(12), RUNOFF(12), INTER(12), PRIBF(12), SECBF(12), INTF(12), 
      &AVUZTWC(12), AVUZFWC(12), AVLZTWC(12), AVLZFPC(12)
-     >,A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(7,1, 12)
-      
+     >,A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(1000,200, 12)
+     >,RUN_HRU(1000,200, 12),BASE_HRU(1000,200, 12)    
 C---BIODIVERSITY CALCULATION USING ANNUAL AET, PET      
       
-      COMMON/HUCPETAET/HUCAET(4000,200), HUCPET(4000,200),
-     > HUCPAET(4000,200)
+      COMMON/HUCPETAET/HUCAET(1000,200), HUCPET(1000,200),
+     >HUCPAET(1000,200)
           
 C --------------------------------------------------------------
       INTEGER I,J, M
@@ -69,7 +67,7 @@ C ----------------------------------------------------------------
 
         WRITE (500, 600) 
 600    FORMAT ('CELL, YEAR, GEP(gC/m2/yr), Reco, NEE(gC/m2/yr),', 
-     >        ' AET(MM), PET(MM),GPP_V(gC/m2/yr),NPP_V(gC/m2/yr)')
+     >        ' AET(MM), PET(MM)')
 
 
         WRITE (600, 650) 
@@ -195,10 +193,10 @@ C ---  write annual GEP and NEE
                GEPA(I,J)=ANGEP
                NEEA(I,J)=ANNEE
               WRITE (500, 3000) HUCNO(I), IDY, ANGEP,ANRECO,
-     >            ANNEE, HUCAET(I,J), HUCPET(I,J), GPP_V(I,J),NPP_V(I,J)
+     >            ANNEE, HUCAET(I,J), HUCPET(I,J)
                                               
 3000          FORMAT (I12, ',', I12, ',',F16.2, ',', F16.2, ',', F16.2
-     >  , ',', F16.2, ',', F16.2, ',', F16.2,',', F16.2)
+     >  , ',', F16.2, ',', F16.2)
 C ---- write annual biodiversity results
      
               WRITE (700, 3100) HUCNO(I), IDY, TRS,MAMMALS, BIRD, 
