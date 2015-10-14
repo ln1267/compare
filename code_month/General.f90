@@ -144,38 +144,38 @@
 	     input_mulu="F:\Data_WaSSIC\10km\inputs_1"
 	     output_mulu='F:\Data_WaSSIC\10km\outputs_1'
 
-      OPEN(1,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\GENERAL.TXT')
-      OPEN(2,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\CELLINFO.TXT') 
-!      OPEN(3,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\vegINFO.TXT')
-      OPEN(4,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\CLIMATE.TXT')
+      OPEN(1,FILE='F:\Data_WaSSIC\50km\inputs\GENERAL.TXT')
+      OPEN(2,FILE='F:\Data_WaSSIC\50km\inputs\CELLINFO.TXT') 
+!      OPEN(3,FILE='F:\Data_WaSSIC\50km\inputs\vegINFO.TXT')
+      OPEN(4,FILE='F:\Data_WaSSIC\50km\inputs\CLIMATE.TXT')
 
-      OPEN(7,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\SOILINFO.TXT')
-      OPEN(8,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\LANDLAI.TXT')
+      OPEN(7,FILE='F:\Data_WaSSIC\50km\inputs\SOILINFO.TXT')
+      OPEN(8,FILE='F:\Data_WaSSIC\50km\inputs\LANDLAI.TXT')
 
-!      OPEN(11,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\HUCAREA.TXT')
-!      OPEN(22,FILE='D:\YUN\Baidu_sina\code_month\Inputs_01_12\V_FLOW.TXT')
+!      OPEN(11,FILE='F:\Data_WaSSIC\50km\inputs\HUCAREA.TXT')
+!      OPEN(22,FILE='F:\Data_WaSSIC\50km\inputs\V_FLOW.TXT')
 
 
 ! ---Open Output files---------------------------------------- 
  
        
-      OPEN(77,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\BASICOUT.TXT')
-      OPEN(78,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\MONTHFLOW.TXT')
-      OPEN(79,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\ANNUALFLOW.TXT')
-      OPEN(80,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\HUCFLOW.TXT')
-      OPEN(99,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\ceshi.TXT')
-      OPEN(400,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\MONTHCARBON.TXT')
-      OPEN(500,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\ANNUALCARBON.TXT')
-      OPEN(600,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\HUCCARBON.TXT')
-!      OPEN(700,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\ANNUALBIO.TXT')
-!      OPEN(800,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\HUCBIO.TXT')    
-      OPEN(900,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\SOILSTORAGE.TXT')
-!      OPEN(910,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\RUNOFFBYLANDUSE.TXT')
-!      OPEN(920,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\FLOWVOLBYLANDUSE.TXT')     
-!      OPEN(1000,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\RUNLAND.TXT')
+      OPEN(77,FILE='F:\Data_WaSSIC\50km\OUTPUTS\BASICOUT.TXT')
+      OPEN(78,FILE='F:\Data_WaSSIC\50km\OUTPUTS\MONTHFLOW.TXT')
+      OPEN(79,FILE='F:\Data_WaSSIC\50km\OUTPUTS\ANNUALFLOW.TXT')
+      OPEN(80,FILE='F:\Data_WaSSIC\50km\OUTPUTS\HUCFLOW.TXT')
+      OPEN(99,FILE='F:\Data_WaSSIC\50km\OUTPUTS\ceshi.TXT')
+      OPEN(400,FILE='F:\Data_WaSSIC\50km\OUTPUTS\MONTHCARBON.TXT')
+      OPEN(500,FILE='F:\Data_WaSSIC\50km\OUTPUTS\ANNUALCARBON.TXT')
+      OPEN(600,FILE='F:\Data_WaSSIC\50km\OUTPUTS\HUCCARBON.TXT')
+!      OPEN(700,FILE='F:\Data_WaSSIC\50km\OUTPUTS\ANNUALBIO.TXT')
+!      OPEN(800,FILE='F:\Data_WaSSIC\50km\OUTPUTS\HUCBIO.TXT')    
+      OPEN(900,FILE='F:\Data_WaSSIC\50km\OUTPUTS\SOILSTORAGE.TXT')
+!      OPEN(910,FILE='F:\Data_WaSSIC\50km\OUTPUTS\RUNOFFBYLANDUSE.TXT')
+!      OPEN(920,FILE='F:\Data_WaSSIC\50km\OUTPUTS\FLOWVOLBYLANDUSE.TXT')     
+!      OPEN(1000,FILE='F:\Data_WaSSIC\50km\OUTPUTS\RUNLAND.TXT')
 ! --- Open Output FILES (WARMUP.FOR)
-       OPEN(2002,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\DATA_V_F.TXT') 
-!       OPEN(2003,FILE='D:\YUN\Baidu_sina\code_month\outputs_01_12\VALIDATION.TXT')  
+       OPEN(2002,FILE='F:\Data_WaSSIC\50km\OUTPUTS\DATA_V_F.TXT') 
+!       OPEN(2003,FILE='F:\Data_WaSSIC\50km\OUTPUTS\VALIDATION.TXT')  
 
 !  --------- Read input data -------------------------------
        

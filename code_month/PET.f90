@@ -73,16 +73,25 @@
 
 !  new model with coweeta Hamon ET Sep 10,2010
 ! 对纬度>40的采用别的公式
-      IF (DEGLAT .GT. 40) THEN
+ !     IF (DEGLAT .GT. 40) THEN
 
-         PAET(J,M) = 0.00169*PET(J,M)*LAI(I,J,M)+ &
-            0.4*PET(J,M) + 7.78*LAI(I,J,M)
+!         PAET(J,M) = 0.00169*PET(J,M)*LAI(I,J,M)+ &
+  !          0.4*PET(J,M) + 7.78*LAI(I,J,M)
 
-      ELSE
-             PAET(J,M) = 0.0222*PET(J,M)*LAI(I,J,M)+0.174*  &
-            RAIN(I,J,M)+0.502*PET(J,M) + 5.31*LAI(I,J,M)
+ !     ELSE
+ !            PAET(J,M) = 0.0222*PET(J,M)*LAI(I,J,M)+0.174*  &
+ !           RAIN(I,J,M)+0.502*PET(J,M) + 5.31*LAI(I,J,M)
 
-      ENDIF
+ !     ENDIF
+	  
+	  
+! Latest model By Yuan Fang Sep 10,2015
+!          R2=0.68, p<0.0001,RMSE=18.1 mm
+
+           PAET(J,M) = -4.79 + 0.75*PET(J,M) + 3.92*LAI(I,J,M)
+	  
+	  
+	  
 !           PRINT *, 'pet', LAI(I,J,M),RAIN(I,J,M), PET(J,M), PAET(J,M)
      
      
