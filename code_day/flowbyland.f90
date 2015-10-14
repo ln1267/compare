@@ -21,7 +21,7 @@
 ! --------------------------------------------------------------
       INTEGER MONTHD(12),MONTHL(12)
       
-      INTEGER I,J, M, K,DAY,YEAR
+      INTEGER I,J, M,DAY,YEAR
       
    
       INTEGER RUNLAND_Y,ETLAND_Y,GEPLAND_Y
@@ -34,7 +34,7 @@
       REAL CROPFLOW, FORESTFLOW, GRASSFLOW, SHRUBSAVFLOW,&
            URBANWATERFLOW, TFLOW,URBANWATERFLO
       
-      REAL  FLOWK(4000, 70, 20)
+      REAL  FLOWK(4000, 70)
       
       
 ! --- Number of days for each month during regular year
@@ -99,9 +99,9 @@
                DO 50 DAY=1, MNDAY
 
          
-                 RUNYR = RUNYR+RUNLAND(I,J,M,DAY,K)
-                 ETYR = ETYR+ETLAND(I,J,M,DAY,K)
-                 GEPYR = GEPYR+GEPLAND(I,J,M,DAY,K)
+                 RUNYR = RUNYR+RUNLAND(I,J,M,DAY)
+                 ETYR = ETYR+ETLAND(I,J,M,DAY)
+                 GEPYR = GEPYR+GEPLAND(I,J,M,DAY)
                           
 50             CONTINUE
                              
@@ -109,21 +109,21 @@
 
 ! --- FLOW MILLION CUBIC METERS
                           
-         FLOWYR = RUNYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UETYR = ETYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UGEPYR = GEPYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
+         FLOWYR = RUNYR*LADUSE(I)/1000./1000000.
+         UETYR = ETYR*LADUSE(I)/1000./1000000.
+         UGEPYR = GEPYR*LADUSE(I)/1000./1000000.
 
          
              IF (YEAR .GE. IYSTART .AND. YEAR .LE. IYEND) THEN 
            
-         WRITE (910,4000) HUCNO(I),YEAR,K, RUNYR, FLOWYR,UETYR,UGEPYR, &
-               LADUSE (I,K), HUCAREA(I) 
+         WRITE (910,4000) HUCNO(I),YEAR, RUNYR, FLOWYR,UETYR,UGEPYR, &
+               LADUSE (I), HUCAREA(I) 
                                               
                                               
 4000        FORMAT (I10, ',', I5, ',', I5, ',',F10.3, ',', F10.3, ',',& 
                  F10.3, ',', F10.3, ',', F10.3,',', F12.1)     
          
-             FLOWK(I,J, K) = FLOWYR  
+             FLOWK(I,J) = FLOWYR  
        
             
        
@@ -164,7 +164,7 @@
 
                IF (K.EQ.1) THEN 
                
-                  CROPFLOW = CROPFLOW +  FLOWK(I,J, K)
+                  CROPFLOW = CROPFLOW +  FLOWK(I,J)
                   
               
 ! -- FORESTS
@@ -172,12 +172,12 @@
           ELSEIF (K .EQ. 4  .OR. K .EQ. 5  &
        .OR. K .EQ. 7.OR. K .EQ. 3) THEN 
      
-               FORESTFLOW = FORESTFLOW +  FLOWK(I,J, K)
+               FORESTFLOW = FORESTFLOW +  FLOWK(I,J)
  
 ! -- GRASSLANDS               
        ELSEIF (K .EQ. 6) THEN                
                
-             GRASSFLOW = GRASSFLOW + FLOWK(I, J , K)
+             GRASSFLOW = GRASSFLOW + FLOWK(I, J)
               
                                
 ! -- SHRUBLANDS AND SAVANNAS                   
@@ -185,7 +185,7 @@
                ELSEIF (K .EQ. 8 .OR. K .EQ. 10 &
          .OR. K .EQ. 9 ) THEN                
 
-                SHRUBSAVAFLOW =  SHRUBSAVAFLOW + FLOWK(I, J , K)
+                SHRUBSAVAFLOW =  SHRUBSAVAFLOW + FLOWK(I, J)
                                
 ! -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)  
 
@@ -193,7 +193,7 @@
                ELSE
               
                               
-              URBANWATERFLOW =  URBANWATERFLOW + FLOWK(I, J , K)
+              URBANWATERFLOW =  URBANWATERFLOW + FLOWK(I, J)
                              
               ENDIF                      
                                      
