@@ -249,8 +249,8 @@ C ---- write annual biodiversity results
 
 
 
-!            WRITE (*, 4100) HUCNO(I),AHUCGEP,
-!     >                    AHUCRE, AHUCNEE
+            WRITE (*, 4100) HUCNO(I),AHUCGEP,
+     >                    AHUCRE, AHUCNEE
                                               
 4100        FORMAT ('CELL=',I12, '  GEP(gC/m2/yr.)=', F10.0, 
      >      '  Reco=', F10.0,' NEE(gC/m2/yr.)=', F10.0)       

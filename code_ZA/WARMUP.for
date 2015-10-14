@@ -2,7 +2,7 @@ C**********************************************************************C
 C                                                                      C
 C     *** SUBROUTINE RPSDF ***                                         C
 C     Read basic input data from GENERAL.TXT and write to              C
-C     BASICOUT.TXT, set up column headings in output files             C
+C     BASICOUT.TXT, set up column headings in output files              C
 C                                                                      C
 C**********************************************************************C
       SUBROUTINE RPSDF
@@ -88,7 +88,8 @@ C-----PRINT TITLE FOR MONTHLY OUTPUT FILE MONTHRUNOFF.TXT
      >'RUNOFF,BASEFLOW,FLOWMCMMon')
           
       WRITE (900, 1055)
-1055  FORMAT('ICELL,YEAR,MONTH,UZTWC,UZFWC,LZTWC,LZFPC,LZFSC')
+1055  FORMAT('CELL,YEAR,DAY,UZTWC,UZFWC',
+     >'LZTWC,LZFPC,LZFSC')
      
 C-----PRINT TITLE FOR ANNUAL OUTPUT ANNUALFLOW.TXT    
      
@@ -100,41 +101,38 @@ C-----PRINT TITLE FOR ANNUAL OUTPUT ANNUALFLOW.TXT
 C-----PRINT TITLE FOR SUMMARY OUTPUT SUMMARRUNOFF.TXT  
 
       WRITE (80, 1070)
-1070  FORMAT (' CELL#,   RAIN,    PET,',
-     > '       AET,    RUNOFF,    RUNOFF/P,   ET/P,  (RUN+ET)/P',
-     > ' RFACTOR')
+1070  FORMAT (' CELL#,YEAR,DAY,P,T,AET,PET,SUR_RUNOFF,',
+     > 'PBF_FLOW,SBF_FLOW,T_RUNOFF,T_FLOW,INTF,SMC,SP,SM')
 
        
-         WRITE (910,1080) 
-         
-1080    FORMAT ('WATERSHEDID,  YEAR, LADUSEID,',
-     > 'HUCRUNOFF, FLOWVOL,ETVOL,ET,GEPVOL,GEP,NEEVOL,NEE,
-     > LAND%, HUCAREA')        
-       
-       
-       
-         WRITE (920,1090) 
-         
-1090    FORMAT ('WATERSHEDID,YEAR,VEG_1,VEG_2,VEG_3,',
-     > 'VEG_4,VEG_5,VEG_6,VEG_7,URBANWATERFLOW,TFLOW') 
-
-         WRITE (930,1081) 
-         
-1081    FORMAT ('WATERSHEDID,  YEAR, Month, LADUSEID,',
-     > 'HUCRUNOFF, FLOWVOL,ETVOL,ET,GEPVOL,GEP,NEEVOL,NEE, 
-     > LAND%, HUCAREA')        
-       
-       
-       
-         WRITE (940,1091) 
-         
-1091    FORMAT ('WATERSHEDID, YEAR, Month,VEG_1,VEG_2,VEG_3,',
-     > 'VEG_4,VEG_5,VEG_6,VEG_7,URBANWATERFLOW,TFLOW') 
+!         WRITE (910,1080) 
+!         
+!1080    FORMAT ('WATERSHEDID,  YEAR, LADUSEID,',
+!     > 'HUCRUNOFF, FLOWVOL,ETVOL,ET,GEPVOL,GEP,LAND%, HUCAREA')        
+!       
+!       
+!       
+!         WRITE (920,1090) 
+!         
+!1090    FORMAT ('WATERSHEDID,YEAR,VEG_1,VEG_2,VEG_3,',
+!     > 'VEG_4,VEG_5,VEG_6,VEG_7,URBANWATERFLOW,TFLOW') 
+!
+!         WRITE (930,1081) 
+!         
+!1081    FORMAT ('WATERSHEDID,  YEAR, Month, LADUSEID,',
+!     > 'HUCRUNOFF, FLOWVOL,ETVOL,ET,GEPVOL,GEP, LAND%, HUCAREA')        
+!       
+!       
+!       
+!         WRITE (940,1091) 
+!         
+!1091    FORMAT ('WATERSHEDID, YEAR, Month,VEG_1,VEG_2,VEG_3,',
+!     > 'VEG_4,VEG_5,VEG_6,VEG_7,URBANWATERFLOW,TFLOW') 
 
 	   WRITE (2003, 204) 
             
-204      FORMAT ('VAL_1,RMES_RUNOFF,RMSE_BASEFLOW,
-     > NS_RUNOFF,NS_BASEFLOW,R_RUNOFF,R_BASEFLOW')      
+204      FORMAT ('VAL_1,RMES_RUNOFF,
+     > NS_RUNOFF,R_RUNOFF')      
       RETURN
       END
 C**********************************************************************C
@@ -159,7 +157,7 @@ C**********************************************************************C
 
       COMMON/SOIL/LZTWM(1000), LZFPM(1000), LZFSM(1000), LZSK(1000),
      >  LZPK(1000), UZTWM(1000), UZFWM(1000), UZK(1000), ZPERC(1000),
-     >  REXP(1000), PFREE(1000), SMC(12)
+     >  REXP(1000), PFREE(1000), SMC(366)
 
       COMMON/LANDCHANGE/FPERD, FPERDLAI
              
@@ -180,84 +178,65 @@ C**********************************************************************C
       CHARACTER*1000 DUMY(30)
       
 C --- Read and print land use data for each active cell IN THE BASIC.OUT FILE
-      WRITE(77,2000)
-2000  FORMAT(/'LANDUSE INFO FOR EACH SIMULATION CELL'/)
-      READ (2,500) DUMY
-500   FORMAT (1000A30)
-      
+!      WRITE(77,2000)
+!2000  FORMAT(/'LANDUSE INFO FOR EACH SIMULATION CELL'/)
+!      READ (2,500) DUMY
+!500   FORMAT (1000A30)
+!      
+!
+!C ----LANC = raw Landcover types    
+!      
+!      WRITE (77,500) DUMY
+!             
+!      DO 10 I=1, NGRID
+!
+!      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),  
+!     >    (LADUSE(I,K),K=1, NLC)
+!      
+!             
+!c      WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I), 
+!c     > (LADUSE(I,K),K=1, NLC)
+!
+!1100  FORMAT(2I10, 2F10.4, 15F10.4)    
+!     
+!10    CONTINUE
 
-C ----LANC = raw Landcover types    
-      
-      WRITE (77,500) DUMY
-             
-      DO 10 I=1, NGRID
 
-      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),  
-     >    (LADUSE(I,K),K=1, NLC)
-      
-             
-c      WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I), 
-c     > (LADUSE(I,K),K=1, NLC)
-
-1100  FORMAT(2I10, 2F10.4, 15F10.4)    
-     
-10    CONTINUE
-
-      READ (22,5001) DUMY
-5001   FORMAT (1000A30)
-C ----LANC = raw Landcover types    
-      
-C----读取径流验证数据
-           
-      DO 105 J=1982-IYSTART+1, 2006-IYSTART+1
-        
-        DO 106 M=1,12
-      READ(22,*) ID,ID, RUNOFF_V(J,M), FLOW_V(J,M),  
-     >    BASEFLOW_V(J,M)
-      
-             
-c      WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I), 
-c     > (LADUSE(I,K),K=1, NLC)
-
-106    CONTINUE  
-105    CONTINUE
 
 
 C --- Read and print SOIL PARAMETERS for each active cell IN THE BASIC.OUT FILE
 
-!      WRITE(77,2051)
-!2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
-!      READ (7,550) DUMY
-!550   FORMAT (30A8)
+      WRITE(77,2051)
+2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
+      READ (7,550) DUMY
+550   FORMAT (30A8)
 !      
 !      
 !      WRITE (77,550) DUMY
 !          
-!      DO 15 I=1, NGRID
-!      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
-!     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
-!     &LZPK(I), PFREE(I)
-!            
-!      WRITE(77,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
-!     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
-!     &LZPK(I), PFREE(I)
-!
-!           
-!       UZTWM(I)=UZTWM(I)*1
-!       UZFWM(I)=UZFWM(I)*1
-!       UZK(I)=UZK(I)*1 
-!       ZPERC(I)=ZPERC(I)*1
-!       REXP(I)=REXP(I)*1
-!       LZTWM(I)=LZTWM(I)*1 !2
-!!!      LZFSM(I)=36
-!       LZFPM(I)=LZFPM(I)*1 !3
-!       LZSK(I)= LZSK(I)*1
-!       LZPK(I)=LZPK(I)*1 !0.8
-!      PFREE(I)=PFREE(I)*1
-!     
-!1150  FORMAT(I12, 11F10.4)    
-!     
-!15    CONTINUE
+      DO 15 I=1, NGRID
+!      UZTWM(I)=VAL_1(TUN1)
+!      UZFWM(I)=30
+!      UZK(I)=0.5
+!      ZPERC(I)=70
+!      REXP(I)=2.2
+!      LZTWM(I)=30
+!      LZFSM(I)=30
+!      LZFPM(I)=70
+!      LZSK(I)=0.2
+!      LZPK(I)=0.02
+!      PFREE(I)=0.3
+      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
+     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
+     &LZPK(I), PFREE(I)
+            
+      WRITE(77,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
+     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
+     &LZPK(I), PFREE(I)
+     
+1150  FORMAT(I12, 11F10.4)    
+     
+15    CONTINUE
 
 
 C ---- Converting forest to two types of croplands in the same watersheds
@@ -332,8 +311,7 @@ c      COMMON/RETURNFLOW/ RETURNFLOW(4000,8)
 c      COMMON/GROUNDWATER/ GROUNDWATER(4000,9), ALAFA      
 c      COMMON/WATERUSE/ WATERUSE(4000,8), HUCWUSE(4000)
 
-       COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),LATUDE(1000),
-     > LONGI(1000),HUCELE(1000),HUCAREA(1000)
+      COMMON/HUC/ HUCAREA(1000)      
       
 c      COMMON/ELEVATION/HUCELE(4000)
       
@@ -379,7 +357,7 @@ C---READ IN HUC AREA, ELEV, and slope from HUCAREA.TXT
        
        READ (11, *) ID, IDHUC, HUCAREA(I)
        
-!       print *, ID, IDHUC, HUCAREA(I)
+
       
 60     CONTINUE
 
@@ -840,17 +818,18 @@ C**********************************************************************C
 C                                                                      C
 C     *** SUBROUTINE RPSCLIMATE ***                                    C
 C     Input MONTHLY CLIMATE DATA, CALCULATE ANNUAL PPT                 C
-C                                                                      C
+C     Input V_FLOW                                                                 C
 C**********************************************************************C
       SUBROUTINE RPSCLIMATE
       
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
       
-      COMMON/CLIMATE/ RAIN(1000,200,12), TEMP(1000,200, 12), AAPPT(1000)
+      COMMON/CLIMATE/ RAIN(100,200,366), TEMP(100,200,366), 
+     <AAPPT(1000),P_PET(100,200,366)
 
-      INTEGER HUCNO(1000), NYEAR, NGRID, YEAR
+      INTEGER HUCNO(1000), NYEAR, NGRID, YEAR,ICOUNT,IYSTART
             
-      INTEGER I, J, M,Mon
+      INTEGER I, J, M,NDAY
      
       REAL RAIN, TEMP, ANNPPT(1000,200)
       
@@ -864,32 +843,39 @@ C**********************************************************************C
       SUMANPPT = 0.
 
       AAPPT = 0.
-      
+
 
       DO 5000 I=1,NGRID
-      
+               ICOUNT=0 
          DO 5001 J=1,NYEAR
-         
-            DO 5002 M=1,12
             
-               IF (I .EQ. 1 .AND. J .EQ. 1 .AND. M .EQ. 1) THEN 
+            YEAR = IYSTART + ICOUNT
+			ICOUNT=ICOUNT+1 
+            NDAY = 365
+            IF(YEAR/4*4.NE.YEAR) GO TO 110
+C            IF(YEAR/400*400.EQ.YEAR .and. YEAR= 2000) GO TO 110
+            NDAY=366   
+
+110         CONTINUE 
+
+            DO 5002 M_DAY=1,NDAY
+            
+               IF (I .EQ. 1 .AND. J .EQ. 1 .AND. M_DAY .EQ. 1) THEN 
        
                   READ (4, 900) TEMPHEAD
 
                  WRITE (77, 900) TEMPHEAD
       
-c                 WRITE (77, 905)
-c905              FORMAT ('end of input data' )
-
-                             
+                            
                ENDIF
         
 900            FORMAT (10A10)
-C910            FORMAT  (/'CLIMATE DATA', 10A10)
                
-              
-               READ(4,*) HUCNO(I), YEAR, Mon, RAIN(I,J,M), TEMP(I,J,M)
-            
+
+               READ(4,*) HUCNO(I), YEAR,M, RAIN(I,J,M_DAY), 
+     <  TEMP(I,J,M_DAY),P_PET(I,J,M_DAY)
+C            write(*,*)HUCNO(I), YEAR,M, RAIN(I,J,M_DAY), 
+C     <  TEMP(I,J,M_DAY),P_PET(I,J,M_DAY)
                 
 c1015        FORMAT(3I10, 2F10.2) 
                        
@@ -906,11 +892,10 @@ c1015        FORMAT(3I10, 2F10.2)
          AAPPT(I) = SUMANPPT(I)/NYEAR
                 
          
-C         WRITE(77,5004) HUCNO(I), AAPPT(I)
-      
-c5004     FORMAT(I10,F10.2)
 
 5000  CONTINUE
+
+
 
       RETURN
       END
@@ -925,90 +910,58 @@ C**********************************************************************C
       
       COMMON/BASIC/NGRID, NYEAR, NLC,BYEAR,IYSTART,IYEND
       
-      COMMON/VALID/ GEP_V(1000,200,12), ET_V(1000,200, 12)
-     >,GPP_V(1000,200),NPP_V(1000,200), FLOW_V(200,12),FLOW(200,12)
-     >,RUNOFF_V(1000,200),RUN_OFF(1000,200), 
-     >BASEFLOW_V(200,12),BASEFLOW(200,12)
-        COMMON/SOIL/LZTWM(1000), LZFPM(1000), LZFSM(1000), LZSK(1000),
-     >  LZPK(1000), UZTWM(1000), UZFWM(1000), UZK(1000), ZPERC(1000),
-     >  REXP(1000), PFREE(1000), SMC(12)
-      INTEGER HUCNO(1000), NYEAR, NGRID, YEAR
+      COMMON/VALID/ RUNOFF_V(100,400),RUN_OFF(100,400) 
+
+      INTEGER HUCNO(1000), NYEAR, NGRID 
             
       INTEGER I, J, M,Mon
-     
-      REAL RAIN, TEMP, ANNPPT(1000,200)
-      
-      REAL ET_V, GEP_V,GPP_V,NPP_V,FLOW_V,RUNOFF_V,BASEFLOW_V
-      
-      CHARACTER*10 TEMPHEAD (10)
 
-      REAL LZTWM, LZFPM, LZFSM, LZSK,
-     >  LZPK, UZTWM, UZFWM, UZK, ZPERC,
-     >  REXP, PFREE, SMC
 
+       INTEGER YEAR,NDAY,ICOUNT
+
+      REAL RUNOFF_V
       
-!
-!      DO 5000 I=1,NGRID
-!      
-!         DO 5001 J=1,NYEAR
-!         
-!            DO 5002 M=1,12
-!            
-!               IF (I .EQ. 1 .AND. J .EQ. 1 .AND. M .EQ. 1) THEN 
+      CHARACTER*10 TEMPHEAD (20)
+
+
+  
+
+
+C----读取径流验证数据
+      DO 6000 I=1,1
+               ICOUNT=0 
+         DO 6001 J=10,28
+            
+            YEAR = 1988 + ICOUNT
+			ICOUNT=ICOUNT+1 
+            NDAY = 365
+            IF(YEAR/4*4.NE.YEAR) GO TO 610
+C            IF(YEAR/400*400.EQ.YEAR .and. YEAR= 2000) GO TO 110
+            NDAY=366   
+
+610         CONTINUE 
+
+            DO 6002 M_DAY=1,NDAY
+            
+!               IF (I .EQ. 1 .AND. J .EQ. 20 .AND. M_DAY .EQ. 1) THEN 
 !       
-!
-!      
-!c                 WRITE (77, 905)
-!c905              FORMAT ('end of input data' )
-!      
-!C                 WRITE (2000, 900) TEMPHEAD       
-!               ENDIF
-!        
-!900            FORMAT (10A10)
-!C910            FORMAT  (/'CLIMATE DATA', 10A10)
-!               
-!
-!                       
-!            
-!             
-!
-!5002        CONTINUE
-!               IF (I .EQ. 1 .AND. J .EQ. 1) THEN 
-!       
+!                  READ (22, *) TEMPHEAD
 !
 !               ENDIF
-!2900            FORMAT (10A10)
-!
-!
-!                
-!5001     CONTINUE
-!
-!                
-!         
-!C         WRITE(77,5004) HUCNO(I), AAPPT(I)
-!      
-!c5004     FORMAT(I10,F10.2)
-!
-!5000  CONTINUE
-      
 
-      DO 20001 J=19,25
+               READ(22,*) Mon,M, RUNOFF_V(J,M_DAY)
 
-      DO 20002 M=1,12
 
-          IF (J .eq. 1 .and. M .eq. 1) then
-          
-          READ (22, 29001) TEMPHEAD
+6002        CONTINUE
 
-          ENDIF
 
-29001     FORMAT (10A10)
+6001     CONTINUE
 
-!         READ(22,*) YEAR,Mon,RUNOFF_V(J,M)!,FLOW_V(J,M),BASEFLOW_V(J,M)
-!      READ (22, *) YEAR,Mon,RUNOFF_V(J,M), FLOW_V(J,M), BASEFLOW_V(J,M)
 
-20002  CONTINUE
-20001  CONTINUE
+
+6000  CONTINUE
+
+
 
 
       RETURN
