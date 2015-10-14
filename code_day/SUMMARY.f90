@@ -11,13 +11,13 @@
       SUBROUTINE SUMMARY(I)
 	  
 	  USE Common_var
-
+      implicit none 
 
 !-----------------------------------------------------------------------      
 
       REAL RAINALL, AETALL, PETALL, RUNALL, RUNRATIO, ETRATIO, TRATIO
             
-      INTEGER J, M,ISTEP
+      INTEGER I,J, M,ISTEP
       
       REAL RALL
       
@@ -32,7 +32,7 @@
       
       ISTEP = IYEND - IYSTART + 1
           
-      DO 100 J = 19, ISTEP
+      DO 100 J = 1, ISTEP
 !------ 排除异常的气候值，异常值，气候和温度设置为-99999
        
        IF  (ANURAIN(J+IYSTART-BYEAR) .eq.-99999 .or. &
@@ -87,8 +87,8 @@
     
          RUNRATIO = RUNRATIO *100.
           
-         WRITE  (*,300) HUCNO(I), RAINALL, RUNALL, &
-         RUNRATIO
+!         WRITE(*,300) HUCNO(I), RAINALL, RUNALL, RUNRATIO
+         
     
 300    FORMAT ('GRID=',I5,' PRECIP (MM)=',F6.0, '   RUNOFF(MM)=', F5.0, &
          '  RUNOFF/PRECIP=', F4.1, '%')    

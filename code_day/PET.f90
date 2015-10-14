@@ -8,12 +8,13 @@
       SUBROUTINE WARMPET(I, J, M, MNDAY)
       
       USE common_var
-                
-      INTEGER M  
+      implicit none
+               
+      INTEGER I,J,M,MNDAY  
                  
       INTEGER MONTHD(12),MONTHL(12), MJD(12), MMD
       
-      REAL TPET,LAI,PE,DEGLAT
+      REAL TPET,PE,DEGLAT,LAI_temp,DTEMP
              
 ! --- Number of days for each month during regular year
       DATA MONTHD/31,28,31,30,31,30,31,31,30,31,30,31/
@@ -33,7 +34,6 @@
             TPAET=0. 
 !			   PET=0.
                          
-        DO 40 K=1, NLC
               
 ! -- MMD = JULIAN DATE FOR MONTH M
                                
@@ -41,98 +41,21 @@
                      
             DEGLAT = LATUDE(I)
             
-! -K= LANDUSE TYPE, DTEMP = AIR TEMP, HPEC = CORRECTION PARAMETER, PE =CALCUALTED PET (MM)--DAY
+! - DTEMP = AIR TEMP, HPEC = CORRECTION PARAMETER, PE =CALCUALTED PET (MM)--DAY
            
-            CALL HAMON(K, DTEMP,M,MMD,DEGLAT,PE)
+            CALL HAMON(DTEMP,M,MMD,DEGLAT,PE)
             
             
 ! ----PET (YEAR, MONTH, LANDUSE) FOR THE CURRENT CELL)
            
-             PET(J,M,K) = PE  
+             PET(J,M) = PE  
                   
-             PET(J,M,K) = PET(J,M,K) * MNDAY 
+             PET(J,M) = PET(J,M) * MNDAY 
              
              
 ! ----ASSIGN LAI FOR EACH LAND USE
             
-             IF (K.EQ.1) THEN
-             
-                LAI = LAI_1(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.2) THEN
-             
-                LAI = LAI_2(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.3) THEN
-             
-                LAI = LAI_3(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.4) THEN
-             
-                LAI = LAI_4(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.5) THEN
-             
-                LAI = LAI_5(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.6) THEN
-             
-                LAI = LAI_6(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.7) THEN
-             
-                LAI = LAI_7(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.8) THEN
-             
-                LAI = LAI_8(I,BYEAR-IYSTART+J,M)
-                                
-             ELSEIF (K.EQ.9) THEN
-             
-                LAI = LAI_9(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.10) THEN
-             
-                LAI = LAI_10(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.11) THEN
-             
-                LAI = LAI_11(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.12) THEN
-             
-                LAI = LAI_12(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ.13) THEN
-             
-                LAI = LAI_13(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ. 14) THEN
-             
-                LAI = LAI_14(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ. 15) THEN
-             
-                LAI = LAI_15(I,BYEAR-IYSTART+J,M)
-
-             ELSEIF (K.EQ. 16) THEN
-             
-                LAI = LAI_16(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ. 17) THEN
-             
-                LAI = LAI_17(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ. 18) THEN
-             
-                LAI = LAI_18(I,BYEAR-IYSTART+J,M)
-             
-             ELSEIF (K.EQ. 19) THEN
-             
-                LAI = LAI_19(I,BYEAR-IYSTART+J,M)
-             
-             ENDIF
-                          
+               
 
 ! ----CALCULATE PAET 
 ! ----PAET (YEAR, MONTH, LANDUSE) FOR THE CURRENT CELL)
@@ -145,22 +68,22 @@
 !     NO -LAI*RAIN TERM (MAKES PAET INVERSELY PROPORTIONAL TO LAI DURING WINTER
 !     R2=0.87, N=90, MODEL ET= 9.37+0.87*MEASURED ET
 
-!             PAET(J,M,K) = 9.95+(PET(J,M,K))*LAI*0.205+0.153*
-!     &RAIN(I,J,M)+0.246*(PET(J,M,K))
+!             PAET(J,M) = 9.95+(PET(J,M))*LAI*0.205+0.153*
+!     &RAIN(I,J,M)+0.246*(PET(J,M))
 
 !  new model with coweeta Hamon ET Sep 10,2010
 ! 对纬度>40的采用别的公式
       IF (DEGLAT .GT. 40) THEN
 
-         PAET(J,M,K) = 0.00169*PET(J,M,K)*LAI+ &
-            0.4*PET(J,M,K) + 7.78*LAI
+         PAET(J,M) = 0.00169*PET(J,M)*LAI(I,J,M)+ &
+            0.4*PET(J,M) + 7.78*LAI(I,J,M)
 
       ELSE
-             PAET(J,M,K) = 0.0222*PET(J,M,K)*LAI+0.174*  &
-            RAIN(I,J,M)+0.502*PET(J,M,K) + 5.31*LAI
+             PAET(J,M) = 0.0222*PET(J,M)*LAI(I,J,M)+0.174*  &
+            RAIN(I,J,M)+0.502*PET(J,M) + 5.31*LAI(I,J,M)
 
       ENDIF
-!           PRINT *, 'pet', LAI,RAIN(I,J,M), PET(J,M,K), PAET(J,M,K)
+!           PRINT *, 'pet', LAI(I,J,M),RAIN(I,J,M), PET(J,M), PAET(J,M)
      
      
 !             ELSE
@@ -168,30 +91,28 @@
 !     CALCULATE PAET FOR GRASSLAND AND LOW LAI
 !     R2=0.696
              
-!             PAET(J,M,K) = 1.49 + 0.325*(PET(J,M,K))+0.353*(RAIN(I,J,M))
+!             PAET(J,M) = 1.49 + 0.325*(PET(J,M))+0.353*(RAIN(I,J,M))
              
 !             ENDIF
           
-!             WRITE(910,5039)  HUCNO(I), J, M, K, PAET(J,M,K)
+!             WRITE(910,5039)  HUCNO(I), J, M, K, PAET(J,M)
 !5039         FORMAT(4I10, F20.1)
 
 
 ! ----CALCULATE TOTAL PET AND PAET FOR THE HUC FOR A GIVEN YEAR AND MONTH
         
              
-             TPET = TPET + PET(J,M,K) * LADUSE(I,K)
+             TPET = TPET + PET(J,M)
              
-             TPAET = TPAET + PAET(J,M,K) * LADUSE(I,K)
+             TPAET = TPAET + PAET(J,M)
              
              
         
-!          WRITE(77, 5040) HUCNO(I), J, M, LADUSE(I,K), LAI          
+!          WRITE(77, 5040) HUCNO(I), J, M, LADUSE(I), LAI          
        
 !5040  FORMAT (3I10, 2F10.5)
      
-                    
-             
-   40      CONTINUE                 
+ 
 
 !-------流域单元月APET、APAET（各植被类型的加权平均值）
 ! ------APET =AVERAGE PET FOR CURRENT CELL, FOR ALL YEAR, MONTH
@@ -207,8 +128,8 @@
 ! ------TEST OUTPUT
 
 
-!       WRITE(77, 5050) HUCNO(I),J,M, APET(M), APAET(M) 
-      
+!       WRITE(*, 5050) HUCNO(I),J,M, APET(M), APAET(M) 
+!      
 !5050  FORMAT (3I10, 2F10.5)
 
                               
@@ -224,7 +145,7 @@
 !     equation                                                         C
 !                                                                      C
 !**********************************************************************C
-      SUBROUTINE HAMON(K, TEMP,MONTH,J,DEGLAT,PE)
+      SUBROUTINE HAMON(TEMP,MONTH,J,DEGLAT,PE)
        
       REAL PE, TEMP, DEGLAT
       
@@ -232,7 +153,7 @@
       
       REAL ESAT, RHOSAT, PI
       
-      INTEGER J, K  
+      INTEGER J 
       
       PI = 3.14159265
 

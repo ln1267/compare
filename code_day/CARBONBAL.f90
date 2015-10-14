@@ -13,11 +13,12 @@
       SUBROUTINE CARBONBAL
       
 		USE Common_var
-	  
+	     implicit none 
 ! --------------------------------------------------------------
-      INTEGER I,J, M
-
+      INTEGER I,J,M,IY,IDY
+      Real AHUCTRS,AHUCMAMMALS,AHUCBIRD,AHUCAMPHIB,AHUCREPTILES,AHUCVERTEB
       
+
 ! ---------------------------------------------------------------      
 
       
@@ -71,7 +72,7 @@
          HUCREPTILES =0.
          HUCVERTEB=0.
                           
-         DO 200 J=19, NYEAR
+         DO 200 J=1, NYEAR
    
             IDY = J + BYEAR - 1 
                   
@@ -234,7 +235,7 @@
 
 
 
-            WRITE (*, 4100) HUCNO(I),AHUCGEP,AHUCRE, AHUCNEE
+!            WRITE (*, 4100) HUCNO(I),AHUCGEP,AHUCRE, AHUCNEE
                                               
 4100        FORMAT ('CELL=',I12, '  GEP(gC/m2/yr.)=', F10.0, &
             '  Reco=', F10.0,' NEE(gC/m2/yr.)=', F10.0)       
