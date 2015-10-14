@@ -593,13 +593,14 @@ DATA W.FLOW_verify;/* 将验证数据添加到模拟数据后面*/
 	drop cell;
 RUN;
      
-
+/*
 proc reg data=W.FLOW_verify;
 	model RUNOFF=RUNOFF_O;
 	plot RUNOFF*RUNOFF_O;
 	title "A monthly comparison of RUNOFF between WASSI-C and Observed of the whole watershed";
 run;
-quit; 
+quit;
+*/ 
 proc reg data=W.FLOW_verify;
 	model B_baseflow=baseflow_O;
 	plot B_baseflow*baseflow_O;
