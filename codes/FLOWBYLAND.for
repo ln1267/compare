@@ -17,13 +17,12 @@ c      use myvar
 
 
 
-      COMMON/HUC/HUCAREA(1000)
-      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),
-     >                LATUDE(1000),LONGI(1000)
+      COMMON/HUC/HUCAREA(4000)
+      COMMON/CELLINFO/LADUSE(4000,20),HUCNO(4000),
+     >                LATUDE(4000),LONGI(4000)
               
        
-      COMMON/BYLAND/ RUNLAND(600, 30,12, 31,13), 
-     >ETLAND(600, 30,12, 31,13), GEPLAND(600, 30,12, 31,13)
+      COMMON/BYLAND/ RUNLAND(500, 70,12, 31,13)
       
 
 C --------------------------------------------------------------
@@ -32,7 +31,7 @@ C --------------------------------------------------------------
       INTEGER I,J, M, K,DAY,YEAR,NGRID
       
       INTEGER HUCNO, BYEAR, IYSTART,IYEND,NYEAR
-      INTEGER RUNLAND_Y,ETLAND_Y,GEPLAND_Y
+      INTEGER RUNLAND_Y
                    
       REAL LADUSE
       
@@ -40,9 +39,9 @@ C --------------------------------------------------------------
       
 C      REAL RUN_LAND(4000,100,12,31,8)
 
-      REAL RUNYR, FLOWYR,ETYR,GEPYR,UETYR,UGEPYR
+      REAL RUNYR, FLOWYR
       
-      REAL RUNLAND,RUNLAND2,ETLAND,GEPLAND
+      REAL RUNLAND,RUNLAND2
       
       
                 
@@ -97,8 +96,6 @@ C --- http://www.timeanddate.com/date/leapyear.html
              ENDIF
         
                RUNYR=0.
-               ETYR=0.
-               GEPYR=0.
                
             DO 100 M=1, 12
                 
@@ -115,8 +112,6 @@ C               RUNLAND_Y=(J-1)*12+M
 
          
                  RUNYR = RUNYR+RUNLAND(I,J,M,DAY,K)
-                 ETYR = ETYR+ETLAND(I,J,M,DAY,K)
-                 GEPYR = GEPYR+GEPLAND(I,J,M,DAY,K)
                           
 50             CONTINUE
                              
@@ -125,18 +120,16 @@ C               RUNLAND_Y=(J-1)*12+M
 C --- FLOW MILLION CUBIC METERS
                           
          FLOWYR = RUNYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UETYR = ETYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UGEPYR = GEPYR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
 
          
              IF (YEAR .GE. IYSTART .AND. YEAR .LE. IYEND) THEN 
            
-         WRITE (910,4000) HUCNO(I),YEAR,K, RUNYR, FLOWYR,UETYR,UGEPYR, 
+         WRITE (910,4000) HUCNO(I),YEAR,K, RUNYR, FLOWYR, 
      >         LADUSE (I,K), HUCAREA(I) 
                                               
                                               
-4000        FORMAT (I10, ',', I5, ',', I5, ',',F10.3, ',', F10.3, ',', 
-     >           F10.3, ',', F10.3, ',', F10.3,',', F12.1)     
+4000        FORMAT (I10, ',', I5, ',', I5, ',', 
+     >           F8.1, ',', F10.3, ',', F10.3,',', F12.1)     
          
              FLOWK(I,J, K) = FLOWYR  
        

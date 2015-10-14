@@ -6,17 +6,10 @@ c       use myvar
 
       COMMON/VAL/VAL_1(100), VAL_2(100), VAL_3,VAL_4,VAL_5,VAL_6
 
-        COMMON/SOIL/LZTWM(1000), LZFPM(1000), LZFSM(1000), LZSK(1000),
-     >  LZPK(1000), UZTWM(1000), UZFWM(1000), UZK(1000), ZPERC(1000),
-     >  REXP(1000), PFREE(1000), SMC(12)
-
-      INTEGER NLC，BYEAR ,TUN
+      INTEGER NLC，BYEAR 
            
       INTEGER MONTHD(12),MONTHL(12)
-      REAL LZTWM, LZFPM, LZFSM, LZSK,
-     >  LZPK, UZTWM, UZFWM, UZK, ZPERC,
-     >  REXP, PFREE, SMC
-
+      
       CHARACTER PRESS
       REAL VAL_L1 ,VAL_L2      
       
@@ -30,15 +23,14 @@ C --- Write introductory information to screen
       
       WRITE(*,10)
    10 FORMAT(' *************************************************'//,
-     >       '                   *** WaSSI-CB Chuan Xi  ***'//,
+     >       '                   *** WaSSI-CB Za Gu Nao ***'//,
      >  '   Water Supply Stress Index Modeling System'//,
      >    ' Eastern Forest Environmental Threat Assessment Center'/,
      >    ' USDA Forest Service Southern Research Station '/,
      >       ' Raleigh, NC'//,
      >       ' June 2011 -'//,
      >       ' Press Y OR y to continue :>' //)
-C      READ(*,20) PRESS
-      PRESS = "Y"
+      READ(*,20) PRESS
 	IF (press.eq."y" .or.press.eq."Y") THEN
    20 FORMAT(A1)
       WRITE(*,30)
@@ -58,8 +50,11 @@ C--Open Input files----------------------------------------------
       OPEN(8,FILE='C:\WaSSICBZB\Inputs\LANDLAI.TXT')
 
       OPEN(11,FILE='C:\WaSSICBZB\Inputs\HUCAREA.TXT')
-      OPEN(22,FILE='C:\WaSSICBZB\Inputs\V_FLOW.TXT')
 
+      OPEN(20,FILE='C:\WaSSICBZB\Inputs\V_month.TXT')
+      OPEN(21,FILE='C:\WaSSICBZB\Inputs\V_year.TXT')
+
+      OPEN(22,FILE='C:\WaSSICBZB\Inputs\V_flow.TXT')
 
 C ---Open Output files---------------------------------------- 
  
@@ -81,12 +76,14 @@ c      OPEN(900,FILE='C:\WaSSICBZB\Outputs\SOILSTORAGE.TXT')
       OPEN(920,FILE='C:\WaSSICBZB\Outputs\FLOWVOLBYLANDUSE.TXT')     
 C      OPEN(1000,FILE='C:\WaSSICBZB\Outputs\RUNLAND.TXT')
 C --- READ INPUT DATA FILES (WARMUP.FOR)
-       OPEN(2002,FILE='C:\WaSSICBZB\Outputs\DATA_V_F.TXT') 
-       OPEN(2003,FILE='C:\WaSSICBZB\Outputs\VALIDATION.TXT')  
+      OPEN(2000,FILE='C:\WaSSICBZB\Outputs\DATA_V_M.TXT') 
+      OPEN(2001,FILE='C:\WaSSICBZB\Outputs\DATA_V_A.TXT') 
+      OPEN(2002,FILE='C:\WaSSICBZB\Outputs\DATA_V_F.TXT')    
+      OPEN(2003,FILE='C:\WaSSICBZB\Outputs\VALIDATION.TXT')    
        
       CALL RPSDF
-
-      CALL RPSINT       
+      CALL RPSINT
+      
       CALL RPSWATERUSE  
       
       CALL RPSLAI
@@ -99,61 +96,16 @@ C --- READ INPUT DATA FILES (WARMUP.FOR)
 C--------------------------------------------------------------------------------------------      
 
 C --- START SIMULATION LOOPS
-!      VAL_L1=30
-!      VAL_L2=1
-!      TUN=2
-!       PRINT*,"请输入“变量起始值”, “变量增量”, “模拟次数”的值"
-!       PRINT*,"以逗号或者回车隔开"
-!      READ (*,*) VAL_L1,VAL_L2,TUN
-!      PRINT*,VAL_L1,VAL_L2,TUN
-
-
+      VAL_L1=11.14
+      VAL_L2=1.85
+      TUN=0
       DO 1111 TUN1=1, 1
-        VAL_L1=VAL_L1+VAL_L2
+        VAL_L1=VAL_L1+0.5
         VAL_1(TUN1)=VAL_L1
-!      DO 1112 TUN2=1, 1
-!        VAL_L2=VAL_L2+0.05
-!        VAL_2(TUN2)=VAL_L2
-!        TUN=TUN+1 
-
-      WRITE(77,2051)
-2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
-!      READ (7,550) DUMY
-550   FORMAT (30A8)
-      
-      
-      WRITE (77,550) DUMY
-          
-      DO 15 I=1, NGRID
-      UZTWM(I)=30
-      UZFWM(I)=22
-      UZK(I)=0.15 !0.19 
-      ZPERC(I)=80
-      REXP(I)=2.4 !3
-      LZTWM(I)=162
-      LZFSM(I)=36
-      LZFPM(I)=65 !85
-      LZSK(I)=0.06
-      LZPK(I)=0.016
-      PFREE(I)=0.2
-C      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
-C     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
-C     &LZPK(I), PFREE(I)
-            
-C      WRITE(77,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
-C     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
-C     &LZPK(I), PFREE(I)
-     
-1150  FORMAT(I12, 11F10.4)    
-     
-15    CONTINUE
-
-
-
-
-
-
-
+      DO 1112 TUN2=1, 1
+        VAL_L2=VAL_L2+0.05
+        VAL_2(TUN2)=VAL_L2
+        TUN=TUN+1
       DO 200 ICELL=1, NGRID
          ICOUNT=0 
                 
@@ -184,7 +136,7 @@ C     &LZPK(I), PFREE(I)
                CALL WARMPET(ICELL, IYEAR, IM, MNDAY)
                
                  
-               CALL WATERBAL(TUN1,ICELL, IYEAR, IM, MNDAY)
+               CALL WATERBAL(TUN1,TUN2,ICELL, IYEAR, IM, MNDAY)
                
 
 
@@ -234,7 +186,7 @@ C     WRITE BIODIVERSITY TO HUCBIO.TXT
             
             PRINT *, 'CARBON BALANCE AND BIODIVERSITY SIMULATION ENDS'
                        
-            CALL VALIDATION(TUN1)    
+            CALL VALIDATION(TUN1,TUN2)
            
          WRITE(*,75)
 75         FORMAT('  CALCULATING FLOW BY LANDCOVER'/)
