@@ -150,11 +150,11 @@
              
       DO 10 I=1, NGRID
 
-      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),LADUSE(I),HUCELE(I)
+      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),LADUSE(I) !,HUCELE(I)
       
              
-!      WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I), 
-!     > (LADUSE(I,K),K=1, NLC)
+     ! WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I),LADUSE(I) 
+      
 
 1100  FORMAT(2I10, 2F10.4, I4)    
      
@@ -184,17 +184,30 @@
      WRITE(*,*) I,HUCNO(I)!, UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
   !  REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),LZPK(I), PFREE(I)
 
-       UZTWM(I)=UZTWM(I)*1
-       UZFWM(I)=UZFWM(I)*3
-       UZK(I)=UZK(I)*30
-       ZPERC(I)=ZPERC(I)*1
-       REXP(I)=REXP(I)*1
-       LZTWM(I)=LZTWM(I)*1
-      LZFSM(I)=LZFSM(I)*1
-       LZFPM(I)=LZFPM(I)*1
-       LZSK(I)= LZSK(I)*30
-       LZPK(I)=LZPK(I)*30
-      PFREE(I)=PFREE(I)*1
+             
+        UZTWM(I)=UZTWM(I)*0.3 !1.15 
+       UZFWM(I)=UZFWM(I)*1.1
+       UZK(I)=UZK(I) *0.2!*1.85
+       ZPERC(I)=ZPERC(I)!
+       REXP(I)=REXP(I)*0.6 !*0.9
+       LZTWM(I)=LZTWM(I) !*1.3
+     LZFSM(I)=LZFSM(I) ! *1.15!*
+      LZFPM(I)=LZFPM(I)*3 ! *2.05   ! 2.4 !
+      LZSK(I)= LZSK(I)*1.25 !  *0.9 !
+       LZPK(I)=LZPK(I) *2 ! !*(1+VAL_2(TUN2)) !*1.2
+      PFREE(I)=PFREE(I) !*(1+VAL_1(TUN1)) !*0.4 !
+  
+ ! ----------------------
+  
+  
+  
+  
+   !   LZTWM(I)=LZTWM(I)*1.3 !*(1+VAL_1(TUN1)) 
+    !  LZFSM(I)=LZFSM(I) !*
+   !    LZFPM(I)=LZFPM(I)*2.4
+   !    LZSK(I)= LZSK(I)*0.9 !*(1+VAL_2(TUN2)) 
+    !   LZPK(I)=LZPK(I)*1.2
+!      PFREE(I)=PFREE(I) !
      
 
 !    print*,I 

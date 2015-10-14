@@ -1,120 +1,118 @@
- Module common_var
+
+!******************Defining Common Variables for the whole program********
+
+      Module common_var
       implicit none
-! BASIC ok
+! BASIC
       INTEGER NGRID,NYEAR,NLC,BYEAR,IYSTART,IYEND
       COMMON/BASIC/NGRID,NYEAR,NLC,BYEAR,IYSTART,IYEND
 
-! VAL ok
+! VAL       
       REAL VAL_1, VAL_2, VAL_3,VAL_4,VAL_5,VAL_6 
       COMMON/VAL/VAL_1(100), VAL_2(100), VAL_3,VAL_4,VAL_5,VAL_6
 
-! VALID ok
+! VALID
       REAL GEP_V,ET_V,GPP_V,NPP_V,FLOW_V,FLOW,RUNOFF_V,RUN_OFF,BASEFLOW_V,&
         BASEFLOW
-      COMMON/VALID/ GEP_V(1000,200,12), ET_V(1000,200,12)&
-          ,GPP_V(1000,200),NPP_V(1000,200), FLOW_V(200,12),FLOW(200,12)&
-          ,RUNOFF_V(1000,200),RUN_OFF(1000,200), &
-          BASEFLOW_V(200,12),BASEFLOW(200,12)
+      COMMON/VALID/ GEP_V(70000,32,12), ET_V(70000,32,12)&
+          ,GPP_V(70000,32),NPP_V(70000,32), FLOW_V(32,12),FLOW(32,12)&
+          ,RUNOFF_V(70000,32),RUN_OFF(70000,32), &
+          BASEFLOW_V(32,12),BASEFLOW(70000,32,12)
 
-! CELLINFO ok
+! CELLINFO
       REAL LADUSE,LATUDE,LONGI,HUCELE
       INTEGER HUCNO
-      Double Precision HUCAREA
-      COMMON/CELLINFO/LADUSE(1000,20),HUCNO(1000),LATUDE(1000),LONGI(1000),HUCELE(1000),HUCAREA(1000)
+      COMMON/CELLINFO/LADUSE(70000),HUCNO(70000),LATUDE(70000),LONGI(70000),HUCELE(70000)
+
+! VEGINFO
+      INTEGER veg
+      COMMON/VEGINFO/VEG(70000,32)
 
 
-! OUTPUT1 ok
-      REAL PET,PAET,APET,APAET,AET,RUNOFF,INTER,PRIBF,SECBF,INTF, &
+! OUTPUT1
+      REAL PET,APET,PAET,APAET,AET,RUNOFF,INTER,PRIBF,SECBF,INTF, &
          AVUZTWC,TPAET,AVUZFWC,AVLZTWC,AVLZFPC,AVLZFSC,A_ET,P_ET,Sun_ET,RUN_HRU,BASE_HRU
-      COMMON/OUTPUT1/ PET(200,12,20),PAET(200,12,20),APET(12),APAET(12),&
+      COMMON/OUTPUT1/ PET(32,12),APET(12),PAET(32,12),APAET(12),&
          AET(12), RUNOFF(12), INTER(12), PRIBF(12), SECBF(12), INTF(12), &
          AVUZTWC(12), AVUZFWC(12), AVLZTWC(12), AVLZFPC(12),AVLZFSC(12),&
-         A_ET(1000,200, 12),P_ET(1000,200, 12),Sun_ET(1000,200, 12),&
-         RUN_HRU(1000,200, 12),BASE_HRU(1000,200, 12)      
- 
-! CLIMATE  ok    
-      REAL  RAIN,TEMP,AAPPT
-      COMMON/CLIMATE/ RAIN(1000,200,12), TEMP(1000,200, 12), AAPPT(1000)
+         A_ET(70000,32, 12),P_ET(70000,32,12),Sun_ET(70000,32,12),&
+         RUN_HRU(70000,32,12),BASE_HRU(70000,32,12)  
+
+! Monthly RUNOFF
+
+       Real RUNOFF_MON, BASEFLOW_MON
+       COMMON/Month_RUN/ RUNOFF_MON(70000,12),BASEFLOW_MON(70000,12)
       
-! LAI  ok      
-      REAL LAI_1, LAI_2, LAI_3,LAI_4,LAI_5,LAI_6, LAI_7,LAI_8,&
-         LAI_9,LAI_10,LAI_11,LAI_12, LAI_13, LAI_14,&
-         LAI_15,LAI_16, LAI_17,LAI_18, LAI_19
-      COMMON/LAI/LAI_1(1000,200,12), LAI_2(1000,200,12), &
-         LAI_3(1000,200,12),LAI_4(1000,200,12),LAI_5(1000,200,12), &
-         LAI_6(1000,200,12), LAI_7(1000,200,12),LAI_8(1000,200,12),&
-         LAI_9(1000,200,12),LAI_10(1000,200,12),LAI_11(1000,200,12),& 
-         LAI_12(1000,200,12), LAI_13(1000,200,12), LAI_14(1000,200,12),&
-         LAI_15(1000,200,12),LAI_16(1000,200,12), LAI_17(1000,200,12),&
-         LAI_18(1000,200,12), LAI_19(1000,200,12)
+! CLIMATE      
+      REAL  RAIN,TEMP,AAPPT
+      COMMON/CLIMATE/ RAIN(70000,32,12), TEMP(70000,32,12), AAPPT(70000)
+      
+! LAI        
+      REAL LAI
+      COMMON/LAI/LAI(70000,32,12)
 
-! SNOWPACK	ok
-      REAL SP,SNOWPACK
-      INTEGER NSPM
-      COMMON/SNOWPACK/SP(12),SNOWPACK,NSPM(200)
+! SNOWPACK	
+      REAL SP,SNOWPACK,NSPM
+      COMMON/SNOWPACK/SP(12),SNOWPACK, NSPM(32)
 
-! SUMMARY1 ok
+! SUMMARY1 
       REAL ANURAIN,ANURUN,ANUPET,ANUAET,ANUPAET
-      COMMON/SUMMARY1/ANURAIN(200),ANURUN(200),ANUPET(200),ANUAET(200),&
-        ANUPAET(200)
+      COMMON/SUMMARY1/ANURAIN(32),ANURUN(32),ANUPET(32),ANUAET(32),&
+        ANUPAET(32)
 
-! SOIL ok
+! SOIL
       REAL LZTWM, LZFPM, LZFSM,LZSK,LZPK, UZTWM, UZFWM, UZK, ZPERC,&
         REXP, PFREE, SMC        
-      COMMON/SOIL/LZTWM(1000), LZFPM(1000), LZFSM(1000), LZSK(1000),&
-        LZPK(1000), UZTWM(1000), UZFWM(1000), UZK(1000), ZPERC(1000),&
-        REXP(1000), PFREE(1000), SMC(12)
+      COMMON/SOIL/LZTWM(70000), LZFPM(70000), LZFSM(70000), LZSK(70000),&
+        LZPK(70000), UZTWM(70000), UZFWM(70000), UZK(70000), ZPERC(70000),&
+        REXP(70000), PFREE(70000), SMC(12)
 
-! Soil Mositure ok
+! Soil Mositure
        REAL UZTWC, UZFWC, LZTWC, LZFSC, LZFPC
-       COMMON/SMC/UZTWC(20), UZFWC(20), LZTWC(20), LZFSC(20), LZFPC(20)
-
-! Monthly Soil Mositure ok
-       REAL MonUZTWC, MonUZFWC, MonLZTWC, MonLZFSC, MonLZFPC
-       COMMON/MONSMC/MonUZTWC(1000, 200, 12), MonUZFWC(1000, 200, 12), MonLZTWC(1000, 200, 12), MonLZFSC(1000, 200, 12), MonLZFPC(1000, 200, 12)
-
-
-! FLOW ok
+       COMMON/SMC/UZTWC(70000), UZFWC(70000), LZTWC(70000), LZFSC(70000), LZFPC(70000)
+! FLOW 
       REAL STRFLOW,STRET,STRGEP     
-      COMMON/FLOW/STRFLOW(1000, 200, 12),STRET(1000, 200, 12)&
-     ,STRGEP(1000, 200, 12)
+      COMMON/FLOW/STRFLOW(70000,32,12),STRET(70000,32,12)&
+     ,STRGEP(70000,32,12)
 
-! CARBON ok
+! CARBON
         REAL GEPM,RECOM,NEEM,GEPA,NEEA
-      COMMON/CARBON/ GEPM(1000, 200, 12),RECOM(1000,200,12), &
-      NEEM(1000,200,12),GEPA(1000,200),NEEA(1000,200)
+      COMMON/CARBON/ GEPM(70000,32,12),RECOM(70000,32,12), &
+      NEEM(70000,32,12),GEPA(70000,32),NEEA(70000,32)
       
-! BYLAND ok    
-      REAL RUNLAND,ETLAND,GEPLAND,NEELAND     
-      COMMON/BYLAND/ RUNLAND(50,200,12,10), &
-        ETLAND(50, 200,12,10), GEPLAND(50,200,12,10),NEELAND(50,200,12,10) 
+! BYLAND   
+      REAL,ALLOCATABLE :: RUNLAND(:,:,:),ETLAND(:,:,:),GEPLAND(:,:,:)
+!	   COMMON/BYLAND/RUNLAND,ETLAND,GEPLAND
+!      REAL RUNLAND,ETLAND,GEPLAND    
+!      COMMON/BYLAND/ RUNLAND(70000,32,12,31), &
+!        ETLAND(70000,32,12,31), GEPLAND(70000,32,12,31)
 
 ! HUCPETAET
       REAL HUCAET, HUCPET,HUCPAET
-      COMMON/HUCPETAET/HUCAET(1000,200), HUCPET(1000,200),&
-      HUCPAET(1000,200)
+      COMMON/HUCPETAET/HUCAET(70000,32), HUCPET(70000,32),&
+      HUCPAET(70000,32)
 
-! LANDCHANGE  ok   
+! LANDCHANGE     
       REAL FPERD, FPERDLAI  
       COMMON/LANDCHANGE/FPERD,FPERDLAI
         
 ! R	  
 	  REAL RFACTOR 
-      COMMON/R/ RFACTOR(200)
+      COMMON/R/ RFACTOR(32)
       end
 
-!**************---Program Starting--------*************************	  
-      PROGRAM WaSSICBZB    
-      use common_var
-      implicit none 
-
-
-      INTEGER TUN1,TUN2
+!**************---Program Starting--------*************************
+     
+      
+      PROGRAM WaSSICBZB 
+         
+       use common_var  
+        implicit none 
            
-      INTEGER I,ID,ICELL,ICOUNT,IYEAR,MONTHD(12),MONTHL(12)
+      INTEGER ICELL,ICOUNT,IYEAR,MONTHD(12),MONTHL(12)
       INTEGER YEAR,NDAY,IM,MNDAY
 
-      CHARACTER PRESS,DUMY
+      CHARACTER PRESS,input_mulu,output_mulu
       REAL VAL_L1 ,VAL_L2      
       
 ! --- Number of days for each month during regular year
@@ -134,75 +132,76 @@
             ' Raleigh, NC'//,&
             ' April 2015 -'//,&
             ' Press Y OR y to continue : ' //)
-!      READ(*,20) PRESS
-      PRESS = "Y"
-	IF (press.eq."y" .or.press.eq."Y") THEN
+      READ(*,20) PRESS
+!      PRESS = "Y"
+!	IF (press.eq."y" .or.press.eq."Y") THEN
    20 FORMAT(A1)
       WRITE(*,30)
    30 FORMAT('       *** PROGRAM IS RUNNING, PLEASE WAIT ***')
 
 !--Open Input files----------------------------------------------
     
-      OPEN(1,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\GENERAL.TXT')
-      OPEN(2,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\CELLINFO.TXT') 
+	     input_mulu="F:\Data_WaSSIC\10km\inputs_1"
+	     output_mulu='F:\Data_WaSSIC\10km\outputs_1_1'
 
-      OPEN(4,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\CLIMATE.TXT')
+      OPEN(1,FILE='J:\Data_WaSSIC\MJ\Inputs_2\GENERAL.TXT')
+      OPEN(2,FILE='J:\Data_WaSSIC\MJ\Inputs_2\CELLINFO.TXT') 
+!      OPEN(3,FILE='J:\Data_WaSSIC\MJ\Inputs_1\vegINFO.TXT')
+      OPEN(4,FILE='J:\Data_WaSSIC\MJ\Inputs_2\CLIMATE.TXT')
 
-      OPEN(7,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\SOILINFO.TXT')
-      OPEN(8,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\LANDLAI.TXT')
+      OPEN(7,FILE='J:\Data_WaSSIC\MJ\Inputs_2\SOILINFO.TXT')
+      OPEN(8,FILE='J:\Data_WaSSIC\MJ\Inputs_2\LANDLAI.TXT')
 
-      OPEN(11,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\HUCAREA.TXT')
-      OPEN(22,FILE='D:\YUN\Baidu_sina\WaSSI_month\Inputs\V_FLOW.TXT')
+!      OPEN(11,FILE='J:\Data_WaSSIC\MJ\Inputs_1\HUCAREA.TXT')
+!      OPEN(22,FILE='J:\Data_WaSSIC\MJ\Inputs_1\V_FLOW.TXT')
 
 
 ! ---Open Output files---------------------------------------- 
  
        
-      OPEN(77,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\BASICOUT.TXT')
-      
-     
-      OPEN(78,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\MONTHFLOW.TXT')
-      OPEN(79,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\ANNUALFLOW.TXT')
-      OPEN(80,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\HUCFLOW.TXT')
-      OPEN(99,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\ceshi.TXT')
-      OPEN(400,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\MONTHCARBON.TXT')
-      OPEN(500,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\ANNUALCARBON.TXT')
-      OPEN(600,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\HUCCARBON.TXT')
-      OPEN(700,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\ANNUALBIO.TXT')
-      OPEN(800,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\HUCBIO.TXT')    
-      OPEN(900,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\SOILSTORAGE.TXT')
-      OPEN(910,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\RUNOFFBYLANDUSE.TXT')
-      OPEN(920,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\FLOWVOLBYLANDUSE.TXT')     
-      OPEN(930,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\RUNOFFBYLANDUSE_m.TXT')
-      OPEN(940,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\FLOWVOLBYLANDUSE_m.TXT')
-        
-!      OPEN(1000,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\RUNLAND.TXT')
-! --- READ INPUT DATA FILES (WARMUP.FOR)
-       OPEN(2002,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\DATA_V_F.TXT') 
-       OPEN(2003,FILE='D:\YUN\Baidu_sina\WaSSI_month\Outputs\VALIDATION.TXT')  
-       
+      OPEN(77,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\BASICOUT.TXT')
+      OPEN(78,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\MONTHFLOW.TXT')
+      OPEN(79,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ANNUALFLOW.TXT')
+      OPEN(80,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\HUCFLOW.TXT')
+      OPEN(99,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ceshi.TXT')
+      OPEN(400,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\MONTHCARBON.TXT')
+      OPEN(500,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\ANNUALCARBON.TXT')
+      OPEN(600,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\HUCCARBON.TXT')
+!      OPEN(700,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\ANNUALBIO.TXT')
+!      OPEN(800,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\HUCBIO.TXT')    
+      OPEN(900,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\SOILSTORAGE.TXT')
+!      OPEN(910,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\RUNOFFBYLANDUSE.TXT')
+!      OPEN(920,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\FLOWVOLBYLANDUSE.TXT')     
+!      OPEN(1000,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\RUNLAND.TXT')
+! --- Open Output FILES (WARMUP.FOR)
+       OPEN(2002,FILE='J:\Data_WaSSIC\MJ\OUTPUTS_2\DATA_V_F.TXT') 
+!       OPEN(2003,FILE='J:\Data_WaSSIC\MJ\OUTPUTS\VALIDATION.TXT')  
+
 !  --------- Read input data -------------------------------
        
       CALL RPSDF       ! Set up column headings for each output files
 
       CALL RPSINT      ! Read Landuse, elevation and Soil parameters
           
-      CALL RPSWATERUSE  ! Read HUC area, elevation, and slope
+!      CALL RPSWATERUSE  ! Read HUC area, elevation, and slope
       
+      print*,"finish read Land cover  data"
+	  
       CALL RPSLAI     ! Read LAI data
       
+      print*,"finish read LAI  data"
+	  
       CALL RPSCLIMATE  ! Read calimate data
 
-      CALL RPSVALID   ! Read Runoff validation data
+    !  CALL  RPSVALID   ! Read Runoff validation data
 
-
-!----------------------Auto calibration part------------------------------------    
-
-!--------------------------------------------------------------------------------------------      
+      print*,"finish read Climate data"
+	  
+!----------------------Auto calibration part------------------------------------      
 
 ! --- START SIMULATION LOOPS
-      VAL_L1=0
-      VAL_L2=0
+!      VAL_L1=30
+!      VAL_L2=1
 !      TUN=2
 !       PRINT*,"请输入“变量起始值”, “变量增量”, “模拟次数”的值"
 !       PRINT*,"以逗号或者回车隔开"
@@ -210,73 +209,27 @@
 !      PRINT*,VAL_L1,VAL_L2,TUN
 
 
-      DO 1111 TUN1=1, 1
-        VAL_L1=VAL_L1+0.
-        VAL_1(TUN1)=VAL_L1
-        VAL_L2=0
-      DO 1112 TUN2=1, 1
-        VAL_L2=VAL_L2+0.0
-        VAL_2(TUN2)=VAL_L2
+ !     DO 1111 TUN1=1, 1
+ !       VAL_L1=VAL_L1+VAL_L2
+  !      VAL_1(TUN1)=VAL_L1
+!      DO 1112 TUN2=1, 1
+!        VAL_L2=VAL_L2+0.05
+!        VAL_2(TUN2)=VAL_L2
 !        TUN=TUN+1 
 
-!      WRITE(77,2051)
-!2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
-!
-!
-!! ----Read Soil parameters from SOILINFO.TXT
-      READ (7,550) DUMY
-550   FORMAT (30A8)
-
-      WRITE (77,550) DUMY
-
-      DO 15 I=1, NGRID
-
-      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
-     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
-     LZPK(I), PFREE(I)
-            
-!      WRITE(77,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
-!     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
-!     LZPK(I), PFREE(I)
-!     
-!1150  FORMAT(I12, 11F10.4)
-
-! ----Assign Soil parameters for each HRU by artification
-           
-!      UZTWM(I)=UZTWM(I)*22 
-!!      UZFWM(I)=22
-!      UZK(I)=UZK(I)*22 
-!      ZPERC(I)=ZPERC(I)*22
-!!      REXP(I)=REXP(I)
-!      LZTWM(I)=LZTWM(I)*22 
-!!      LZFSM(I)=36
-!      LZFPM(I)=LZFPM(I)*1.5
-!      LZSK(I)= LZSK(I)*1
-!      LZPK(I)=LZPK(I)*2
-!      PFREE(I)=0.2
-
-      UZTWM(I)=30 
-      UZFWM(I)=22
-      UZK(I)=0.15 
-      ZPERC(I)=80
-      REXP(I)=2.4
-      LZTWM(I)=162
-      LZFSM(I)=36
-      LZFPM(I)=65
-      LZSK(I)= 0.06
-      LZPK(I)=0.016
-      PFREE(I)=0.2
-
-
-
-15    CONTINUE
-
-!----------------------Modelling for each HRU and year start------------------------------------   
+      WRITE(77,2051)
+2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
+!      READ (7,550) DUMY
+!550   FORMAT (30A8)
+!  
+!      WRITE (77,550) DUMY
+!          
+!----------------------Modelling for each Cell and year start------------------------------------   
+   
       DO 200 ICELL=1, NGRID
          ICOUNT=0 
                 
          DO 300 IYEAR=1, NYEAR
-                  
             YEAR = IYSTART + ICOUNT
 			ICOUNT=ICOUNT+1 
             NDAY = 365
@@ -294,71 +247,74 @@
                ELSE
                  MNDAY=MONTHL(IM)
                ENDIF
-                            
+               
+                                             
                CALL WARMPET(ICELL, IYEAR, IM, MNDAY)  ! Caculate MONTHLY PET AND POTENTIAL AET 
                
                  
-               CALL WATERBAL(TUN1,TUN2,ICELL, IYEAR, IM, MNDAY) ! Caculate MONTHLY GPP and ET
- 
+               CALL WATERBAL(ICELL, IYEAR, IM, MNDAY) ! Caculate MONTHLY GPP and ET
+               
+
 400         CONTINUE 
  
-!C     WRITE MONTHLY WATER BALANCE OUTPUT TO MONTHRUNOFF.TXT            
-!C     WRITE MONTHLY SOIL STORAGE OUTPUT TO SOILSTORAGE.TXT             
-!C     CALCULATE TOTAL ANNUAL RAIN, PET, AET, DISCHARGE, INT, SNOWP  
-!C     PRINT ANNUAL WATER BALANCE COMPONENTS TO ANNUALFLOW.TXT  
-!
-!c     CALCULATE R FACTOR AND OUTPUT TO ANNUALFLOW.TXT           
+!    WRITE MONTHLY WATER BALANCE OUTPUT TO MONTHRUNOFF.TXT            
+!     WRITE MONTHLY SOIL STORAGE OUTPUT TO SOILSTORAGE.TXT             
+!     CALCULATE TOTAL ANNUAL RAIN, PET, AET, DISCHARGE, INT, SNOWP  
+!     PRINT ANNUAL WATER BALANCE COMPONENTS TO ANNUALFLOW.TXT  
 
-            CALL OUTPUT(ICELL,IYEAR) ! Output Annual water and carbon balances
+!     CALCULATE R FACTOR AND OUTPUT TO ANNUALFLOW.TXT           
+
+            CALL OUTPUT(ICELL,IYEAR)  ! Output Annual water and carbon balances
             
 300      CONTINUE
 
-!C     CALCULATE AVERAGE WATER BALANCE COMPONENTS FROM IYSTART TO IYEND
-!C     WRITE TO SUMMARRUNOFF.TXT   
-!                                 
+!     CALCULATE AVERAGE WATER BALANCE COMPONENTS FROM IYSTART TO IYEND
+!     WRITE TO SUMMARRUNOFF.TXT   
+                                 
     
          CALL SUMMARY(ICELL)
            
 
 200   CONTINUE
-        
+       
+	     
                 
             PRINT *, 'WATER BALANCE SECTION SUCCEEDED!'                      
-!
-!C     SIMULATE TOTAL FLOW FOR EACH MONTH AND EACH HUC                  
-!C     WRITE ACCUMULATED FLOW TO MONTHACCFLOW.TXT                       
-!C     PERFORM WATER SUPPLY/DEMAND AND WASSI CALCULATIONS               
-!C     WRITE WASSI OUTPUT TO ANNUALWaSSI.TXT                            
-!C     WRITE WASSI OUTPUT TO HUCWaSSI.TXT                               
-!
-!c            CALL FLOWROUTING
-!                    
-!c            PRINT *, 'FLOW ROUTING DONE'
-!            
-!C     Simulate GEP AND NEE for selected HUC                            
-!C     WRITE GEP AND NEE TO MONTHCARBON.TXT, ANNUALCARBON.TXT, HUCCARBON.TXT        
-!C     SIMULATE BIODIVERSITY FOR SELECTED HUC                           
-!C     WRITE BIODIVERSITY TO HUCBIO.TXT                                 
+
+!     SIMULATE TOTAL FLOW FOR EACH MONTH AND EACH HUC                  
+!     WRITE ACCUMULATED FLOW TO MONTHACCFLOW.TXT                       
+!     PERFORM WATER SUPPLY/DEMAND AND WASSI CALCULATIONS               
+!     WRITE WASSI OUTPUT TO ANNUALWaSSI.TXT                            
+!     WRITE WASSI OUTPUT TO HUCWaSSI.TXT                               
+
+!            CALL FLOWROUTING
+                    
+!            PRINT *, 'FLOW ROUTING DONE'
+            
+!     Simulate GEP AND NEE for selected HUC                            
+!     WRITE GEP AND NEE TO MONTHCARBON.TXT, ANNUALCARBON.TXT, HUCCARBON.TXT        
+!     SIMULATE BIODIVERSITY FOR SELECTED HUC                           
+!     WRITE BIODIVERSITY TO HUCBIO.TXT                                 
 
 
             CALL CARBONBAL
             
             PRINT *, 'CARBON BALANCE AND BIODIVERSITY SIMULATION ENDS'
                        
-            CALL VALIDATION(TUN1,TUN2)    
+            CALL VALIDATION    
            
          WRITE(*,75)
 75         FORMAT('  CALCULATING FLOW BY LANDCOVER'/)
 
-1112   CONTINUE
-1111   CONTINUE
-            CALL FLOWBYLAND      
+!1112   CONTINUE
+!1111   CONTINUE
+ !           CALL FLOWBYLAND      
 
   
             PRINT *, '-------------PROGRAM RUN ENDS----------------!'
-		Stop
-      ELSE
-    	    	STOP 
-	ENDIF		
+      Stop
+!      ELSE
+!    	    	STOP 
+!	ENDIF		
       END
 
