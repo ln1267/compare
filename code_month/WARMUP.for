@@ -209,7 +209,7 @@ C ----LANC = raw Landcover types
       
 C----读取径流验证数据
            
-      DO 105 J=1982-IYSTART+1,2006-IYSTART+1
+      DO 105 J=1982-IYSTART+1, 2006-IYSTART+1
         
         DO 106 M=1,12
       READ(22,*) ID,ID, RUNOFF_V(J,M), FLOW_V(J,M),  
@@ -241,21 +241,20 @@ C --- Read and print SOIL PARAMETERS for each active cell IN THE BASIC.OUT FILE
 !      WRITE(77,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),
 !     &REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),
 !     &LZPK(I), PFREE(I)
-!	 
+!
+!           
 !       UZTWM(I)=UZTWM(I)*1
-!       UZFWM(I)=UZFWM(I)*5.5
-!       UZK(I)=UZK(I)*15 
+!       UZFWM(I)=UZFWM(I)*1
+!       UZK(I)=UZK(I)*1 
 !       ZPERC(I)=ZPERC(I)*1
 !       REXP(I)=REXP(I)*1
-!       LZTWM(I)=LZTWM(I)*1
-!      LZFSM(I)=LZFSM(I)*1
-!       LZFPM(I)=LZFPM(I)*6
-!       LZSK(I)= LZSK(I)*10
-!       LZPK(I)=LZPK(I)*26
+!       LZTWM(I)=LZTWM(I)*1 !2
+!!!      LZFSM(I)=36
+!       LZFPM(I)=LZFPM(I)*1 !3
+!       LZSK(I)= LZSK(I)*1
+!       LZPK(I)=LZPK(I)*1 !0.8
 !      PFREE(I)=PFREE(I)*1
-!           
-
-     
+!     
 !1150  FORMAT(I12, 11F10.4)    
 !     
 !15    CONTINUE
@@ -993,6 +992,24 @@ C**********************************************************************C
 !5000  CONTINUE
       
 
-     
+      DO 20001 J=19,25
+
+      DO 20002 M=1,12
+
+          IF (J .eq. 1 .and. M .eq. 1) then
+          
+          READ (22, 29001) TEMPHEAD
+
+          ENDIF
+
+29001     FORMAT (10A10)
+
+!         READ(22,*) YEAR,Mon,RUNOFF_V(J,M)!,FLOW_V(J,M),BASEFLOW_V(J,M)
+!      READ (22, *) YEAR,Mon,RUNOFF_V(J,M), FLOW_V(J,M), BASEFLOW_V(J,M)
+
+20002  CONTINUE
+20001  CONTINUE
+
+
       RETURN
       END

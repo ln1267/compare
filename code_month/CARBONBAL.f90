@@ -13,22 +13,18 @@
       SUBROUTINE CARBONBAL
       
 		USE Common_var
-	     implicit none 
+	    Implicit none 
 ! --------------------------------------------------------------
       INTEGER I,J,M,IY,IDY
       Real AHUCTRS,AHUCMAMMALS,AHUCBIRD,AHUCAMPHIB,AHUCREPTILES,AHUCVERTEB
       
-
 ! ---------------------------------------------------------------      
-
       
       REAL ANGEP, ANRECO, ANNEE,  AHUCGEP, AHUCNEE,AHUCRE
       REAL HUCGEP, HUCNEE, HUCRE
 
-      
       REAL HUCTRS,TRS, HUCMAMMALS,MAMMALS,HUCBIRD,BIRD,HUCAMPHIB,&
        AMPHIB,HUCREPTILES, REPTILES, HUCVERTEB, VERTEB
-
 
 !----------------------------------------------------------------      
 
@@ -94,11 +90,11 @@
        
         
 !--- ACCUMULATE ANNUAL GEP FORM MONTHLY VALUES (g C/m2/mon)
-      IF (RAIN(I,J,M) .eq. -9999 .or. TEMP(I,J,M) .eq. -99999) then
+      IF (RAIN(I,J,M) < -50.0 .or. TEMP(I,J,M) < -50.0) then
 
-           ANGEP = -99999
-            ANRECO = -99999
-            ANNEE = -99999
+           ANGEP = -999.0
+            ANRECO = -999.0
+            ANNEE = -999.0
             GOTO 22200
 
       ELSE
@@ -187,8 +183,7 @@
                  F10.2, ',', F10.2, ',', F10.2, ',', F10.2, ',', F10.2,&
                 ',', F10.2, ',', F8.1, ',', F8.1)
            
-      IF (ANGEP .eq. -99999 .or. ANRECO .eq. -99999 .or. ANRECO .eq. &
-        -99999) then
+      IF (ANGEP < -50.0 .or. ANRECO < -50.0 .or. ANRECO < -50.0 ) then
 
      
       ELSE

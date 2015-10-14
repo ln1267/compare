@@ -12,6 +12,7 @@
  
       CHARACTER*4 HEADNG(20)
       INTEGER ISCENARIOS
+	  
   
 !      COMMON/LAND/ SPRING,SUMMER,FALL,WINTER,SI(366)
 
@@ -96,25 +97,42 @@
       WRITE (80, 1070)
 1070  FORMAT ('CELL,RAIN,PET,',&
       'AET,RUNOFF,RUNOFF/P,ET/P,(RUN+ET)/P',&
-       'RFACTOR,Y_n')
+       'RFACTOR')
 
        
          WRITE (910,1080) 
          
 1080    FORMAT ('WATERSHEDID,YEAR,LADUSEID,',&
       'HUCRUNOFF,FLOWVOL,LAND%,HUCAREA')        
-       
-       
-       
+      
          WRITE (920,1090) 
          
 1090    FORMAT ('WATERSHEDID,YEAR,CROPFLOW,',&
        'FORESTFLOW,GRASSFLOW,SHRUBSAVAFLOW,URBANWATERFLOW,TFLOW') 
-
-!	   WRITE (2003, 204) 
+	   
+         WRITE (930,1081) 
+         
+1081    FORMAT ('WATERSHEDID,YEAR,Month,LADUSEID,',&
+      'HUCRUNOFF,FLOWVOL,ETVOL,ET,GEPVOL,GEP,NEEVOL,NEE,&
+      LAND%,HUCAREA')    	   
+	   
+         WRITE (940,1091) 
+         
+1091    FORMAT ('WATERSHEDID, YEAR, Month,CROPFLOW,',&
+       'FORESTFLOW,GRASSFLOW,SHRUBSAVAFLOW,URBANWATERFLOW,TFLOW') 	   
+	   
+	   ! WRITE (2003, 204) 
+            
+! 204      FORMAT ('VAL_1,RMES_RUNOFF,RMSE_BASEFLOW,
+     ! > NS_RUNOFF,NS_BASEFLOW,R_RUNOFF,R_BASEFLOW')  
+    
+	   
+	   WRITE (2003, 204) 
 !            
-!204      FORMAT ('VAL_1,RMES_RUNOFF,RMSE_BASEFLOW,
-!     > NS_RUNOFF,NS_BASEFLOW,R_RUNOFF,R_BASEFLOW')      
+204      FORMAT ('WATERSHEDID Year Month RAIN SP PET  &
+				AET PAET RUNOFF PRIBF SECBF &
+				INTF EMSMC EMUZTWC  EMUZFWC &
+					EMLZTWC  EMLZFPC  EMLZFSC')      
       RETURN
       END
 !**********************************************************************!
@@ -132,8 +150,7 @@
 
       REAL CROP
 
-      INteger year, I , J,ID
-
+      INteger year, I ,M, J,ID,K
 
       CHARACTER*1000 DUMY(30)
       
@@ -150,70 +167,53 @@
              
       DO 10 I=1, NGRID
 
-      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),LADUSE(I) !,HUCELE(I)
+      READ(2,*) ID, HUCNO(I), LATUDE(I), LONGI(I),(LADUSE(I,K),K=1, NLC)!,HUCELE(I)
       
-             
-     ! WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I),LADUSE(I) 
-      
-
+ 
 1100  FORMAT(2I10, 2F10.4, I4)    
      
 10    CONTINUE
 
 
-
-
-
 ! --- Read and print SOIL PARAMETERS for each active cell IN THE BASIC.OUT FILE
 !
-      WRITE(77,2051)
-2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
-      READ (7,550) DUMY
-	  Write(*,*) DUMY
-550   FORMAT (30A8)
-      
-      
-      WRITE (77,550) DUMY
-          
-      DO 15 I=1, NGRID
-
-      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
-     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
-     LZPK(I), PFREE(I)
-            
-     WRITE(*,*) I,HUCNO(I)!, UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
-  !  REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),LZPK(I), PFREE(I)
-
-             
-        UZTWM(I)=UZTWM(I)*0.3 !1.15 
-       UZFWM(I)=UZFWM(I)*1.1
-       UZK(I)=UZK(I) *0.2!*1.85
-       ZPERC(I)=ZPERC(I)!
-       REXP(I)=REXP(I)*0.6 !*0.9
-       LZTWM(I)=LZTWM(I) !*1.3
-     LZFSM(I)=LZFSM(I) ! *1.15!*
-      LZFPM(I)=LZFPM(I)*3 ! *2.05   ! 2.4 !
-      LZSK(I)= LZSK(I)*1.25 !  *0.9 !
-       LZPK(I)=LZPK(I) *2 ! !*(1+VAL_2(TUN2)) !*1.2
-      PFREE(I)=PFREE(I) !*(1+VAL_1(TUN1)) !*0.4 !
-  
- ! ----------------------
-  
-  
-  
-  
-   !   LZTWM(I)=LZTWM(I)*1.3 !*(1+VAL_1(TUN1)) 
-    !  LZFSM(I)=LZFSM(I) !*
-   !    LZFPM(I)=LZFPM(I)*2.4
-   !    LZSK(I)= LZSK(I)*0.9 !*(1+VAL_2(TUN2)) 
-    !   LZPK(I)=LZPK(I)*1.2
-!      PFREE(I)=PFREE(I) !
-     
-
-!    print*,I 
+!      WRITE(77,2051)
+!2051  FORMAT(/'SOIL PARAMETERS FOR EACH SIMULATION CELL'/)
+!      READ (7,550) DUMY
+!550   FORMAT (30A8)
+!      
+!      
+!      WRITE (77,550) DUMY
+!          
+!      DO 15 I=1, NGRID
+!
+!      READ(7,*) ID, HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
+!     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
+!     LZPK(I), PFREE(I)
+!            
+!!      WRITE(*,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
+!!     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
+!!     LZPK(I), PFREE(I)
+!!    print*,I 
+!
+!!! this part is used for soil data calibration
+!           
+!   !    UZTWM(I)=UZTWM(I)*1
+!   !    UZFWM(I)=UZFWM(I)*1
+!   !    UZK(I)=UZK(I)*1 
+! !      ZPERC(I)=ZPERC(I)*1
+!     !  REXP(I)=REXP(I)*1
+!      LZTWM(I)=LZTWM(I)*1.3 !*(1+VAL_1(TUN1)) 
+!    !  LZFSM(I)=LZFSM(I) !*
+!       LZFPM(I)=LZFPM(I)*2.4
+!       LZSK(I)= LZSK(I)*0.9 !*(1+VAL_2(TUN2)) 
+!       LZPK(I)=LZPK(I)*1.2
+!!      PFREE(I)=PFREE(I) !
+!
+!
 !1150  FORMAT(I12, 11F10.4)    
-     
-15    CONTINUE
+!     
+!15    CONTINUE
 
 
 ! ---- Converting forest to two types of croplands in the same watersheds
@@ -316,26 +316,24 @@
 !c      INTEGER NORECHUC(4000), POP_FLAG 
       
       
- !     CHARACTER*10 DUMY7(30)
+		CHARACTER*10 DUMY7(30)
           
-
-      
-       
+   
 !---READ IN HUC AREA, ELEV, and slope from HUCAREA.TXT
       
            
-!       READ (11, 50) DUMY7
-!50     FORMAT (30A10)
+       READ (11, 50) DUMY7
+50     FORMAT (30A10)
 ! 
-!       WRITE (77, 50) DUMY7
+       WRITE (77, 50) DUMY7
 !             
-!       DO 60 I = 1, NGRID
+       DO 60 I = 1, NGRID
 !       
-!       READ (11, *) ID, IDHUC, HUCAREA(I)   !,HUCELE(I)
+       READ (11, *) ID, HUCNO(I), HUCAREA(I)   !,HUCELE(I)
 !       
-!       print *, ID, IDHUC, HUCAREA(I)    !,HUCELE(I)
+       print *, ID, IDHUC, HUCAREA(I)    !,HUCELE(I)
 !      
-!60     CONTINUE
+60     CONTINUE
 
 
 !C---READ IN RETURN FLOW RATE from RETURNFLOW.TXT
@@ -608,34 +606,38 @@
       SUBROUTINE RPSLAI
       
       USE Common_var
-                   
+      implicit none             
       INTEGER YEAR
       
       
-      INTEGER I, J, M,Mon
+      INTEGER I, J, M,Mon,K
 
-      INTEGER Y_2001 ,Y_LAI_END ,Y_2012,Y_LAI_START     
+      INTEGER Y_start ,Y_LAI_END ,Y_end,Y_LAI_START     
      
       CHARACTER*100 TEMPHEAD3 (11)
-            
+
+! Define the start and end year of LAI data	
+	
+	Print*, "Please input the start and End year of LAI data (Eg: 2000,2012)"
+	Read(*,*) LAI_S_Y,LAI_E_Y
+	Print*, "Start Year=",LAI_S_Y,"END Year=",LAI_E_Y
+!	LAI_S_Y=2000
+ !  LAI_E_Y=2012
    
  
 !   Set default LAI for the year without LAI input-----
 
-
-      IF (BYEAR .LT. 2001 ) then
-           Y_LAI_START=2001-BYEAR+1
+      IF (BYEAR .LT. LAI_S_Y ) then
+           Y_LAI_START=LAI_S_Y-BYEAR+1
         ELSE
          Y_LAI_START=1
        ENDIF
-      If (IYEND .GT. 2012) then 
-        Y_LAI_END=2012-BYEAR+1
+      If (IYEND .GT. LAI_E_Y) then 
+        Y_LAI_END=LAI_E_Y-BYEAR+1
        Else
         Y_LAI_END=IYEND-BYEAR+1
       Endif
 
-      Y_2001=2001-BYEAR+1
-      Y_2012=2012-BYEAR+1
 
 ! --- READ IN LAI DATA FROM LANDLAI.TXT
 
@@ -657,7 +659,7 @@
  
 ! --- LAI_* IS THE LAI FOR LANDUSE * (8 TOTAL IN LANDLAI.TXT)
 
-         READ(8,*) HUCNO(I),YEAR,Mon,LAI(I,J,M)  
+         READ(8,*) HUCNO(I),YEAR,Mon,(LAI_VEG(I,J,M,K),K=1, NLC) 
             
  !        WRITE(*,*),HUCNO(I),YEAR,Mon,LAI(I,J,M)
     
@@ -670,18 +672,21 @@
 
 201   CONTINUE
 
-! --- ASSIGN YEAR 2001 LAI DATA TO YEARS BEFORE 2001
+! --- ASSIGN YEAR 'LAI_S_Y' LAI DATA TO YEARS BEFORE "LAI_S_Y'
 ! -----将2001年的数据赋给以前的年份
-        IF  ( BYEAR .LT. 2001)  then
+        IF  ( BYEAR .LT. LAI_S_Y)  then
           DO 202 I=1, NGRID
                 
-             DO 302 J=1, Y_2001-1
+             DO 302 J=1, Y_LAI_START-1
 
                 DO 402 M=1, 12
-
-                LAI(I,J,M) = LAI(I,Y_2001,M)
-                      
-     
+					
+					DO  K=1, NLC
+              
+						LAI_VEG(I,J,M,K) = LAI_VEG(I,Y_LAI_START,M,K)
+                                      
+					END DO
+					
 402             CONTINUE 
 
 302          CONTINUE
@@ -690,18 +695,21 @@
 !
         ENDIF
 !          
-!C--- ASSIGN YEAR 2012 LAI DATA TO YEARS AFTER 2012
+!C--- ASSIGN YEAR LAI_E_Y LAI DATA TO YEARS AFTER LAI_E_Y
 !C--- 将2012年的数据赋给以后的年份
-      IF (IYEND .GT. 2012) then
+      IF (IYEND .GT. LAI_E_Y) then
           DO 203 I=1, NGRID
                 
-             DO 303 J=Y_2012+1, NYEAR
+             DO 303 J=LAI_E_Y+1, NYEAR
 
                 DO 403 M=1, 12
 
-                LAI(I,J,M) = LAI(I,Y_2012,M)
-       
-
+					DO  K=1, NLC
+              
+						LAI_VEG(I,J,M,K) = LAI_VEG(I,Y_LAI_END,M,K)
+                                      
+					END DO
+					
 403             CONTINUE 
 
 303          CONTINUE
@@ -757,15 +765,16 @@
 !C**********************************************************************C
       SUBROUTINE RPSCLIMATE
       
-       USE Common_var
-
+      USE Common_var
+	  implicit none
+	  
       INTEGER YEAR
             
       INTEGER I, J, M,Mon
      
-      REAL ANNPPT(70000,32)
+      REAL ANNPPT(MAX_GRIDS,MAX_YEARS)
       
-      REAL SUMANPPT(70000)
+      REAL SUMANPPT(MAX_GRIDS)
       
       CHARACTER*10 TEMPHEAD (10)
 
@@ -809,7 +818,7 @@
                
 
 5002        CONTINUE
-       Write(99,*), I,J
+
             SUMANPPT(I) = SUMANPPT(I) + ANNPPT(I, J)
 
 5001     CONTINUE
@@ -820,50 +829,10 @@
          
 !         WRITE(77,5004) HUCNO(I), AAPPT(I)
       
-!5004     FORMAT(I10,F10.2)
+5004     FORMAT(I10,F10.2)
 
 5000  CONTINUE
 
       RETURN
       END
 
-!C**********************************************************************C
-!C                                                                      C
-!C     *** SUBROUTINE RPSVALID ***                                      C
-!C     Input MONTHLY YEAR FLOW  VALIDATION DATA,                        C
-!C                                                                      C
-!C**********************************************************************C
-      SUBROUTINE RPSVALID
-      
-      USE Common_var
-
-      INTEGER  YEAR
-            
-      INTEGER I, J, M,Mon
-     
-      REAL ANNPPT(10000,32)
-            
-      CHARACTER*10 TEMPHEAD (10)
-
-      
-      DO 20001 J=19,25
-
-      DO 20002 M=1,12
-
-          IF (J .eq. 1 .and. M .eq. 1) then
-          
-          READ (22, 29001) TEMPHEAD
-
-          ENDIF
-
-29001     FORMAT (10A10)
-
-!         READ(22,*) YEAR,Mon,RUNOFF_V(J,M)!,FLOW_V(J,M),BASEFLOW_V(J,M)
-!      READ (22, *) YEAR,Mon,RUNOFF_V(J,M), FLOW_V(J,M), BASEFLOW_V(J,M)
-
-20002  CONTINUE
-20001  CONTINUE
-
-
-      RETURN
-      END

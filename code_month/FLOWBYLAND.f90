@@ -31,8 +31,8 @@
       REAL CROPFLOW, FORESTFLOW, GRASSFLOW, SHRUBSAVFLOW,&
           URBANWATERFLOW, TFLOW,URBANWATERFLO
       REAL VEG_1,VEG_2,VEG_3,VEG_4,VEG_5,VEG_6,VEG_7
-      REAL  FLOWK(4000, 70, 20)
-      REAL  FLOWMK(4000, 70,12, 20)
+      REAL  FLOWK(MAX_GRIDS,MAX_YEARS,MAX_VEGS)
+      REAL  FLOWMK(MAX_GRIDS,MAX_YEARS,12,MAX_VEGS)
       
 ! --- Number of days for each month during regular year
       DATA MONTHD/31,28,31,30,31,30,31,31,30,31,30,31/
@@ -56,27 +56,12 @@
 ! --- DETERMINE WHETHER YEAR IS A LEAP YEAR 
 ! --- http://www.timeanddate.com/date/leapyear.html
 
-             IF (YEAR/4 .EQ. INT(YEAR/4)) THEN
+            NDAY = 365
+            IF(YEAR/4*4.NE.YEAR) GO TO 110
+            IF(YEAR/400*400.EQ.YEAR) GO TO 110
+            NDAY=366   
              
-                NDAY = 366
-             
-                IF (YEAR/100 .EQ. INT(YEAR/100)) THEN
-                
-                   NDAY = 365
-                   
-                   IF (YEAR/400 .EQ. INT(YEAR/400)) THEN
-                   
-                     NDAY = 366
-                     
-                   ENDIF
-                   
-                ENDIF
-                
-             ELSE
-             
-               NDAY = 365
-               
-             ENDIF
+110         CONTINUE 
         
                RUNYR=0.
                ETYR=0.
@@ -98,40 +83,37 @@
                GEPMR=0.
                NEEMR=0.
 			  
-!               DO 50 DAY=1, MNDAY
-!
-!         
-!                 RUNYR = RUNYR+RUNLAND(I,J,M,DAY,K)
-!                 ETYR = ETYR+ETLAND(I,J,M,DAY,K)
-!                 GEPYR = GEPYR+GEPLAND(I,J,M,DAY,K)
-!                 NEEYR = NEEYR+NEELAND(I,J,M,DAY,K)
-!                  
-!				 RUNMR = RUNMR+RUNLAND(I,J,M,DAY,K)
-!                 ETMR = ETMR+ETLAND(I,J,M,DAY,K)
-!                 GEPMR = GEPMR+GEPLAND(I,J,M,DAY,K) 
-!                 NEEMR = NEEMR+NEELAND(I,J,M,DAY,K) 
-!
-!50             CONTINUE
+               DO 50 DAY=1, MNDAY
 
-                 RUNYR = RUNYR+RUNLAND(I,J,M,K)
-                 ETYR = ETYR+ETLAND(I,J,M,K)
-                 GEPYR = GEPYR+GEPLAND(I,J,M,K)
-                 NEEYR = NEEYR+NEELAND(I,J,M,K)
-
+         
+                 RUNYR = RUNYR+RUNLAND(I,J,M,DAY,K)
+                 ETYR = ETYR+ETLAND(I,J,M,DAY,K)
+                 GEPYR = GEPYR+GEPLAND(I,J,M,DAY,K)
+                 NEEYR = NEEYR+NEELAND(I,J,M,DAY,K)
+                  
+				 RUNMR = RUNMR+RUNLAND(I,J,M,DAY,K)
+                 ETMR = ETMR+ETLAND(I,J,M,DAY,K)
+                 GEPMR = GEPMR+GEPLAND(I,J,M,DAY,K) 
+                 NEEMR = NEEMR+NEELAND(I,J,M,DAY,K) 
+				
+!				WRITE(77,*) I,YEAR,M,DAY,K,ETLAND(I,J,M,DAY,K) 
+				
+50             CONTINUE  ! Day loop
 
 
 ! --- FLOW MILLION CUBIC METERS
                           
-         FLOWMR = RUNLAND(I,J,M,K)*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UETMR = ETLAND(I,J,M,K)*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UGEPMR = GEPLAND(I,J,M,K)*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
-         UNEEMR = NEELAND(I,J,M,K)*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
+         FLOWMR = RUNMR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
+         UETMR = ETMR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
+         UGEPMR = GEPMR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
+         UNEEMR = NEEMR*LADUSE(I,K)*HUCAREA(I)/1000./1000000.
 
          
              IF (YEAR .GE. IYSTART .AND. YEAR .LE. IYEND) THEN 
-           
-         WRITE (930,4001) HUCNO(I),YEAR,M,K, RUNLAND(I,J,M,K), FLOWMR,ETLAND(I,J,M,K),UETMR, &
-             GEPLAND(I,J,M,K),UGEPMR,NEELAND(I,J,M,K),UNEEMR,LADUSE (I,K), HUCAREA(I) 
+
+! Monthly water balances for each land use			 
+         WRITE (930,4001) HUCNO(I),YEAR,M,K, RUNMR, FLOWMR,UETMR,ETMR, &
+             UGEPMR,GEPMR,UNEEMR,NEEMR,LADUSE (I,K), HUCAREA(I) 
                                               
                                               
 4001        FORMAT (I10, ',', I5, ',', I5, ',', I5,',',F10.3, ',',  &
@@ -139,13 +121,12 @@
      F10.3, ',',F10.3, ',', F10.3,',', F12.1)     
          
 
-            FLOWMK(I,J,M, K) = FLOWMR  
+            FLOWMK(I,J,M,K) = FLOWMR  
             
        
            ENDIF
-    
-                             
-100        CONTINUE
+                     
+100        CONTINUE !month loop
 
 ! --- FLOW MILLION CUBIC METERS
                           
@@ -156,7 +137,8 @@
 
          
              IF (YEAR .GE. IYSTART .AND. YEAR .LE. IYEND) THEN 
-           
+			 
+! Annual water balances for each land use           
          WRITE (910,4000) HUCNO(I),YEAR,K, RUNYR, FLOWYR,UETYR,ETYR, &
               UGEPYR,GEPYR,UNEEYR,NEEYR,LADUSE (I,K), HUCAREA(I) 
                                               
@@ -165,24 +147,20 @@
            F10.3, ',', F10.3, ',',F10.3, ',', F10.3,',',F10.3, ',', &
       F10.3,',', F10.3,',', F12.1)     
          
-             FLOWK(I,J,K)= FLOWYR  
-       
-            
+             FLOWK(I,J,K) = FLOWYR  
+           
        
            ENDIF
           
-200      CONTINUE
-300      CONTINUE
+200      CONTINUE ! YEAR Loop
+
+300      CONTINUE ! GRID loop
       
-
-
-400      CONTINUE
-
+400      CONTINUE !NLC loop
 
 
 
-
-! -- RECLASSIFY LANDCOVER AND WATRE YIELD 
+! -- ANNUAL RECLASSIFY LANDCOVER AND WATRE YIELD 
 
 
   
@@ -208,55 +186,48 @@
 
                IF (K.EQ.1) THEN 
                
-                  VEG_1 = VEG_1 +  FLOWK(I,J, K)
-                  
-              
+					VEG_1 = VEG_1 +  FLOWK(I,J, K)
+               
 ! -- FORESTS
  
-          ELSEIF (K .EQ. 2) THEN 
+				ELSEIF (K .EQ. 2) THEN 
      
-               VEG_2 = VEG_2 +  FLOWK(I,J, K)
+					VEG_2 = VEG_2 +  FLOWK(I,J, K)
  
 ! -- GRASSLANDS               
-       ELSEIF (K .EQ. 3) THEN                
+				ELSEIF (K .EQ. 3) THEN                
                
-             VEG_3 = VEG_3 + FLOWK(I, J , K)
+					VEG_3 = VEG_3 + FLOWK(I, J , K)
 
-! -- CROP
-
-              
-! -- FORESTS
  
-          ELSEIF (K .EQ. 4) THEN 
+				ELSEIF (K .EQ. 4) THEN 
      
-               VEG_4 = VEG_4 +  FLOWK(I,J, K)
+				VEG_4 = VEG_4 +  FLOWK(I,J, K)
  
 ! -- GRASSLANDS               
-       ELSEIF (K .EQ. 5) THEN                
+				ELSEIF (K .EQ. 5) THEN                
                
-             VEG_5 = VEG_5 + FLOWK(I, J , K)
+					VEG_5 = VEG_5 + FLOWK(I, J , K)
 ! -- GRASSLANDS               
-       ELSEIF (K .EQ. 6) THEN                
+				ELSEIF (K .EQ. 6) THEN                
                
-             VEG_6 = VEG_6 + FLOWK(I, J , K)                               
+					VEG_6 = VEG_6 + FLOWK(I, J , K)                               
 ! -- SHRUBLANDS AND SAVANNAS                   
                
-               ELSEIF (K .EQ. 7) THEN                
+				ELSEIF (K .EQ. 7) THEN                
 
-                VEG_7 =  VEG_7 + FLOWK(I, J , K)
+					VEG_7 =  VEG_7 + FLOWK(I, J , K)
                                
 ! -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)  
-
-                             
+                   
                ELSE
-              
-                              
-              URBANWATERFLOW =  URBANWATERFLOW + FLOWK(I, J , K)
+                            
+					URBANWATERFLOW =  URBANWATERFLOW + FLOWK(I, J , K)
                              
               ENDIF                      
                                      
                                
-500         CONTINUE
+500         CONTINUE  ! NLC loop
 
          TFLOW=VEG_1 +VEG_2+VEG_3+VEG_4+VEG_5+VEG_6+VEG_7+URBANWATERFLOW
                 
@@ -272,19 +243,19 @@
          ENDIF       
            
 
-600      CONTINUE
-700   CONTINUE
+600      CONTINUE ! YEAR Loop
+
+700   CONTINUE ! GRID loop
 
 
 
 
 ! -- MONTH RECLASSIFY LANDCOVER AND WATRE YIELD 
 
-
   
       DO 701 I=1, NGRID                               
         DO 601 J=1, NYEAR      
-        DO 401 M=1, 12 
+			DO 401 M=1, 12 
 
              YEAR = BYEAR + J -1
              
@@ -299,81 +270,79 @@
 			 TFLOW= 0.
              
              
-           DO 501 K=1, NLC    
+				DO 501 K=1, NLC    
 
 ! -- CROP
 
-               IF (K.EQ.1) THEN 
+					IF (K.EQ.1) THEN 
                
-                  VEG_1 = VEG_1 +  FLOWMK(I,J,M, K)
-                  
-              
+						VEG_1 = VEG_1 +  FLOWMK(I,J,M, K)
+     
+! -- FORESTS
+
+					ELSEIF (K .EQ. 2) THEN 
+     
+						VEG_2 = VEG_2 +  FLOWMK(I,J,M, K)
+ 
+! -- GRASSLANDS               
+					ELSEIF (K .EQ. 3) THEN                
+               
+						VEG_3 = VEG_3 + FLOWMK(I,J,M, K)
+    
 ! -- FORESTS
  
-          ELSEIF (K .EQ. 2) THEN 
+					ELSEIF (K .EQ. 4) THEN 
      
-               VEG_2 = VEG_2 +  FLOWMK(I,J,M, K)
+						VEG_4 = VEG_4 +  FLOWMK(I,J,M, K)
  
 ! -- GRASSLANDS               
-       ELSEIF (K .EQ. 3) THEN                
+					ELSEIF (K .EQ. 5) THEN                
                
-             VEG_3 = VEG_3 + FLOWMK(I,J,M, K)
-
-! -- CROP
-
-              
-! -- FORESTS
- 
-          ELSEIF (K .EQ. 4) THEN 
-     
-               VEG_4 = VEG_4 +  FLOWMK(I,J,M, K)
- 
+						VEG_5 = VEG_5 + FLOWMK(I,J,M, K)
 ! -- GRASSLANDS               
-       ELSEIF (K .EQ. 5) THEN                
+					ELSEIF (K .EQ. 6) THEN                
                
-             VEG_5 = VEG_5 + FLOWMK(I,J,M, K)
-! -- GRASSLANDS               
-       ELSEIF (K .EQ. 6) THEN                
-               
-             VEG_6 = VEG_6 + FLOWMK(I,J,M, K)                           
+						VEG_6 = VEG_6 + FLOWMK(I,J,M, K)                           
 ! -- SHRUBLANDS AND SAVANNAS                   
                
-               ELSEIF (K .EQ. 7) THEN                
+					ELSEIF (K .EQ. 7) THEN                
 
-                VEG_7 =  VEG_7 + FLOWMK(I,J,M, K)
+						VEG_7 =  VEG_7 + FLOWMK(I,J,M, K)
                                
 ! -- URBAN/BARRENS/WATRE BODY (SAME AS OPEN SHRUB)  
-
+                        
+					ELSE
+                      
+						URBANWATERFLOW =  URBANWATERFLOW + FLOWMK(I,J,M, K)
                              
-               ELSE
-              
-                              
-              URBANWATERFLOW =  URBANWATERFLOW + FLOWMK(I,J,M, K)
-                             
-              ENDIF                      
+					ENDIF                      
                                      
                                
-501         CONTINUE
+501         CONTINUE ! NLC
 
-         TFLOW=VEG_1 +VEG_2+VEG_3+VEG_4+VEG_5+VEG_6+VEG_7+URBANWATERFLOW
+			TFLOW=VEG_1 +VEG_2+VEG_3+VEG_4+VEG_5+VEG_6+VEG_7+URBANWATERFLOW
                 
              IF (YEAR .GE. IYSTART .AND. YEAR .LE. IYEND) THEN 
            
-         WRITE (940,5001) HUCNO(I),YEAR,M, VEG_1 ,VEG_2,VEG_3,VEG_4, &
-      VEG_5,VEG_6,VEG_7, URBANWATERFLOW,TFLOW 
+			WRITE (940,5001) HUCNO(I),YEAR,M, VEG_1 ,VEG_2,VEG_3,VEG_4, &
+			VEG_5,VEG_6,VEG_7, URBANWATERFLOW,TFLOW 
                                                     
                                               
 5001     FORMAT (I10, ',', I5, ',',I5, ',', F10.3, ',', F10.3, &
       ',', F10.3,',',F10.3, ',', F10.3, ',', F10.3,',', F10.3, ',', F10.3, ',', F10.3)
           
                 
-           ENDIF       
+			ENDIF       
            
-401      CONTINUE
-601      CONTINUE
-701   CONTINUE
+401      CONTINUE ! Month loop
 
+601      CONTINUE ! YEAR loop
 
+701   CONTINUE ! GRID loop
+
+! Deallocates array RUNLAND,ETLAND,GEPLAND
+
+      DEALLOCATE (RUNLAND,ETLAND,GEPLAND,NEELAND) !
 
 
       RETURN

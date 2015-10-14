@@ -9,17 +9,17 @@
 !C**********************************************************************C
      
       SUBROUTINE SUMMARY(I)
-	  
-	  USE Common_var
+
+      use common_var
       implicit none 
 
-!-----------------------------------------------------------------------      
+!----------------------------------------------------------------------      
 
       REAL RAINALL, AETALL, PETALL, RUNALL, RUNRATIO, ETRATIO, TRATIO
-            
-      INTEGER I,J, M,ISTEP
+           
+      INTEGER  I,J, M,ISTEP
       
-      REAL RALL
+      REAL  RALL
       
       
       RAINALL =0.
@@ -32,20 +32,20 @@
       
       ISTEP = IYEND - IYSTART + 1
           
-      DO 100 J = 1, ISTEP
-!------ ÅÅ³ýÒì³£µÄÆøºòÖµ£¬Òì³£Öµ£¬ÆøºòºÍÎÂ¶ÈÉèÖÃÎª-99999
+     DO 100 J = 1, ISTEP
+!------ æŽ’é™¤å¼‚å¸¸çš„æ°”å€™å€¼ï¼Œå¼‚å¸¸å€¼ï¼Œæ°”å€™å’Œæ¸©åº¦è®¾ç½®ä¸º-99999
        
-       IF  (ANURAIN(J+IYSTART-BYEAR) .eq.-99999 .or. &
-      ANUAET(J+IYSTART-BYEAR) .eq.-99999 .or. ANUPET(J+IYSTART-BYEAR) &
-        .eq.-99999 .or. ANURUN(J+IYSTART-BYEAR) .eq.-99999 ) then 
+       IF  (ANURAIN(I,J+IYSTART-BYEAR) < -50.0 .or. &
+      ANUAET(I,J+IYSTART-BYEAR) < -50.0 .or. ANUPET(I,J+IYSTART-BYEAR) &
+        < -50.0 .or. ANURUN(I,J+IYSTART-BYEAR) < -50.0 ) then 
       
       ELSE
-            RAINALL = RAINALL + ANURAIN(J+IYSTART-BYEAR)    
-            AETALL = AETALL + ANUAET(J+IYSTART-BYEAR)  
-            PETALL = PETALL + ANUPET(J+IYSTART-BYEAR)
-            RUNALL = RUNALL + ANURUN(J+IYSTART-BYEAR)
+            RAINALL = RAINALL + ANURAIN(I,J+IYSTART-BYEAR)    
+            AETALL = AETALL + ANUAET(I,J+IYSTART-BYEAR)  
+            PETALL = PETALL + ANUPET(I,J+IYSTART-BYEAR)
+            RUNALL = RUNALL + ANURUN(I,J+IYSTART-BYEAR)
             
-            RALL = RALL + RFACTOR(J+IYSTART-BYEAR)
+            RALL = RALL + RFACTOR(I,J+IYSTART-BYEAR)
                  
             M = M + 1
       ENDIF
@@ -62,7 +62,7 @@
       RALL =RALL /M
 
 
-      IF (RAINALL .GE. 0.) THEN  
+      IF (RAINALL .NE. 0.) THEN  
       RUNRATIO = RUNALL/RAINALL
       ETRATIO = AETALL/RAINALL   
       ELSE
@@ -78,20 +78,19 @@
 !--WRITE TO FILE SUMMARRUNOFF.TXT
 
          WRITE (80,250) HUCNO(I), RAINALL, PETALL, AETALL, RUNALL, &
-         RUNRATIO, ETRATIO, TRATIO, M
-
+         RUNRATIO, ETRATIO, TRATIO, RALL
      
-250      FORMAT (I10, ',', F10.1, ',', F10.1,',',  &
-               F10.1, ',', F10.1,',', F8.3, ',', F8.3,',', F8.3,&
-          ',', I3)    
+250      FORMAT (I10, ',', F10.1, ',', F10.1,',', & 
+              F10.1, ',', F10.1,',', F8.3, ',', F8.3,',', F8.3,&
+         ',', F8.1)    
     
          RUNRATIO = RUNRATIO *100.
           
-!         WRITE(*,300) HUCNO(I), RAINALL, RUNALL, RUNRATIO
-         
+ !        WRITE  (*,300) HUCNO(I), RAINALL, RUNALL, RUNRATIO
+   
     
 300    FORMAT ('GRID=',I5,' PRECIP (MM)=',F6.0, '   RUNOFF(MM)=', F5.0, &
-         '  RUNOFF/PRECIP=', F4.1, '%')    
+        '  RUNOFF/PRECIP=', F4.1, '%')    
 
       RETURN
       END
