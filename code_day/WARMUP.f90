@@ -699,22 +699,22 @@
 
 	  !************* -----------Read annual land cover data------------ ***************
 
-      READ (3,5001) DUMY
-5001   FORMAT (1000A30)
+!      READ (3,5001) DUMY
+!5001   FORMAT (1000A30)
 
 ! ----LANC = raw Landcover types    
       
            
-      DO 105 I=1, NGRID   ! start and end year of land cover data
+ !     DO 105 I=1, NGRID   ! start and end year of land cover data
         
-        DO 106 J=Y_2001,Y_2012
+!        DO 106 J=Y_2001,Y_2012
 
-      READ(3,*) HUCNO(I),YEAR,veg(I,J)  
+!      READ(3,*) HUCNO(I),YEAR,veg(I,J)  
              
      ! WRITE(*,*) HUCNO(I),YEAR,veg(I,J) 
  
-106    CONTINUE  
-105    CONTINUE
+!106    CONTINUE  
+!105    CONTINUE
 	  
 	  
 	  
@@ -736,9 +736,9 @@
             
       INTEGER I, J, M,Mon
      
-      REAL ANNPPT(6000,200)
+      REAL ANNPPT(50000,32)
       
-      REAL SUMANPPT(6000)
+      REAL SUMANPPT(50000)
       
       CHARACTER*10 TEMPHEAD (10)
 
@@ -782,10 +782,11 @@
                
 
 5002        CONTINUE
-
+       Write(99,*), I,J
             SUMANPPT(I) = SUMANPPT(I) + ANNPPT(I, J)
 
 5001     CONTINUE
+
 
          AAPPT(I) = SUMANPPT(I)/NYEAR
                 
@@ -813,7 +814,7 @@
             
       INTEGER I, J, M,Mon
      
-      REAL ANNPPT(6000,200)
+      REAL ANNPPT(10000,32)
             
       CHARACTER*10 TEMPHEAD (10)
 

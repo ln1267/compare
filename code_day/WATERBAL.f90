@@ -20,16 +20,16 @@
             RECOTEMP, NEETEMP
           
          
-      REAL ETUZTW(200,12), RESIDET(200,12), ETUZFW(200,12)
+      REAL ETUZTW(32,12), RESIDET(32,12), ETUZFW(32,12)
       
-      REAL ETLZTW(200,12), RATLZT, RATLZ
+      REAL ETLZTW(32,12), RATLZT, RATLZ
       
       REAL SNOW, SNOWW
       
       REAL LTASM, TAREA
       
-      REAL ET(200,12), SURFRO, GEP(200,12), INFIL,&
-        RECO(200,12), NEE(200,12) 
+      REAL ET(32,12), SURFRO, GEP(32,12), INFIL,&
+        RECO(32,12), NEE(32,12) 
       
       REAL DPAET
       
@@ -50,6 +50,17 @@
       INTEGER GEPFLAG
            
 ! *****************************************************************************************************
+
+! ----   Allocates array RUNLAND,
+
+!      ALLOCATE (RUNLAND(60000,32,12,31))
+!	  ALLOCATE (ETLAND(60000,32,12,31))
+!	  ALLOCATE (GEPLAND(60000,32,12,31))
+	  
+      ALLOCATE (RUNLAND(NGRID,NYEAR,12,31))
+      ALLOCATE (ETLAND(NGRID,NYEAR,12,31))
+      ALLOCATE (GEPLAND(NGRID,NYEAR,12,31))
+
 ! --- INITIALIZE VARIABLES FOR START OF SIMULATION
 
              AETTEMP =0.0
@@ -923,8 +934,8 @@
            NEEM(I,J,M) = NEETEMP
 
 ! -- STREAMFLOW IN MILLION M3 FOR EACH HUC FOR MONTH M. HUCAREA IN SQ. METERS 
-        STRFLOW(I, J, M) = (RUNOFF(M) + PRIBF(M) + SECBF(M) + INTF(M))*64/1000. 
-        ! 64 is the area of each cell
+        STRFLOW(I, J, M) = (RUNOFF(M) + PRIBF(M) + SECBF(M) + INTF(M))*25/1000. 
+        ! 64 is the area of each cell (KM2)
 
 
 ! TEST OUTPUT
@@ -935,5 +946,10 @@
 !    'AVLZFPC=',AVLZFPC(M),'AVLZFSC=',AVLZFSC(M),'GEPM=',GEPM(I,J, M) 
 12133 format(I6,I6,I4,13F10.3)
 ! --- Return
+
+! Deallocates array RUNLAND,ETLAND,GEPLAND
+      
+      DEALLOCATE (RUNLAND,ETLAND,GEPLAND)
+
       RETURN
       END
