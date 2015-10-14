@@ -128,11 +128,7 @@
       SUBROUTINE RPSINT 
 
 	  Use Common_var
-       implicit none
-
       REAL CROP
-
-      INteger year, I , J,ID
 
 
       CHARACTER*1000 DUMY(30)
@@ -161,24 +157,26 @@
 10    CONTINUE
 
 
-!************* -----------Read annual land cover data------------ ***************
+!************* -----------Read Runoff validation data------------ ***************
 
-      READ (3,5001) DUMY
-5001   FORMAT (1000A30)
-
+!      READ (22,5001) DUMY
+!5001   FORMAT (1000A30)
 ! ----LANC = raw Landcover types    
       
-           
-      DO 105 I=1, NGRID   ! start and end year of land cover data
-        
-        DO 106 J=1,NYEAR
-
-      READ(3,*) HUCNO(I),YEAR,veg(I,J)  
-             
-     ! WRITE(*,*) HUCNO(I),YEAR,veg(I,J) 
- 
-106    CONTINUE  
-105    CONTINUE
+!----读取径流验证数据
+!           
+!      DO 105 J=1, 25
+!        
+!        DO 106 M=1,12
+!      READ(22,*) ID,ID, RUNOFF_V(J,M), FLOW_V(J,M),  
+!     >    BASEFLOW_V(J,M)
+!      
+!             
+!c      WRITE(77,1100) ID, HUCNO(I),LATUDE(I), LONGI(I), 
+!c     > (LADUSE(I,K),K=1, NLC)
+!
+!106    CONTINUE  
+!105    CONTINUE
 
 
 ! --- Read and print SOIL PARAMETERS for each active cell IN THE BASIC.OUT FILE
@@ -200,7 +198,7 @@
 !      WRITE(*,1150) HUCNO(I), UZTWM(I), UZFWM(I), UZK(I), ZPERC(I),&
 !     REXP(I), LZTWM(I), LZFSM(I), LZFPM(I), LZSK(I),&
 !     LZPK(I), PFREE(I)
-!    print*,I 
+     
 1150  FORMAT(I12, 11F10.4)    
      
 15    CONTINUE
@@ -758,9 +756,9 @@
             
       INTEGER I, J, M,Mon
      
-      REAL ANNPPT(3000,200)
+      REAL ANNPPT(1000,200)
       
-      REAL SUMANPPT(3000)
+      REAL SUMANPPT(1000)
       
       CHARACTER*10 TEMPHEAD (10)
 
@@ -835,7 +833,7 @@
             
       INTEGER I, J, M,Mon
      
-      REAL ANNPPT(3000,200)
+      REAL ANNPPT(1000,200)
             
       CHARACTER*10 TEMPHEAD (10)
 
