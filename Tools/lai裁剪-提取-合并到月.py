@@ -13,27 +13,23 @@ import arcpy
 arcpy.CheckOutExtension("spatial")
 
 #循环开始
-for n in xrange(2000,2001):
+for n in xrange(2001,2012):
 	i=0
 	for d in xrange(1,365,8):
 		d="%03d" % d
 		data_class="LAI"
 ##########################-----操作目录---------##############################################
-		input_mulu="F:\\MODIS_LAI-1km TIF\\"		#输入TIF文件目录		
-		out_mulu="d:\\linshi\\"	#输出有效值文件目录
-		out_lai_mu="e:\\out\\"	
+		input_mulu="K:\\Data\\MODIS_LAI\\"		#输入TIF文件目录		
+		out_mulu="K:\\Data\\LAI\\linshi\\"	#输出有效值文件目录
+		out_lai_mu="K:\\Data\\LAI\\"	
 ##########################-----输入文件---------##############################################
-		input_tif1 = input_mulu+"MOD15A2.A"+str(n)+d+".Lai_1km.tif" 
-		input_tif = input_mulu+"MOD15A2.A"+str(n)+d+"clip.tif" 		
+		input_tif = input_mulu+"MOD15A2.A"+str(n)+d+".Lai_1km.tif" 
+	
 		output_extra = out_mulu+"lai"+str(n)+d+".tif"	#提取后输出的tif文件
 
-		basin_clip="E:\\HUC\\basins\\basin_buffer_pro.shp"
 			
 		print output_extra
 		
-# Process: 裁剪 (3)
-		arcpy.Clip_management(input_tif1, "-569482.72309382 3210242.66760919 -96637.2454170428 3594357.64348364", input_tif, basin_clip, "", "ClippingGeometry")	
-		print "成功按流域边界裁剪LAI数据！"
 		
 # Process: Extract by Attributes...
 		arcpy.gp.ExtractByAttributes_sa(input_tif ,"\"value\" < 100 ", output_extra)

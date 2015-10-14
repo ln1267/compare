@@ -11,14 +11,14 @@ import arcpy
 # Check out any necessary licenses
 arcpy.CheckOutExtension("spatial")
 
-for n in xrange(2012,2013):
+for n in xrange(2001,2012):
 #	for m in xrange(1,13):
 #		m="%02d" % m		#转换为两位日期
 		
 		
 		
-	input_lai_mulu="Y:\\LAI12"
-	out_lai_mu="Y:\\LAI12"	
+	input_lai_mulu="K:\\Data\\MODIS_LAI\\"
+	out_lai_mu="K:\\Data\\LAI\\"	
 # Local variables:
 	input_lai_1= input_lai_mulu+"MOD15A2.A"+str(n)+"001.Lai_1km.tif"
 	input_lai_2= input_lai_mulu+"MOD15A2.A"+str(n)+"009.Lai_1km.tif"

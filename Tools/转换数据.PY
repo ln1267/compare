@@ -12,7 +12,7 @@ arcpy.CheckOutExtension("spatial")
 
 
 #循环开始
-for n in xrange(2009,2013):
+for n in xrange(1982,2013):
 	for m in xrange(1,13):
 		m="%02d" % m		#转换为两位日期
 # Local variables:	
@@ -21,52 +21,17 @@ for n in xrange(2009,2013):
 		data_class2="basin"					#判断是处理气象数据还是LAI数据；分别用“basin_"和“VEG_"
 ##########################-----流域划分个数---------##############################################			
 		basin_num_1=""
-		basin_num_2="125"
-		basin_num_3="15"
-		basin_num_4="25"
-		basin_num_5="35"
-		basin_num_6="40"
-		basin_num_7="50"
-		basin_num_8="85"
-		basin_num_9="100"
-		basin_num_10="160"
-		basin_num_11="200"
-		basin_num_12="300"
-		basin_num_13="650"
-		basin_num_14="1500"
-		basin_num_15="4000"
-		basin_num_16="20000"
-		basin_num_17="20000"
-		basin_num_18="2000"
 		################################################################################	
 		
 ##########################-----公用目录---------##############################################		
-		input_dir="z:\\NEW_DATA\\"+data_class+"\\"	#气象数据所在的目录
-		output_raster_dir="E:\\zagunao\\"+data_class+"\\"			#转换生成的栅格所在的目录
-		basins_dir="E:\\zagunao\\" 	#流域边界所在目录
+		input_dir="K:\\Data\\Yuzhen\\Climate\\"+data_class+"\\"	#气象数据所在的目录
+		output_raster_dir="d:\\zagunao\\"+data_class+"\\"			#转换生成的栅格所在的目录
+		basins_dir="d:\\zagunao\\" 	#流域边界所在目录
 ################################################################################		
 		
 #######################---转换后的每个流域结果的输出目录------#################################
 		
 		output_data_dir_basin_1=output_raster_dir+basin_num_1	#统计结果输出的目录
-		output_data_dir_basin_2=output_raster_dir+basin_num_2	#统计结果输出的目录
-		output_data_dir_basin_3=output_raster_dir+basin_num_3	#统计结果输出的目录
-		output_data_dir_basin_4=output_raster_dir+basin_num_4	#统计结果输出的目录
-		output_data_dir_basin_5=output_raster_dir+basin_num_5	#统计结果输出的目录
-		output_data_dir_basin_6=output_raster_dir+basin_num_6	#统计结果输出的目录
-		output_data_dir_basin_7=output_raster_dir+basin_num_7	#统计结果输出的目录
-		output_data_dir_basin_8=output_raster_dir+basin_num_8	#统计结果输出的目录
-		output_data_dir_basin_9=output_raster_dir+basin_num_9	#统计结果输出的目录
-		output_data_dir_basin_10=output_raster_dir+basin_num_10	#统计结果输出的目录
-		output_data_dir_basin_11=output_raster_dir+basin_num_11	#统计结果输出的目录
-		output_data_dir_basin_12=output_raster_dir+basin_num_12	#统计结果输出的目录
-		output_data_dir_basin_13=output_raster_dir+basin_num_13	#统计结果输出的目录
-		output_data_dir_basin_14=output_raster_dir+basin_num_14	#统计结果输出的目录
-		output_data_dir_basin_15=output_raster_dir+basin_num_15	#统计结果输出的目录
-		output_data_dir_basin_16=output_raster_dir+basin_num_16	#统计结果输出的目录
-		output_data_dir_basin_17=output_raster_dir+basin_num_17	#统计结果输出的目录
-		output_data_dir_basin_18=output_raster_dir+basin_num_18	#统计结果输出的目录
-
 		################################################################################
 
 		name1=data_class+str(n)+m+".txt"
@@ -81,49 +46,13 @@ for n in xrange(2009,2013):
 		
 ######################-----分流域处理后的结果文件------##############################################		
 		output_data_basin_1=output_data_dir_basin_1+name4	#按表格统计结果输出的文件
-		output_data_basin_2=output_data_dir_basin_2+name4	#按表格统计结果输出的文件
-		output_data_basin_3=output_data_dir_basin_3+name4	#按表格统计结果输出的文件
-		output_data_basin_4=output_data_dir_basin_4+name4	#按表格统计结果输出的文件
-		output_data_basin_5=output_data_dir_basin_5+name4	#按表格统计结果输出的文件
-		output_data_basin_6=output_data_dir_basin_6+name4	#按表格统计结果输出的文件
-		output_data_basin_7=output_data_dir_basin_7+name4	#按表格统计结果输出的文件
-		output_data_basin_8=output_data_dir_basin_8+name4	#按表格统计结果输出的文件
-		output_data_basin_9=output_data_dir_basin_9+name4	#按表格统计结果输出的文件
-		output_data_basin_10=output_data_dir_basin_10+name4	#按表格统计结果输出的文件
-		output_data_basin_11=output_data_dir_basin_11+name4	#按表格统计结果输出的文件
-		output_data_basin_12=output_data_dir_basin_12+name4	#按表格统计结果输出的文件
-		output_data_basin_13=output_data_dir_basin_13+name4	#按表格统计结果输出的文件
-		output_data_basin_14=output_data_dir_basin_14+name4	#按表格统计结果输出的文件
-		output_data_basin_15=output_data_dir_basin_15+name4	#按表格统计结果输出的文件
-		output_data_basin_16=output_data_dir_basin_16+name4	#按表格统计结果输出的文件
-		output_data_basin_17=output_data_dir_basin_17+name4	#按表格统计结果输出的文件
-		output_data_basin_18=output_data_dir_basin_18+name4	#按表格统计结果输出的文件
 		################################################################################
 		
 		print input_dir,output_asctoras,output_data_basin_1
 		
 ##########################待处理流域边界文件##############################################		
 		basin_1=basins_dir+data_class2+basin_num_1+".shp"	# 待统计流域边界
-		basin_2=basins_dir+data_class2+basin_num_2+".shp"	# 待统计流域边界
-		basin_3=basins_dir+data_class2+basin_num_3+".shp"	# 待统计流域边界
-		basin_4=basins_dir+data_class2+basin_num_4+".shp"	# 待统计流域边界
-		basin_5=basins_dir+data_class2+basin_num_5+".shp"	# 待统计流域边界
-		basin_6=basins_dir+data_class2+basin_num_6+".shp"	# 待统计流域边界
-		basin_7=basins_dir+data_class2+basin_num_7+".shp"	# 待统计流域边界
-		basin_8=basins_dir+data_class2+basin_num_8+".shp"	# 待统计流域边界
-		basin_9=basins_dir+data_class2+basin_num_9+".shp"	# 待统计流域边界
-		basin_10=basins_dir+data_class2+basin_num_10+".shp"	# 待统计流域边界
-		basin_11=basins_dir+data_class2+basin_num_11+".shp"	# 待统计流域边界
-		basin_12=basins_dir+data_class2+basin_num_12+".shp"	# 待统计流域边界
-		basin_13=basins_dir+data_class2+basin_num_13+".shp"	# 待统计流域边界
-		basin_14=basins_dir+data_class2+basin_num_14+".shp"	# 待统计流域边界
-		basin_15=basins_dir+data_class2+basin_num_15+".shp"	# 待统计流域边界
-		basin_16=basins_dir+data_class2+basin_num_16+".shp"	# 待统计流域边界
-		basin_17=basins_dir+data_class2+basin_num_17+".shp"	# 待统计流域边界
-		basin_18=basins_dir+data_class2+basin_num_18+".shp"	# 待统计流域边界
 ################################################################################
-
-
 
 # Process: 以表格显示分区统计岷江流域
 # Process: Zonal Statistics as Table...
