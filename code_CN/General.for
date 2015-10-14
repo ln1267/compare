@@ -30,7 +30,7 @@ C --- Write introductory information to screen
      >    ' USDA Forest Service Southern Research Station '/,
      >       ' Raleigh, NC'//,
      >       ' June 2011 -'//,
-     >       ' Press Y OR y to continue :>' //)
+     >       ' Press Y OR y to continue :>1 ' //)
       READ(*,20) PRESS
 !      PRESS = "Y"
 !	IF (press.eq."y" .or.press.eq."Y") THEN
