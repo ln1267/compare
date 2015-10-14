@@ -72,7 +72,7 @@
          HUCREPTILES =0.
          HUCVERTEB=0.
                           
-         DO 200 J=19, NYEAR
+         DO 200 J=1, NYEAR
    
             IDY = J + BYEAR - 1 
                   

@@ -6,6 +6,7 @@
 !     MOISTURE ACCOUNTING MODEL (SAC-SMA)                              C
 !     Line 591 --- Carbon model                                        C
 !     Line 941 --- Area for each cell                                  C
+!     IF MODEL in dynamic land cover then LADUSE(I) -----> VEG(I,J) total:38   C
 !**********************************************************************C
       
       SUBROUTINE WATERBAL(I,J,M,MNDAY)
@@ -721,7 +722,7 @@
 
 ! -- CROP
 
-               IF (LADUSE(I).EQ.1) THEN 
+               IF (LADUSE(I).EQ.12.0) THEN 
 
                GEP(J,M) = 4.5 * ET(J,M)
 !---------论文中的公式
@@ -732,7 +733,7 @@
 			   
 ! -- Close SHRUBLANDS                   
                
-               ELSEIF (LADUSE(I) .EQ. 3) THEN                
+               ELSEIF (LADUSE(I) .EQ. 6.0) THEN                
 
                GEP(J,M) = 1.4 * ET(J,M)  
                 
@@ -740,7 +741,7 @@
                 
 !-- DECIDUOUS Broadleaf FOREST
  
-               ELSEIF (LADUSE(I) .EQ. 0) THEN 
+               ELSEIF (LADUSE(I) .EQ. 4.0) THEN 
 
                GEP(J,M) = 2.4* ET(J,M) 
 !-------论文公式				   
@@ -751,19 +752,19 @@
 
 ! -- Evergreen Broadleaf FOREST
  
-               ELSEIF (LADUSE(I) .EQ. 0) THEN 
+               ELSEIF (LADUSE(I) .EQ. 2) THEN 
 
                GEP(J,M) = 2.6* ET(J,M)              
                RECO(J,M)= 19.6 + 1.58 * ET(J,M)*MNDAY			   
 
 !---- Evergreen Needleleaf Forest
-               ELSEIF (LADUSE(I) .EQ. 2) THEN                
+               ELSEIF (LADUSE(I) .EQ. 1) THEN                
 
                GEP(J,M) = 2.14* ET(J,M)
                RECO(J,M)= 9.9 + 1.67 * ET(J,M)*MNDAY			   
                
 ! -- GRASSLANDS               
-                ELSEIF (LADUSE(I) .EQ. 4) THEN    
+                ELSEIF (LADUSE(I) .EQ. 8 .or. LADUSE(I) .EQ. 9 .or. LADUSE(I) .EQ. 10 ) THEN    
                
                GEP(J,M) = 2.25 * ET(J,M)
 !------ 论文公式
@@ -773,34 +774,34 @@
                
 !---- MIXED FOREST
                
-               ELSEIF (LADUSE(I) .EQ. 0) THEN 
+               ELSEIF (LADUSE(I) .EQ. 5) THEN 
                
                GEP(J,M) =2.5 * ET(J,M)                         
                RECO(J,M)= 24.44 + 1.70 * GEP(J,M)*MNDAY
 
 ! -- Open Shrublands                   
                
-			   ELSEIF (LADUSE(I) .EQ. 0) THEN                
+			   ELSEIF (LADUSE(I) .EQ. 7) THEN                
 
                GEP(J,M) =  1.42* ET(J,M)
                RECO(J,M)= 9.7 + 0.74 * ET(J,M)*MNDAY
                                            
 ! -- SAVANNAS                   
                
-			   ELSEIF (LADUSE(I).EQ.  0) THEN                
+			   ELSEIF (LADUSE(I).EQ. 20  ) THEN                
 
                GEP(J,M) = 1.26* ET(J,M) !
                RECO(J,M)= 25.2 + 0.67 * ET(J,M)*MNDAY
          
 ! -- Wetlands                     
                
-			   ELSEIF (LADUSE(I) .EQ. 6) THEN                
+			   ELSEIF (LADUSE(I) .EQ. 11) THEN                
 
                GEP(J,M) = 1.66* ET(J,M)
                RECO(J,M)= 7.8 + 0.93 * ET(J,M)*MNDAY     
 ! -- Wet Savanna                     
                
-			   ELSEIF (LADUSE(I) .EQ. 0) THEN                
+			   ELSEIF (LADUSE(I) .EQ. 20 ) THEN                
 
                GEP(J,M) = 1.49* ET(J,M)
                RECO(J,M)= 14.7 + 0.94 * ET(J,M)*MNDAY

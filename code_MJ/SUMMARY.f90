@@ -32,7 +32,7 @@
       
       ISTEP = IYEND - IYSTART + 1
           
-      DO 100 J = 19, ISTEP
+      DO 100 J = 1, ISTEP
 !------ 排除异常的气候值，异常值，气候和温度设置为-99999
        
        IF  (ANURAIN(J+IYSTART-BYEAR) .eq.-99999 .or. &
