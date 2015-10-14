@@ -12,50 +12,49 @@ arcpy.CheckOutExtension("spatial")
 
 
 #循环开始
-for n in xrange(1961,1990):
+for n in xrange(2012,2013):
 	for m in xrange(1,13):
 		m="%02d" % m		#转换为两位日期
 # Local variables:	
 												#如果处理气象数据统计字段为"HUC_8"，统计LAI是则为”HUC_8"
-		data_class="TM"							#待处理的数据类型”TM“，”PRE“，”LAI“
-		data_class2="basin"					#判断是处理气象数据还是LAI数据；分别用“basin_"和“VEG_"
+		data_class="LAI"							#待处理的数据类型”TM“，”PRE“，”LAI“
+		data_class2="VEG"					#判断是处理气象数据还是LAI数据；分别用“basin_"和“VEG_"
 ##########################-----流域划分个数---------##############################################			
 		basin_num_1=""
 		################################################################################	
 		
 ##########################-----公用目录---------##############################################		
-		input_dir="D:\\Temp\\LAI_GLASS\\Chuanxi\\month\\tif\\"+data_class	#气象数据所在的目录
-		input_dir2="D:\\Temp\\LAI_GLASS\\Chuanxi\\month\\tif_real\\"+data_class	#气象数据所在的目录
-		output_raster_dir="D:\\YUN\\Baidu_sina\\zagunao\\"+data_class+"\\glass\\"			#转换生成的栅格所在的目录
-		basins_dir="D:\\YUN\\Baidu_sina\\zagunao\\" 	#流域边界所在目录
+		input_dir="E:\\LAI\\"		#气象数据所在的目录
+		output_raster_dir="d:\\zagunao\\"+data_class+"\\"			#转换生成的栅格所在的目录
+		basins_dir="d:\\zagunao\\" 	#流域边界所在目录
 ################################################################################		
 		
 #######################---转换后的每个流域结果的输出目录------#################################
 		
 		output_data_dir_basin_1=output_raster_dir+basin_num_1	#统计结果输出的目录
-		################################################################################
+################################################################################
 
 		name1=data_class+str(n)+m+".txt"
-		name2=str(n)+m+".tif"
+		name2=data_class+str(n)+m+".tif"
 		name4=data_class+str(n)+m+".dbf"
 		
 ######################-----待预处理的气象数据文件------##############################################		
-		input_file = input_dir+name2						#输入气象数据
+		input_file = input_dir+name1							#输入气象数据
 #		input_file = "d:\\tm196101.txt"
-		output_asctoras = input_dir2+name2				#处理后的气象数据
+		output_asctoras = input_dir+name2				#处理后的气象数据
 ################################################################################
 		
 ######################-----分流域处理后的结果文件------##############################################		
 		output_data_basin_1=output_data_dir_basin_1+name4	#按表格统计结果输出的文件
-		################################################################################
+################################################################################
 		
 		print input_dir,output_asctoras,output_data_basin_1
 		
 ##########################待处理流域边界文件##############################################		
-		basin_1="D:\\YUN\\Baidu_sina\\zagunao\\veg.shp"	# 待统计流域边界
+		basin_1=basins_dir+data_class2+basin_num_1+".shp"	# 待统计流域边界
 ################################################################################
 
-		arcpy.gp.ExtractByAttributes_sa(input_file ,"\"value\" < 100 ", output_asctoras)
+
 
 # Process: 以表格显示分区统计岷江流域
 # Process: Zonal Statistics as Table...
