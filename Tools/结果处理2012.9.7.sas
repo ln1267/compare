@@ -9,7 +9,6 @@
 **/
 
 
-
 /*----------------------------数据预处理开始-----------------------------------------------*/
 /*为每个输出创建逻辑库*/
 libname W "C:\WASSICBZB\Outputs";
@@ -41,7 +40,7 @@ data W.HUCCARBON;/* 读入HUCCARBON（流域年均碳通量）*/
 run;
 data W.HUCFLOW;/* 读入HUCFLOW（流域年均水通量）*/
 	infile "C:\WASSICBZB\Outputs\HUCFLOW.TXT"  dlm=',' dsd missover firstobs=2;;
-	input CELL RAIN PET AET RUNOFF RUNOFF_P ET_P RUN_ET_PRFACTOR;
+	input CELL RAIN PET AET RUNOFF RUNOFF_P ET_P RUN_ET_PRFACTOR Y_n;
 run;
 data W.MONTHCARBON;/* 读入MONTHCARBON（流域月碳通量）*/
 	infile "C:\WASSICBZB\Outputs\MONTHCARBON.TXT"  dlm=',' dsd missover firstobs=2;;
@@ -55,7 +54,65 @@ data W.RUNOFFBYLANDUSE;/* 读入RUNOFFBYLANDUSE（流域各个植被类型的年径流）*/
 	infile "C:\WASSICBZB\Outputs\RUNOFFBYLANDUSE.TXT"  dlm=',' dsd missover firstobs=2;;
 	input WATERSHEDID YEAR LADUSEID HUCRUNOFF FLOWVOL LANDratio HUCAREA;
 run;
+data W.SOILSTORAGE;/* 读入RUNOFFBYLANDUSE（流域各个植被类型的年径流）*/
+	infile "C:\WASSICBZB\Outputs\SOILSTORAGE.TXT"  dlm=',' dsd missover firstobs=2;;
+	input CELL YEAR MONTH UZTWC UZFWC LZTWC LZFPC LZFSC;
+run;
 /*模拟结果文件读入结束*/
+
+
+
+/*输出所有的到output.xlsx文件*/
+PROC EXPORT DATA= W.ANNUALCARBON 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="ANNUALCARBON"; 
+RUN;
+
+PROC EXPORT DATA= W.ANNUALFLOW 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="ANNUALFLOW"; 
+RUN;
+PROC EXPORT DATA= W.FLOWVOLBYLANDUSE 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="FLOWVOLBYLANDUSE"; 
+RUN;
+PROC EXPORT DATA= W.RUNOFFBYLANDUSE 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="RUNOFFBYLANDUSE"; 
+RUN;
+PROC EXPORT DATA= W.HUCFLOW 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="HUCFLOW"; 
+RUN;
+PROC EXPORT DATA= W.MONTHCARBON 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="MONTHCARBON"; 
+RUN;
+PROC EXPORT DATA= W.MONTHFLOW 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="MONTHFLOW"; 
+RUN;
+PROC EXPORT DATA= W.RUNOFFBYLANDUSE 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="RUNOFFBYLANDUSE"; 
+RUN;
+PROC EXPORT DATA= W.SOILSTORAGE 
+            OUTFILE= "C:\WASSICBZB\output.xlsx" 
+            DBMS=EXCEL REPLACE;
+     SHEET="SOILSTORAGE"; 
+RUN;
+
+
+
+
 
 
 /*读入验证数据*/
@@ -71,6 +128,7 @@ PROC IMPORT OUT= W.MODGEP
      USEDATE=YES;
      SCANTIME=YES;
 RUN;
+
 	/*Zhang ET database*/
 PROC IMPORT OUT= W.ZHANGET 
             DATAFILE= "E:\zagunao\VALID\ZHANGET.xlsx" 
